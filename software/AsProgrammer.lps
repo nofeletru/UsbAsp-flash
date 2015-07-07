@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="9"/>
+    <BuildModes Active="Release"/>
+    <Units Count="25">
+      <Unit0>
+        <Filename Value="AsProgrammer.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="AsProgrammer"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="27" Y="10"/>
+        <UsageCount Value="200"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="main.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MainForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="main"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="0"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1981"/>
+        <CursorPos X="18" Y="22"/>
+        <UsageCount Value="72"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="usbaspi2c.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="usbaspi2c"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="61"/>
+        <CursorPos X="81" Y="55"/>
+        <UsageCount Value="202"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="usbaspmw.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="usbaspmw"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="12" Y="19"/>
+        <UsageCount Value="215"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="usbaspmulti.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="usbaspmulti"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="129"/>
+        <CursorPos X="5" Y="106"/>
+        <UsageCount Value="72"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="usbasp25.pas"/>
+        <UnitName Value="usbasp25"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="6" Y="122"/>
+        <UsageCount Value="96"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="LibUSB.pas"/>
+        <UnitName Value="LibUSB"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="107" Y="339"/>
+        <UsageCount Value="106"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="usbhid.pas"/>
+        <UnitName Value="usbhid"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="10"/>
+        <CursorPos X="10" Y="31"/>
+        <UsageCount Value="109"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="D:\lazarus\lcl\menus.pp"/>
+        <UnitName Value="Menus"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="20" Y="208"/>
+        <UsageCount Value="28"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="C:\lazarusF\4_khexeditor_1.5\source\khexeditor.pas"/>
+        <UnitName Value="KHexEditor"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="4002"/>
+        <CursorPos X="101" Y="4035"/>
+        <UsageCount Value="110"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="C:\lazarusF\4_khexeditor_1.5\source\keditcommon.pas"/>
+        <UnitName Value="KEditCommon"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="339"/>
+        <CursorPos X="5" Y="119"/>
+        <UsageCount Value="102"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="D:\lazarus\lcl\actnlist.pas"/>
+        <UnitName Value="ActnList"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="15" Y="261"/>
+        <UsageCount Value="28"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="usbasp45.pas"/>
+        <UnitName Value="usbasp45"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="16" Y="160"/>
+        <UsageCount Value="101"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="LIBUSB Test\libusb.pp"/>
+        <UnitName Value="libusb"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="111"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="4"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="C:\lazarusF\fpc\2.6.4\source\rtl\objpas\classes\classesh.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="61"/>
+        <CursorPos X="44" Y="103"/>
+        <UsageCount Value="50"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="C:\lazarusF\4_khexeditor_1.5\source\kfunctions.pas"/>
+        <UnitName Value="KFunctions"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="6"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="..\6_kcontrols_1.6\source\khexeditor.pas"/>
+        <UnitName Value="KHexEditor"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="7"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="C:\lazarusF\6_kcontrols_1.6\source\khexeditor.pas"/>
+        <UnitName Value="KHexEditor"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="3858"/>
+        <CursorPos X="11" Y="3869"/>
+        <UsageCount Value="27"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="C:\lazarusF\lcl\include\wincontrol.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="5783"/>
+        <CursorPos X="1" Y="5803"/>
+        <UsageCount Value="27"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="C:\lazarusF\lcl\include\control.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2089"/>
+        <CursorPos X="1" Y="2109"/>
+        <UsageCount Value="7"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="C:\lazarusF\lcl\lclmessageglue.pas"/>
+        <UnitName Value="LCLMessageGlue"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="99"/>
+        <CursorPos X="1" Y="123"/>
+        <UsageCount Value="7"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="C:\lazarusF\lcl\interfaces\win32\win32callback.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="195"/>
+        <CursorPos X="1" Y="216"/>
+        <UsageCount Value="7"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="C:\lazarusF\6_kcontrols_1.6\source\keditcommon.pas"/>
+        <UnitName Value="KEditCommon"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="16"/>
+        <CursorPos X="35" Y="235"/>
+        <UsageCount Value="13"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="C:\lazarusF\lcl\graphics.pp"/>
+        <UnitName Value="Graphics"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1185"/>
+        <CursorPos X="51" Y="1203"/>
+        <UsageCount Value="10"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="C:\lazarusF\6_kcontrols_1.6\source\kcontrols.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2"/>
+        <CursorPos X="4" Y="11"/>
+        <UsageCount Value="10"/>
+      </Unit24>
+    </Units>
+    <General>
+      <ActiveWindowIndexAtStart Value="0"/>
+    </General>
+    <JumpHistory Count="5" HistoryIndex="4">
+      <Position1>
+        <Filename Value="main.pas"/>
+        <Caret Line="2064" Column="48" TopLine="2060"/>
+      </Position1>
+      <Position2>
+        <Filename Value="main.pas"/>
+        <Caret Line="1332" Column="5" TopLine="1323"/>
+      </Position2>
+      <Position3>
+        <Filename Value="main.pas"/>
+        <Caret Line="1422" Column="1" TopLine="1401"/>
+      </Position3>
+      <Position4>
+        <Filename Value="main.pas"/>
+        <Caret Line="202" Column="128" TopLine="196"/>
+      </Position4>
+      <Position5>
+        <Filename Value="main.pas"/>
+        <Caret Line="22" Column="18" TopLine="1"/>
+      </Position5>
+    </JumpHistory>
+  </ProjectSession>
+  <Debugging>
+    <Watches Count="1">
+      <Item1>
+        <Expression Value="ID"/>
+        <DisplayStyle Value="wdfStructure"/>
+      </Item1>
+    </Watches>
+  </Debugging>
+  <EditorMacros Count="0"/>
+</CONFIG>
