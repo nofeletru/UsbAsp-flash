@@ -41,6 +41,7 @@
        <W25Q16 size="2097152" page="256" id="EF4015"></W25Q16>
 	   <W25Q128BV size="16777216" page="256" id="EF4018" /> 
 	   <W25Q32 size="4194304" page="256" id="EF4016" />
+	   <W25Q64 size="8388608" page="256" id="EF4017" />
 	   <W25D80 size="1048576" page="256" id="EF3014"/>
        <W25X32 size="4194304" page="256" id="EF3016" />	   
      </WINBOND>
