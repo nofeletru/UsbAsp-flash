@@ -20,6 +20,8 @@
 	 </SST>
 	 <Spansion>
 	  <S25FL032 size="4194304" page="256" id="010215" />
+	  <S25FL216K size="2097152" page="256" id="014015" spicmd="25" />
+	  <S25FL016A size="2097152" page="256" id="010214" spicmd="25" />
 	 </Spansion>
      <EON>
       <EN25F80 size="1048576" page="256" id="1C3114" />
