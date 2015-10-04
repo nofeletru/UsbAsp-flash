@@ -31,10 +31,12 @@
 	  <GD25Q080 size="1048576" page="256" id="C84014" />
      </GigaDevice>
      <MACRONIX>
+	   <MX25L4005 size="524288" page="256" id="C22013"></MX25L4005>
        <MX25L8005 size="1048576" page="256" id="C22014"></MX25L8005>
 	   <MX25L3206E size="4194304" page="256" id="C22016" />
 	   <MX25L1606E size="2097152" page="256" id="C22015" />
 	   <MX25L1636D size="2097152" page="256" id="C22415"/>
+	   <MX25L6406E size="8388608" page="256" id="C22017"/>
      </MACRONIX>
 	 <Nansi>
 	   <N25S80 size="1048576" page="256" id="D53014" />
