@@ -1524,7 +1524,7 @@ begin
 
   if ComboSPICMD.ItemIndex = SPI_CMD_45 then
   begin
-    UsbAsp25_ReadSR(hUSBDev, sreg); //Читаем регистр
+    UsbAsp45_ReadSR(hUSBDev, sreg); //Читаем регистр
     LogPrint('Sreg: '+IntToBin(sreg, 8));
   end;
 
@@ -1904,6 +1904,8 @@ try
       LogPrint(STR_USER_CANCEL, clRed);
       Exit;
     end;
+
+    UsbAsp25_ReadSR(hUSBDev, sreg); //Читаем регистр
     LogPrint('Стало Sreg: '+IntToBin(sreg, 8));
   end;
 
