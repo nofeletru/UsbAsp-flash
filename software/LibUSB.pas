@@ -21,14 +21,23 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *)
 
-{$mode delphi}
 unit LibUSB;
 
 interface
 
+{$ifdef unix}
+uses unix;
+{$endif}
+
 const
-  LIBUSB_PATH_MAX = 512;
+{$ifdef windows}
+  LIBUSB_PATH_MAX = 510;
   LIBUSB_DLL_NAME =  'libusb0.dll';
+{$endif}
+{$ifdef unix}
+  LIBUSB_PATH_MAX = PATH_MAX;
+  LIBUSB_DLL_NAME =  'libusb';
+{$endif}
 
   USB_OK = 0; // 0 = success from functions < 0 is failed
 
@@ -263,10 +272,10 @@ type
   pusb_device = ^usb_device;
   pusb_bus = ^usb_bus;
 
-  usb_device = packed record
+  usb_device = record
     next,
     prev: pusb_device;
-    filename: packed array [0..LIBUSB_PATH_MAX-1] of char;
+    filename: packed array [0..LIBUSB_PATH_MAX+1] of char;
     bus: pusb_bus;
     descriptor: usb_device_descriptor;
     config: PArray_usb_config_descriptor;
@@ -276,10 +285,10 @@ type
      children : ^pusb_device;
   end;
 
-  usb_bus = packed record
+  usb_bus = record
     next,
     prev: pusb_bus;
-    dirname: packed array [0..LIBUSB_PATH_MAX-1] of char;
+    dirname: packed array [0..LIBUSB_PATH_MAX+1] of char;
     devices: pusb_device;
     location: longint;
      root_dev: pusb_device;
@@ -339,18 +348,6 @@ function  usb_find_devices: longword; cdecl;
 function  usb_get_device(dev: pusb_dev_handle): pusb_device;  cdecl; // renamed from usb_device because of same named record
 function  usb_get_busses: pusb_bus; cdecl;
 
-function  usb_install_service_np: integer; cdecl;
-function  usb_uninstall_service_np: integer; cdecl;
-function  usb_install_driver_np(inf_file: PChar): integer; cdecl;
-function  usb_get_version: pusb_version; cdecl;
-function  usb_isochronous_setup_async(dev: pusb_dev_handle; var context: pointer; ep: char; pktsize: integer): integer; cdecl;
-function  usb_bulk_setup_async(dev: pusb_dev_handle; var context: pointer; ep: char): integer; cdecl;
-function  usb_interrupt_setup_async(dev: pusb_dev_handle; var context: pointer; ep: char): integer; cdecl;
-function  usb_submit_async(context: pointer; bytes: PByte; size: integer): integer; cdecl;
-function  usb_reap_async(context: pointer; timeout: integer): integer; cdecl;
-function  usb_free_async(var context: pointer): integer; cdecl;
-
-
 implementation
 
 
@@ -389,16 +386,7 @@ function  usb_find_devices: longword; cdecl; external LIBUSB_DLL_NAME name 'usb_
 function  usb_get_device(dev: pusb_dev_handle): pusb_device;  cdecl; external LIBUSB_DLL_NAME name 'usb_device'; // renamed from usb_device because of same named record
 function  usb_get_busses: pusb_bus; cdecl; external LIBUSB_DLL_NAME name 'usb_get_busses';
 
-function  usb_install_service_np; cdecl; external LIBUSB_DLL_NAME name 'usb_install_service_np';
-function  usb_uninstall_service_np; cdecl; external LIBUSB_DLL_NAME name 'usb_uninstall_service_np';
-function  usb_install_driver_np; cdecl; external LIBUSB_DLL_NAME name 'usb_install_driver_np';
-function  usb_get_version; cdecl; external LIBUSB_DLL_NAME name 'usb_get_version';
-function  usb_isochronous_setup_async; cdecl; external LIBUSB_DLL_NAME name 'usb_isochronous_setup_async';
-function  usb_bulk_setup_async; cdecl; external LIBUSB_DLL_NAME name 'usb_bulk_setup_async';
-function  usb_interrupt_setup_async; cdecl; external LIBUSB_DLL_NAME name 'usb_interrupt_setup_async';
-function  usb_submit_async; cdecl; external LIBUSB_DLL_NAME name 'usb_submit_async';
-function  usb_reap_async; cdecl; external LIBUSB_DLL_NAME name 'usb_reap_async';
-function  usb_free_async; cdecl; external LIBUSB_DLL_NAME name 'usb_free_async';
+
 
 
 end.
