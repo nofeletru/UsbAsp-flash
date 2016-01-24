@@ -84,7 +84,6 @@ begin
       Exit;
     end;
   until((sreg and 1 = 0));
-  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 1, sreg);
 end;
 
 //Вход в режим программирования
