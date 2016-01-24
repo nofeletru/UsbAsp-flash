@@ -118,14 +118,16 @@ end;
 
 //Возвращает сколько байт прочитали
 function UsbAsp25_Read(devHandle: Pusb_dev_handle; Opcode: byte; Addr: longword; var buffer: array of byte; bufflen: integer): integer;
+var
+  buff: array[0..3] of byte;
 begin
 
-  buffer[0] := Opcode;
-  buffer[1] := hi(addr);
-  buffer[2] := hi(lo(addr));
-  buffer[3] := lo(addr);
+  buff[0] := Opcode;
+  buff[1] := hi(addr);
+  buff[2] := hi(lo(addr));
+  buff[3] := lo(addr);
 
-  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 0, 0, 4, buffer);
+  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 0, 0, 4, buff);
   result := USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_READ, 1, 0, bufflen, buffer);
 end;
 
