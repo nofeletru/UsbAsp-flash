@@ -19,8 +19,8 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics,
   Dialogs, StdCtrls, ExtCtrls, ComCtrls, Menus, Grids, ActnList, Buttons,
-  RichMemo, KHexEditor, KEditCommon, StrUtils, usbasp25, usbasp45, usbaspi2c, usbaspmw, usbaspmulti,
-  usbhid, libusb, dos, XMLRead, DOM, KControls;
+  RichMemo, KHexEditor, KEditCommon, StrUtils, usbasp25, usbasp45, usbasp95,
+  usbaspi2c, usbaspmw, usbaspmulti, usbhid, libusb, dos, XMLRead, DOM, KControls;
 
 type
 
@@ -49,7 +49,6 @@ type
     MenuAutoCheck: TMenuItem;
     ComboItem1: TMenuItem;
     Menu3Mhz: TMenuItem;
-    Menu6Mhz: TMenuItem;
     MenuIgnoreBusyBit: TMenuItem;
     MenuGotoOffset: TMenuItem;
     MenuFind: TMenuItem;
@@ -161,6 +160,7 @@ type
   SPI_CMD_25             = 0;
   SPI_CMD_45             = 1;
   SPI_CMD_KB             = 2;
+  SPI_CMD_95             = 3;
 
 
 var
@@ -297,7 +297,6 @@ var
 begin
   if MainForm.RadioSPI.Checked then
   begin
-    if MainForm.Menu6Mhz.Checked then Speed := MainForm.Menu6Mhz.Tag;
     if MainForm.Menu3Mhz.Checked then Speed := MainForm.Menu3Mhz.Tag;
     if MainForm.Menu1_5Mhz.Checked then Speed := MainForm.Menu1_5Mhz.Tag;
     if MainForm.Menu750Khz.Checked then Speed := MainForm.Menu750Khz.Tag;
@@ -509,6 +508,74 @@ begin
   MainForm.ProgressBar.Position := 0;
 end;
 
+procedure WriteFlash95(var RomStream: TMemoryStream; StartAddress, WriteSize: cardinal; PageSize: word; ChipSize: integer);
+var
+  DataChunk: array[0..4095] of byte;
+  DataChunk2: array[0..4095] of byte;
+  Address, BytesWrite: cardinal;
+  i: integer;
+begin
+  if (StartAddress >= WriteSize) or (WriteSize = 0) {or (PageSize > WriteSize)} then
+  begin
+    LogPrint(STR_CHECK_SETTINGS, ClRed);
+    exit;
+  end;
+
+  if MainForm.MenuAutoCheck.Checked then
+    LogPrint(STR_WRITING_FLASH_WCHK) else
+      LogPrint(STR_WRITING_FLASH);
+
+  BytesWrite := 0;
+  Address := StartAddress;
+  MainForm.ProgressBar.Max := WriteSize div PageSize;
+
+  try
+
+    while Address < WriteSize do
+    begin
+
+      UsbAsp95_WREN(hUSBDev);
+
+      if (WriteSize - Address) < PageSize then PageSize := (WriteSize - Address);
+      RomStream.ReadBuffer(DataChunk, PageSize);
+
+      BytesWrite := BytesWrite + UsbAsp95_Write(hUSBDev, ChipSize, Address, datachunk, PageSize);
+
+
+      if not MainForm.MenuIgnoreBusyBit.Checked then  //Игнорировать проверку
+      if UsbAsp25_Busy(hUSBDev) then
+      begin
+        LogPrint(STR_USER_CANCEL , clRed);
+        Break;
+      end;
+
+      if MainForm.MenuAutoCheck.Checked then
+      begin
+        UsbAsp95_Read(hUSBDev, ChipSize, Address, datachunk2, PageSize);
+        for i:=0 to PageSize-1 do
+          if DataChunk2[i] <> DataChunk[i] then
+          begin
+            LogPrint(STR_VERIFY_ERROR+IntToHex(Address+i, 8), clRed);
+            MainForm.ProgressBar.Position := 0;
+            Exit;
+          end;
+      end;
+
+      Inc(Address, PageSize);
+      MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
+      Application.ProcessMessages;
+    end;
+
+  finally
+  end;
+
+  if BytesWrite <> WriteSize then
+    LogPrint(STR_WRONG_BYTES_WRITE, clRed)
+  else
+    LogPrint(STR_DONE);
+  MainForm.ProgressBar.Position := 0;
+end;
+
 //write size in pages
 procedure WriteFlashKB(var RomStream: TMemoryStream; StartAddress, WriteSize: cardinal; PageSize: word);
 var
@@ -694,6 +761,57 @@ begin
   MainForm.ProgressBar.Position := 0;
 end;
 
+procedure ReadFlash95(var RomStream: TMemoryStream; StartAddress, ChipSize: cardinal);
+var
+  ChunkSize: Word;
+  BytesRead: integer;
+  DataChunk: array[0..4095] of byte;
+  Address: cardinal;
+begin
+  if (StartAddress >= ChipSize) or (ChipSize = 0) then
+  begin
+    LogPrint(STR_CHECK_SETTINGS, clRed);
+    exit;
+  end;
+
+  ChunkSize := SizeOf(DataChunk);
+  if ChunkSize > ChipSize then ChunkSize := ChipSize;
+
+  LogPrint(STR_READING_FLASH);
+  BytesRead := 0;
+  Address := StartAddress;
+  MainForm.ProgressBar.Max := ChipSize div ChunkSize;
+
+  try
+    RomStream.Clear;
+
+    while Address < ChipSize do
+    begin
+      if ChunkSize > (ChipSize - Address) then ChunkSize := ChipSize - Address;
+
+      BytesRead := BytesRead + UsbAsp95_Read(hUSBDev, ChipSize, Address, datachunk, ChunkSize);
+      RomStream.WriteBuffer(datachunk, chunksize);
+      Inc(Address, ChunkSize);
+
+      MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
+      Application.ProcessMessages;
+      if MainForm.ButtonCancel.Tag <> 0 then
+      begin
+        LogPrint(STR_USER_CANCEL, clRed);
+        Break;
+      end;
+    end;
+
+  finally
+  end;
+
+  if BytesRead <> ChipSize then
+    LogPrint(STR_WRONG_BYTES_READ, clRed)
+  else
+    LogPrint(STR_DONE);
+  MainForm.ProgressBar.Position := 0;
+end;
+
 procedure ReadFlash45(var RomStream: TMemoryStream; StartAddress, PageSize, ChipSize: cardinal);
 var
   ChunkSize: Word;
@@ -829,6 +947,66 @@ begin
     if ChunkSize > (DataSize - Address) then ChunkSize := DataSize - Address;
 
     BytesRead := BytesRead + UsbAsp25_Read(hUSBDev, $03, Address, datachunk, ChunkSize);
+    RomStream.ReadBuffer(DataChunkFile, ChunkSize);
+
+    for i := 0 to ChunkSize -1 do
+    if DataChunk[i] <> DataChunkFile[i] then
+    begin
+      LogPrint(STR_VERIFY_ERROR+IntToHex(Address+i, 8), clRed);
+      MainForm.ProgressBar.Position := 0;
+      Exit;
+    end;
+
+    Inc(Address, ChunkSize);
+
+    MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
+    Application.ProcessMessages;
+    if MainForm.ButtonCancel.Tag <> 0 then
+    begin
+      LogPrint(STR_USER_CANCEL, clRed);
+      Break;
+    end;
+  end;
+
+  finally
+  end;
+
+  if (BytesRead <> DataSize) then
+    LogPrint(STR_WRONG_BYTES_READ, clRed)
+  else
+    LogPrint(STR_DONE);
+  MainForm.ProgressBar.Position := 0;
+end;
+
+procedure VerifyFlash95(var RomStream: TMemoryStream; StartAddress, DataSize, ChipSize: cardinal);
+var
+  ChunkSize: Word;
+  BytesRead, i: integer;
+  DataChunk: array[0..4095] of byte;
+  DataChunkFile: array[0..4095] of byte;
+  Address: cardinal;
+begin
+  if (StartAddress >= DataSize) or (DataSize = 0) then
+  begin
+    LogPrint(STR_CHECK_SETTINGS, clRed);
+    exit;
+  end;
+
+  ChunkSize := 4096;
+  if ChunkSize > DataSize then ChunkSize := DataSize;
+
+  LogPrint(STR_VERIFY);
+  BytesRead := 0;
+  Address := StartAddress;
+  MainForm.ProgressBar.Max := DataSize div ChunkSize;
+
+  try
+
+  while Address < DataSize do
+  begin
+    if ChunkSize > (DataSize - Address) then ChunkSize := DataSize - Address;
+
+    BytesRead := BytesRead + UsbAsp95_Read(hUSBDev, ChipSize, Address, datachunk, ChunkSize);
     RomStream.ReadBuffer(DataChunkFile, ChunkSize);
 
     for i := 0 to ChunkSize -1 do
@@ -1252,12 +1430,18 @@ begin
 
   if MainForm.RadioSPI.Checked then
   begin
-    MainForm.ButtonReadID.Enabled := True;
-    MainForm.ButtonBlock.Enabled := True;
+    if (MainForm.ComboSPICMD.ItemIndex <> SPI_CMD_KB) and (MainForm.ComboSPICMD.ItemIndex <> SPI_CMD_95) then
+    begin
+      MainForm.ButtonReadID.Enabled := True;
+      MainForm.ButtonBlock.Enabled := True;
+    end
+    else
+    begin
+      MainForm.ButtonErase.Enabled := False;
+      MainForm.ButtonBlock.Enabled := True;
+    end;
+
   end;
-
-
-
 end;
 
 procedure TMainForm.ChipClick(Sender: TObject);
@@ -1288,11 +1472,13 @@ begin
       if  Node.Attributes.GetNamedItem('spicmd') <> nil then
       begin
         if UpperCase(Node.Attributes.GetNamedItem('spicmd').NodeValue) = 'KB'then
-          MainForm.ComboSPICMD.ItemIndex:= 2;
+          MainForm.ComboSPICMD.ItemIndex:= SPI_CMD_KB;
         if Node.Attributes.GetNamedItem('spicmd').NodeValue = '45' then
-          MainForm.ComboSPICMD.ItemIndex:= 1 else
+          MainForm.ComboSPICMD.ItemIndex:= SPI_CMD_45;
         if Node.Attributes.GetNamedItem('spicmd').NodeValue = '25' then
-          MainForm.ComboSPICMD.ItemIndex:= 0;
+          MainForm.ComboSPICMD.ItemIndex:= SPI_CMD_25;
+        if Node.Attributes.GetNamedItem('spicmd').NodeValue = '95' then
+          MainForm.ComboSPICMD.ItemIndex:= SPI_CMD_95;
       end
       else
         ComboSPICMD.ItemIndex := 0;
@@ -1494,6 +1680,23 @@ begin
     LogPrint('Стало Sreg: '+IntToBin(sreg, 8));
   end;
 
+  if ComboSPICMD.ItemIndex = SPI_CMD_95 then
+  begin
+    UsbAsp95_ReadSR(hUSBDev, sreg); //Читаем регистр
+    LogPrint('Было Sreg: '+IntToBin(sreg, 8));
+
+    sreg := %10011100; //
+    UsbAsp95_WREN(hUSBDev); //Включаем разрешение записи
+    UsbAsp95_WriteSR(hUSBDev, sreg); //Устанавливаем регистр
+
+    //Пока отлипнет ромка
+    if UsbAsp25_Busy(hUSBDev) then
+    begin
+      LogPrint(STR_USER_CANCEL, clRed);
+      Exit;
+    end;
+    LogPrint('Стало Sreg: '+IntToBin(sreg, 8));
+  end;
 
 
 finally
@@ -1519,6 +1722,12 @@ begin
   if ComboSPICMD.ItemIndex = SPI_CMD_25 then
   begin
     UsbAsp25_ReadSR(hUSBDev, sreg); //Читаем регистр
+    LogPrint('Sreg: '+IntToBin(sreg, 8));
+  end;
+
+  if ComboSPICMD.ItemIndex = SPI_CMD_95 then
+  begin
+    UsbAsp95_ReadSR(hUSBDev, sreg); //Читаем регистр
     LogPrint('Sreg: '+IntToBin(sreg, 8));
   end;
 
@@ -1586,17 +1795,17 @@ begin
   ComboPageSize.Visible       := True;
   ComboSPICMD.Visible         := True;
 
-  if ComboSPICMD.ItemIndex <> 2 then
+  ButtonErase.Enabled         := True;
+
+  if (ComboSPICMD.ItemIndex <> SPI_CMD_KB) and (ComboSPICMD.ItemIndex <> SPI_CMD_95) then
   begin
     ButtonReadID.Enabled        := True;
     ButtonBlock.Enabled         := True;
   end else
   begin
     ButtonReadID.Enabled        := False;
-    ButtonBlock.Enabled         := False;
+    ButtonErase.Enabled         := False;
   end;
-
-  ButtonErase.Enabled         := True;
 
   ComboMWBitLen.Visible       := False;
   Label4.Visible              := False;
@@ -1677,6 +1886,8 @@ try
 
     if ComboSPICMD.ItemIndex = SPI_CMD_25 then
       WriteFlash25(RomF, 0, KHexEditor.Data.Size, PageSize, WriteType);
+    if ComboSPICMD.ItemIndex = SPI_CMD_95 then
+      WriteFlash95(RomF, 0, KHexEditor.Data.Size, PageSize, StrToInt(ComboChipSize.Text));
     if ComboSPICMD.ItemIndex = SPI_CMD_45 then
       WriteFlash45(RomF, 0, KHexEditor.Data.Size, PageSize, WriteType);
     if ComboSPICMD.ItemIndex = SPI_CMD_KB then
@@ -1811,6 +2022,9 @@ try
     if ComboSPICMD.ItemIndex = SPI_CMD_25 then
       VerifyFlash25(RomF, 0, KHexEditor.Data.Size);
 
+    if ComboSPICMD.ItemIndex = SPI_CMD_95 then
+      VerifyFlash95(RomF, 0, KHexEditor.Data.Size, StrToInt(ComboChipSize.Text));
+
     if ComboSPICMD.ItemIndex = SPI_CMD_45 then
      begin
       if (not IsNumber(ComboPageSize.Text)) then
@@ -1906,6 +2120,26 @@ try
     end;
 
     UsbAsp25_ReadSR(hUSBDev, sreg); //Читаем регистр
+    LogPrint('Стало Sreg: '+IntToBin(sreg, 8));
+  end;
+
+  if ComboSPICMD.ItemIndex = SPI_CMD_95 then
+  begin
+    UsbAsp95_ReadSR(hUSBDev, sreg); //Читаем регистр
+    LogPrint('Было Sreg: '+IntToBin(sreg, 8));
+
+    sreg := 0; //
+    UsbAsp95_WREN(hUSBDev); //Включаем разрешение записи
+    UsbAsp95_WriteSR(hUSBDev, sreg); //Сбрасываем регистр
+
+    //Пока отлипнет ромка
+    if UsbAsp25_Busy(hUSBDev) then
+    begin
+      LogPrint(STR_USER_CANCEL, clRed);
+      Exit;
+    end;
+
+    UsbAsp95_ReadSR(hUSBDev, sreg); //Читаем регистр
     LogPrint('Стало Sreg: '+IntToBin(sreg, 8));
   end;
 
@@ -2136,6 +2370,9 @@ try
       end;
       ReadFlash45(RomF, 0, StrToInt(ComboPageSize.Text), StrToInt(ComboChipSize.Text));
     end;
+
+    if  ComboSPICMD.ItemIndex = SPI_CMD_95 then
+      ReadFlash95(RomF, 0, StrToInt(ComboChipSize.Text));
 
     RomF.Position := 0;
     KHexEditor.LoadFromStream(RomF);

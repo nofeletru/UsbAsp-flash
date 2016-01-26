@@ -12,6 +12,7 @@
 	</cFeon>
     <ST>
 	  <M25P10 size="131072" page="256" id="202011" />
+	  <M95080 size="1024" page="32" spicmd="95" />
 	</ST>
      <SST>
 	  <SST25VF512 size="65536" page="1" id="BF48" />

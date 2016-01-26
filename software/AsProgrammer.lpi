@@ -22,6 +22,7 @@
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
       <MajorVersionNr Value="1"/>
+      <MinorVersionNr Value="1"/>
       <BuildNr Value="1"/>
       <Language Value="0419"/>
       <StringTable ProductVersion=""/>
@@ -69,12 +70,6 @@
               </Win32>
             </Options>
           </Linking>
-          <Other>
-            <CompilerMessages>
-              <MsgFileName Value=""/>
-            </CompilerMessages>
-            <CompilerPath Value="$(CompPath)"/>
-          </Other>
         </CompilerOptions>
       </Item2>
       <SharedMatrixOptions Count="2">
@@ -106,11 +101,10 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="5">
+    <Units Count="6">
       <Unit0>
         <Filename Value="AsProgrammer.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="AsProgrammer"/>
       </Unit0>
       <Unit1>
         <Filename Value="main.pas"/>
@@ -118,23 +112,23 @@
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="main"/>
       </Unit1>
       <Unit2>
         <Filename Value="usbaspi2c.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="usbaspi2c"/>
       </Unit2>
       <Unit3>
         <Filename Value="usbaspmw.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="usbaspmw"/>
       </Unit3>
       <Unit4>
         <Filename Value="usbaspmulti.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="usbaspmulti"/>
       </Unit4>
+      <Unit5>
+        <Filename Value="usbasp95.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit5>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -154,8 +148,6 @@
     </Parsing>
     <CodeGeneration>
       <SmartLinkUnit Value="True"/>
-      <TargetProcessor Value="pentium2"/>
-      <TargetCPU Value="i386"/>
       <TargetOS Value="win32"/>
       <Optimizations>
         <VariablesInRegisters Value="True"/>
@@ -173,12 +165,6 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerMessages>
-        <MsgFileName Value=""/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">

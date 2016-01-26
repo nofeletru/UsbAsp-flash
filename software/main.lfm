@@ -12,7 +12,7 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poDesktopCenter
-  LCLVersion = '1.2.6.0'
+  LCLVersion = '1.4.4.0'
   object ProgressBar: TProgressBar
     Left = 0
     Height = 20
@@ -76,6 +76,7 @@ object MainForm: TMainForm
     end
     object ToolButton1: TToolButton
       Left = 239
+      Height = 32
       Top = 2
       Width = 10
       Caption = 'ToolButton1'
@@ -105,6 +106,7 @@ object MainForm: TMainForm
     end
     object ToolButton3: TToolButton
       Left = 73
+      Height = 32
       Top = 2
       Width = 10
       Caption = 'ToolButton3'
@@ -141,6 +143,7 @@ object MainForm: TMainForm
     end
     object ToolButton2: TToolButton
       Left = 333
+      Height = 32
       Top = 2
       Width = 10
       Caption = 'ToolButton2'
@@ -178,6 +181,7 @@ object MainForm: TMainForm
     end
     object ToolButton5: TToolButton
       Left = 379
+      Height = 32
       Top = 2
       Width = 10
       Caption = 'ToolButton5'
@@ -185,6 +189,7 @@ object MainForm: TMainForm
     end
     object ToolButton4: TToolButton
       Left = 569
+      Height = 32
       Top = 2
       Width = 10
       Caption = 'ToolButton4'
@@ -197,7 +202,7 @@ object MainForm: TMainForm
     Top = 34
     Width = 802
     Align = alTop
-    ClientHeight = 41
+    ClientHeight = 39
     ClientWidth = 798
     TabOrder = 2
     object ComboChipSize: TComboBox
@@ -354,6 +359,7 @@ object MainForm: TMainForm
         '25-я серия'
         '45-я серия'
         'KB9012'
+        '95-я серия'
       )
       OnChange = ComboSPICMDChange
       Style = csDropDownList
@@ -425,6 +431,7 @@ object MainForm: TMainForm
     ReadOnly = True
     ScrollBars = ssVertical
     TabOrder = 5
+    ZoomFactor = 1
   end
   object OpenDialog: TOpenDialog
     Filter = '*.*|*.*'
@@ -455,12 +462,6 @@ object MainForm: TMainForm
         Caption = 'SPI'
         object MenuSPIClock: TMenuItem
           Caption = 'Частота'
-          object Menu6Mhz: TMenuItem
-            Tag = 14
-            AutoCheck = True
-            Caption = '6 MHz'
-            RadioItem = True
-          end
           object Menu3Mhz: TMenuItem
             Tag = 13
             AutoCheck = True
