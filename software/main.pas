@@ -1521,7 +1521,7 @@ end;
 
 procedure TMainForm.KHexEditorChange(Sender: TObject);
 begin
-  //StatusBar.Panels.Items[0].Text := 'Размер: '+IntToStr(KHexEditor.Data.Size);
+  StatusBar.Panels.Items[0].Text := 'Размер: '+IntToStr(KHexEditor.Data.Size);
   if KHexEditor.Modified then
     StatusBar.Panels.Items[1].Text := 'Изменен'
   else
