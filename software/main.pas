@@ -20,7 +20,7 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics,
   Dialogs, StdCtrls, ExtCtrls, ComCtrls, Menus, Grids, ActnList, Buttons,
   RichMemo, KHexEditor, KEditCommon, StrUtils, usbasp25, usbasp45, usbasp95,
-  usbaspi2c, usbaspmw, usbaspmulti, usbhid, libusb, dos, XMLRead, DOM, KControls;
+  usbaspi2c, usbaspmw, usbaspmulti, usbhid, libusb, dos, XMLRead, XMLWrite, DOM, KControls;
 
 type
 
@@ -103,6 +103,7 @@ type
     procedure ClearLogMenuItemClick(Sender: TObject);
     procedure ComboSPICMDChange(Sender: TObject);
     procedure CopyLogMenuItemClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ChipClick(Sender: TObject);
@@ -135,6 +136,8 @@ type
   procedure LogPrint(text: string; AColor: TColor = clDefault);
   function UsbAspEEPROMSupport(): integer;
   procedure FindHEX(FindStr: string);
+  procedure SaveOptions;
+  Procedure LoadOptions;
 
   const
   STR_CHECK_SETTINGS     = 'Проверьте настройки';
@@ -2325,6 +2328,7 @@ begin
 
   KHexEditor.SetCharMapping(EditorCharMapping());
   KHexEditor.ExecuteCommand(ecOverwriteMode);
+  LoadOptions;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -2440,6 +2444,11 @@ end;
 procedure TMainForm.CopyLogMenuItemClick(Sender: TObject);
 begin
   Log.CopyToClipboard;
+end;
+
+procedure TMainForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
+begin
+  SaveOptions;
 end;
 
 
@@ -2596,7 +2605,107 @@ begin
     ShowMessage(PChar(S));
 end;
 
+procedure SaveOptions;
+var
+  XMLfile: TXMLDocument;
+  Node, ParentNode: TDOMNode;
+begin
+  if FileExists('chiplist.xml') then
+  begin
+    ReadXMLFile(XMLfile, 'chiplist.xml');
 
+    //Удаляем старую запись
+    Node := XMLfile.DocumentElement.FindNode('options');
+    if (Node <> nil) then XMLfile.DocumentElement.RemoveChild(Node);
+
+    Node:= XMLfile.DocumentElement;
+    ParentNode := XMLfile.CreateElement('options');
+
+    if MainForm.MenuAutoCheck.Checked then
+      TDOMElement(ParentNode).SetAttribute('verify', '1') else
+        TDOMElement(ParentNode).SetAttribute('verify', '0');
+
+    if MainForm.Menu3Mhz.Checked then
+      TDOMElement(ParentNode).SetAttribute('spi_speed', '3Mhz');
+    if MainForm.Menu1_5Mhz.Checked then
+      TDOMElement(ParentNode).SetAttribute('spi_speed', '1_5Mhz');
+    if MainForm.Menu750Khz.Checked then
+      TDOMElement(ParentNode).SetAttribute('spi_speed', '750Khz');
+    if MainForm.Menu375Khz.Checked then
+      TDOMElement(ParentNode).SetAttribute('spi_speed', '375Khz');
+    if MainForm.Menu187_5Khz.Checked then
+      TDOMElement(ParentNode).SetAttribute('spi_speed', '187_5Khz');
+    if MainForm.Menu93_75Khz.Checked then
+      TDOMElement(ParentNode).SetAttribute('spi_speed', '93_75Khz');
+    if MainForm.Menu32Khz.Checked then
+      TDOMElement(ParentNode).SetAttribute('spi_speed', '32Khz');
+
+    if MainForm.MenuMW32Khz.Checked then
+      TDOMElement(ParentNode).SetAttribute('mw_speed', '32Khz');
+    if MainForm.MenuMW16Khz.Checked then
+      TDOMElement(ParentNode).SetAttribute('mw_speed', '16Khz');
+    if MainForm.MenuMW8Khz.Checked then
+      TDOMElement(ParentNode).SetAttribute('mw_speed', '8Khz');
+
+    Node.Appendchild(parentNode);
+
+    WriteXMLFile(XMLfile, 'chiplist.xml');
+    XMLfile.Free;
+  end;
+
+end;
+
+procedure LoadOptions;
+var
+    XMLfile: TXMLDocument;
+    Node, parentNode: TDOMNode;
+    OptVal: string;
+begin
+  if FileExists('chiplist.xml') then
+  begin
+    ReadXMLFile(XMLfile, 'chiplist.xml');
+
+    Node := XMLfile.DocumentElement.FindNode('options');
+
+    if (Node <> nil) then
+    if (Node.HasAttributes) then
+    begin
+
+      if  Node.Attributes.GetNamedItem('verify') <> nil then
+      begin
+        if Node.Attributes.GetNamedItem('verify').NodeValue = '1' then
+          MainForm.MenuAutoCheck.Checked := true;
+      end;
+
+      if  Node.Attributes.GetNamedItem('spi_speed') <> nil then
+      begin
+        OptVal := Node.Attributes.GetNamedItem('spi_speed').NodeValue;
+
+        if OptVal = '3Mhz' then MainForm.Menu3Mhz.Checked := true;
+        if OptVal = '1_5Mhz' then MainForm.Menu1_5Mhz.Checked := true;
+        if OptVal = '750Khz' then MainForm.Menu750Khz.Checked := true;
+        if OptVal = '375Khz' then MainForm.Menu375Khz.Checked := true;
+        if OptVal = '187_5Khz' then MainForm.Menu187_5Khz.Checked := true;
+        if OptVal = '93_75Khz' then MainForm.Menu93_75Khz.Checked := true;
+        if OptVal = '32Khz' then MainForm.Menu32Khz.Checked := true;
+
+      end;
+
+      if  Node.Attributes.GetNamedItem('mw_speed') <> nil then
+      begin
+        OptVal := Node.Attributes.GetNamedItem('mw_speed').NodeValue;
+
+        if OptVal = '32Khz' then MainForm.MenuMW32Khz.Checked := true;
+        if OptVal = '16Khz' then MainForm.MenuMW16Khz.Checked := true;
+        if OptVal = '8Khz' then MainForm.MenuMW8Khz.Checked := true;
+      end;
+
+    end;
+
+    XMLfile.Free;
+  end;
+
+end;
 
 end.
 
