@@ -7,6 +7,9 @@
     <AdestoTechnologies>
 	  <AT45DB041D size="540672" page="264" id="1F2400" spicmd="45" />
 	</AdestoTechnologies>
+	<Atmel>
+	  <AT25010 size="128" page="1" spicmd="95"/>
+	</Atmel>
 	<cFeon>
 	  <cFeon25Q32 size="4194304" page="256" id="1C3016" />
 	</cFeon>
@@ -38,7 +41,7 @@
 	   <MX25L1606E size="2097152" page="256" id="C22015" />
 	   <MX25L1636D size="2097152" page="256" id="C22415"/>
 	   <MX25L6406E size="8388608" page="256" id="C22017"/>
-     </MACRONIX>
+     </MACRONIX> 
 	 <Nansi>
 	   <N25S80 size="1048576" page="256" id="D53014" />
 	 </Nansi>
