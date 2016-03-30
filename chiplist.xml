@@ -1,4 +1,13 @@
 <?xml version="1.0"?>
+
+<!--- 
+  size - размер данных микросхемы памяти в байтах(DEC)
+  page - размер страницы микросхемы памяти в байтах(DEC). Для SST AAI Word programm - SSTW. Для SST AAI Byte programm - SSTB. 
+  id - индефикатор микросхемы памяти(HEX). Поддерживаются опкоды 9F, 90, AB
+  spicmd - команды для серий микросхем памяти ХХ25 или ХХ45
+   
+ -->
+ 
  <chiplist>
    <SPI>
     <KB90XX>
@@ -19,8 +28,8 @@
 	</ST>
      <SST>
 	  <SST25VF512 size="65536" page="1" id="BF48" />
-	  <SST25LF020A page="SSTB" size="262144" id="BF43"/>
-	  <SST25VF040B size="524288" page="1" id="BF258D" />
+	  <SST25LF020A size="262144" page="SSTB" id="BF43"/>
+	  <SST25VF040B size="524288" page="SSTW" id="BF258D" />
 	  <SST25VF080B size="1048576" page="SSTW" id="BF258E" />
 	 </SST>
 	 <Spansion>
