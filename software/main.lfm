@@ -376,6 +376,41 @@ object MainForm: TMainForm
       Caption = 'Команды SPI'
       ParentColor = False
     end
+    object CheckBox_I2C_A2: TCheckBox
+      Left = 464
+      Height = 19
+      Top = 17
+      Width = 20
+      TabOrder = 5
+      Visible = False
+    end
+    object CheckBox_I2C_A1: TCheckBox
+      Left = 484
+      Height = 19
+      Top = 17
+      Width = 20
+      TabOrder = 6
+      Visible = False
+    end
+    object CheckBox_I2C_A0: TCheckBox
+      Left = 504
+      Height = 19
+      Top = 17
+      Width = 20
+      ParentShowHint = False
+      TabOrder = 7
+      Visible = False
+    end
+    object LabelI2CAddr: TLabel
+      Left = 464
+      Height = 15
+      Top = 0
+      Width = 64
+      AutoSize = False
+      Caption = 'A2  A1  A0'
+      ParentColor = False
+      Visible = False
+    end
   end
   object KHexEditor: TKHexEditor
     Left = 0

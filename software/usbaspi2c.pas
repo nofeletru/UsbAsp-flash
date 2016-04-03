@@ -30,8 +30,8 @@ const
 
 procedure EnterProgModeI2C(devHandle: Pusb_dev_handle);
 function UsbAspI2C_BUSY(devHandle: Pusb_dev_handle; Address: byte): Boolean;
-function UsbAspI2C_Read(devHandle: Pusb_dev_handle; AddrType: byte; Address: word;var buffer: array of byte; bufflen: integer): integer;
-function UsbAspI2C_Write(devHandle: Pusb_dev_handle; AddrType: byte; Addr: longword; buffer: array of byte; bufflen: integer): integer;
+function UsbAspI2C_Read(devHandle: Pusb_dev_handle; DevAddr, AddrType: byte; Address: word;var buffer: array of byte; bufflen: integer): integer;
+function UsbAspI2C_Write(devHandle: Pusb_dev_handle; DevAddr, AddrType: byte; Addr: longword; buffer: array of byte; bufflen: integer): integer;
 
 implementation
 
@@ -48,19 +48,22 @@ var
   Status: byte;
 begin
   USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_I2C_ACK, Address, 0, 1, Status);
+
   Result := not Boolean(Status);
 end;
 
 //Возвращает сколько байт прочитали
-function UsbAspI2C_Read(devHandle: Pusb_dev_handle; AddrType: byte; Address: word;var buffer: array of byte; bufflen: integer): integer;
+function UsbAspI2C_Read(devHandle: Pusb_dev_handle; DevAddr, AddrType: byte; Address: word;var buffer: array of byte; bufflen: integer): integer;
 var
   value, index: Integer;
 begin
 
+  DevAddr := DevAddr or %10100000;
+
   //шайтанама
   if (AddrType = I2C_ADDR_TYPE_2BYTE) or (AddrType = I2C_ADDR_TYPE_2BYTE_1BIT) then
   begin
-    value := (I2C_2BYTE_ADDR shl 8) or (%10100000);
+    value := (I2C_2BYTE_ADDR shl 8) or (DevAddr);
     index := Address;
   end else
   if AddrType = I2C_ADDR_TYPE_7BIT  then
@@ -69,7 +72,7 @@ begin
     index := 0;
   end else
   begin
-    value := (I2C_1BYTE_ADDR shl 8) or (%10100000);
+    value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
     index := 0;
   end;
 
@@ -77,7 +80,7 @@ begin
 end;
 
 //Возвращает сколько байт записали
-function UsbAspI2C_Write(devHandle: Pusb_dev_handle; AddrType: byte; Addr: longword; buffer: array of byte; bufflen: integer): integer;
+function UsbAspI2C_Write(devHandle: Pusb_dev_handle; DevAddr, AddrType: byte; Addr: longword; buffer: array of byte; bufflen: integer): integer;
 var
   value, index: Integer;
 begin
@@ -87,6 +90,9 @@ begin
   //Hi(index)  = 5; Hi адрес
   //шайтанама
   //TODO: Moar addr types
+
+  DevAddr := DevAddr or %10100000;
+
   if AddrType = I2C_ADDR_TYPE_7BIT then
   begin
     Value := (I2C_0BYTE_ADDR shl 8) or (Byte(Addr) shl 1); //7 бит
@@ -95,13 +101,13 @@ begin
 
   if AddrType = I2C_ADDR_TYPE_1BYTE then
   begin
-    Value := (I2C_1BYTE_ADDR shl 8) or (%10100000);
+    Value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
     index := Byte(Addr);
   end;
 
   if AddrType = I2C_ADDR_TYPE_1BYTE_1BIT then
   begin
-    Value := (I2C_1BYTE_ADDR shl 8) or (%10100000);
+    Value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
 
     if (Hi(Word(Addr)) and (1 shl 0)) <> 0 then
       value := value or (1 shl 1);
@@ -111,7 +117,7 @@ begin
 
   if AddrType = I2C_ADDR_TYPE_1BYTE_2BIT then
   begin
-    Value := (I2C_1BYTE_ADDR shl 8) or (%10100000);
+    Value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
 
     if (Hi(Word(Addr)) and (1 shl 0)) <> 0 then
       value := value or (1 shl 1);
@@ -124,7 +130,7 @@ begin
 
   if AddrType = I2C_ADDR_TYPE_1BYTE_3BIT then
   begin
-    Value := (I2C_1BYTE_ADDR shl 8) or (%10100000);
+    Value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
 
     if (Hi(Word(Addr)) and (1 shl 0)) <> 0 then
       value := value or (1 shl 1);
@@ -140,13 +146,13 @@ begin
 
   if AddrType = I2C_ADDR_TYPE_2BYTE then
   begin
-    value := (I2C_2BYTE_ADDR shl 8) or (%10100000);
+    value := (I2C_2BYTE_ADDR shl 8) or (DevAddr);
     index := Word(Addr);
   end;
 
   if AddrType = I2C_ADDR_TYPE_2BYTE_1BIT then
   begin
-    value := (I2C_2BYTE_ADDR shl 8) or (%10100000);
+    value := (I2C_2BYTE_ADDR shl 8) or (DevAddr);
 
     if Hi(Addr) and (1 shl 0) <> 0 then
       value := value or (1 shl 1);
