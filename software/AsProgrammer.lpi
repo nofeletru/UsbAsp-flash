@@ -23,6 +23,7 @@
       <AutoIncrementBuild Value="True"/>
       <MajorVersionNr Value="1"/>
       <MinorVersionNr Value="2"/>
+      <RevisionNr Value="1"/>
       <BuildNr Value="2"/>
       <Language Value="0419"/>
       <StringTable ProductVersion=""/>

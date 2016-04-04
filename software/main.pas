@@ -2371,6 +2371,7 @@ procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   MainForm.KHexEditor.Free;
   RomF.Free;
+  SaveOptions;
 end;
 
 procedure TMainForm.ButtonReadClick(Sender: TObject);
