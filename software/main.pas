@@ -13,9 +13,10 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics,
-  Dialogs, StdCtrls, ExtCtrls, ComCtrls, Menus, Grids, ActnList, Buttons,
+  Dialogs, StdCtrls, ExtCtrls, ComCtrls, Menus, ActnList, Buttons,
   RichMemo, KHexEditor, KEditCommon, StrUtils, usbasp25, usbasp45, usbasp95,
-  usbaspi2c, usbaspmw, usbaspmulti, usbhid, libusb, dos, XMLRead, XMLWrite, DOM, KControls;
+  usbaspi2c, usbaspmw, usbaspmulti, usbhid, libusb, dos, XMLRead, XMLWrite, DOM,
+  KControls, msgstr;
 
 type
 
@@ -138,28 +139,7 @@ type
   procedure SaveOptions;
   Procedure LoadOptions;
 
-  const
-  STR_CHECK_SETTINGS     = 'Проверьте настройки';
-  STR_READING_FLASH      = 'Читаю флэшку...';
-  STR_WRITING_FLASH      = 'Записываю флэшку...';
-  STR_WRITING_FLASH_WCHK = 'Записываю флэшку с проверкой...';
-  STR_CONNECTION_ERROR   = 'Ошибка подключения к USBAsp';
-  STR_SET_SPEED_ERROR    = 'Ошибка установки скорости SPI';
-  STR_WRONG_BYTES_READ   = 'Количество прочитанных байт не равно размеру флэшки';
-  STR_WRONG_BYTES_WRITE  = 'Количество записанных байт не равно размеру флэшки';
-  STR_WRONG_FILE_SIZE    = 'Размер файла больше размера чипа';
-  STR_ERASING_FLASH      = 'Стираю флэшку...';
-  STR_DONE               = 'Готово';
-  STR_BLOCK_EN           = 'Возможно включена защита на запись. Нажмите кнопку "Снять защиту" и сверьтесь с даташитом';
-  STR_VERIFY_ERROR       = 'Ошибка сравнения по адресу: ';
-  STR_VERIFY             = 'Проверяю флэшку...';
-  STR_TIME               = 'Время выполнения: ';
-  STR_USER_CANCEL        = 'Прервано пользователем';
-  STR_NO_EEPROM_SUPPORT  = 'Данная версия прошивки не поддерживается!';
-  STR_MINI_EEPROM_SUPPORT= 'Данная версия прошивки не поддерживает I2C и MW!';
-  STR_I2C_NO_ANSWER      = 'Микросхема не отвечает';
-
-
+const
   SPI_CMD_25             = 0;
   SPI_CMD_45             = 1;
   SPI_CMD_KB             = 2;
@@ -1602,7 +1582,7 @@ procedure TMainForm.ComboItem1Click(Sender: TObject);
 var
   CheckTemp: Boolean;
 begin
-  if MessageDlg('AsProgrammer', 'Чип будет стерт и перезаписан. Продолжить?', mtConfirmation, [mbYes, mbNo], 0)
+  if MessageDlg('AsProgrammer', STR_COMBO_WARN, mtConfirmation, [mbYes, mbNo], 0)
     <> mrYes then Exit;
 
   if ButtonBlock.Enabled then
@@ -1634,7 +1614,7 @@ procedure TMainForm.MenuFindClick(Sender: TObject);
 var
   s : string;
 begin
-   s := InputBox('Поиск HEX значения','','');
+   s := InputBox(STR_SEARCH_HEX,'','');
    if s <> '' then FindHEX(Utf8ToSys(s));
 end;
 
@@ -1643,7 +1623,7 @@ var
   s : string;
   ss: TKHexEditorSelection;
 begin
-  s := InputBox('Перейти по адресу','','');
+  s := InputBox(STR_GOTO_ADDR,'','');
   s := Trim(s);
   if IsNumber('$'+s)  then
   begin
@@ -1673,7 +1653,7 @@ begin
   if ComboSPICMD.ItemIndex = SPI_CMD_25 then
   begin
     UsbAsp25_ReadSR(hUSBDev, sreg); //Читаем регистр
-    LogPrint('Было Sreg: '+IntToBin(sreg, 8));
+    LogPrint(STR_OLD_SREG+IntToBin(sreg, 8));
 
     sreg := %10011100; //
     UsbAsp25_WREN(hUSBDev); //Включаем разрешение записи
@@ -1685,13 +1665,13 @@ begin
       LogPrint(STR_USER_CANCEL, clRed);
       Exit;
     end;
-    LogPrint('Стало Sreg: '+IntToBin(sreg, 8));
+    LogPrint(STR_NEW_SREG+IntToBin(sreg, 8));
   end;
 
   if ComboSPICMD.ItemIndex = SPI_CMD_95 then
   begin
     UsbAsp95_ReadSR(hUSBDev, sreg); //Читаем регистр
-    LogPrint('Было Sreg: '+IntToBin(sreg, 8));
+    LogPrint(STR_OLD_SREG+IntToBin(sreg, 8));
 
     sreg := %10011100; //
     UsbAsp95_WREN(hUSBDev); //Включаем разрешение записи
@@ -1703,7 +1683,7 @@ begin
       LogPrint(STR_USER_CANCEL, clRed);
       Exit;
     end;
-    LogPrint('Стало Sreg: '+IntToBin(sreg, 8));
+    LogPrint(STR_NEW_SREG+IntToBin(sreg, 8));
   end;
 
 
@@ -1848,7 +1828,7 @@ try
   ButtonCancel.Tag := 0;
   if not OpenDevice() then exit;
   if Sender <> ComboItem1 then
-    if MessageDlg('AsProgrammer', 'Начать запись?', mtConfirmation, [mbYes, mbNo], 0)
+    if MessageDlg('AsProgrammer', STR_START_WRITE, mtConfirmation, [mbYes, mbNo], 0)
       <> mrYes then Exit;
   LockControl();
   LogPrint(TimeToStr(Time()));
@@ -2145,7 +2125,7 @@ try
   if ComboSPICMD.ItemIndex = SPI_CMD_25 then
   begin
     UsbAsp25_ReadSR(hUSBDev, sreg); //Читаем регистр
-    LogPrint('Было Sreg: '+IntToBin(sreg, 8));
+    LogPrint(STR_OLD_SREG+IntToBin(sreg, 8));
 
     sreg := 0; //
     UsbAsp25_WREN(hUSBDev); //Включаем разрешение записи
@@ -2159,13 +2139,13 @@ try
     end;
 
     UsbAsp25_ReadSR(hUSBDev, sreg); //Читаем регистр
-    LogPrint('Стало Sreg: '+IntToBin(sreg, 8));
+    LogPrint(STR_NEW_SREG+IntToBin(sreg, 8));
   end;
 
   if ComboSPICMD.ItemIndex = SPI_CMD_95 then
   begin
     UsbAsp95_ReadSR(hUSBDev, sreg); //Читаем регистр
-    LogPrint('Было Sreg: '+IntToBin(sreg, 8));
+    LogPrint(STR_OLD_SREG+IntToBin(sreg, 8));
 
     sreg := 0; //
     UsbAsp95_WREN(hUSBDev); //Включаем разрешение записи
@@ -2179,7 +2159,7 @@ try
     end;
 
     UsbAsp95_ReadSR(hUSBDev, sreg); //Читаем регистр
-    LogPrint('Стало Sreg: '+IntToBin(sreg, 8));
+    LogPrint(STR_NEW_SREG+IntToBin(sreg, 8));
   end;
 
   if ComboSPICMD.ItemIndex = SPI_CMD_45 then
@@ -2196,8 +2176,8 @@ try
       s := s + IntToHex(SLreg[i], 2);
     end;
     LogPrint('Secktor Lockdown регистр: 0x'+s);
-    if UsbAsp45_isPagePowerOfTwo(hUSBDev) then LogPrint('Установлен размер страницы кратный двум!')
-      else LogPrint('Установлен стандартный размер страницы');
+    if UsbAsp45_isPagePowerOfTwo(hUSBDev) then LogPrint(STR_45PAGE_POWEROF2)
+      else LogPrint(STR_45PAGE_STD);
 
   end;
 
@@ -2251,9 +2231,9 @@ begin
       //Если нет записи в cfg или считалась чушь
       if ChipName = '' then
       begin
-        LogPrint('ID(9F): '+ IDstr +'(Неизвестно)');
-        LogPrint('ID(90): '+ IDstr90H +'(Неизвестно)');
-        LogPrint('ID(AB): '+ IDstrABH +'(Неизвестно)');
+        LogPrint('ID(9F): '+ IDstr +STR_ID_UNKNOWN);
+        LogPrint('ID(90): '+ IDstr90H +STR_ID_UNKNOWN);
+        LogPrint('ID(AB): '+ IDstrABH +STR_ID_UNKNOWN);
       end
       //Если есть
       else
@@ -2508,7 +2488,7 @@ try
   ButtonCancel.Tag := 0;
   if not OpenDevice() then exit;
   if Sender <> ComboItem1 then
-    if MessageDlg('AsProgrammer', 'Точно стереть чип?', mtConfirmation, [mbYes, mbNo], 0)
+    if MessageDlg('AsProgrammer', STR_START_ERASE, mtConfirmation, [mbYes, mbNo], 0)
       <> mrYes then Exit;
   LockControl();
   LogPrint(TimeToStr(Time()));
@@ -2653,8 +2633,8 @@ begin
  MainForm.KHexEditor.ExecuteCommand(ecSearch, @SearchData);
 
   case SearchData.ErrorReason of
-    eseNoMatch: S := 'Значение не найдено';
-    eseNoDigitsFind: S := 'Укажите шестнадцатеричные числа';
+    eseNoMatch: S := STR_NOT_FOUND_HEX;
+    eseNoDigitsFind: S := STR_SPECIFY_HEX;
     eseNoDigitsReplace: S := '';
   else
     S := '';

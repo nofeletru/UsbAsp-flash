@@ -3,7 +3,7 @@ unit usbhid;
 interface
 
 uses
-  Classes, SysUtils, libusb, Graphics;
+  Classes, SysUtils, libusb, Graphics, msgstr;
 
 type
  TPString = array [0..255] of Char;
@@ -148,7 +148,7 @@ begin
   Result := usb_control_msg(devHandle, USB_TYPE_VENDOR or USB_RECIP_DEVICE or direction, request, value, index, buffer, bufflen, 10000);
   if result < 0 then
   begin
-    if result = -116 then Main.LogPrint('USB_control_msg отвалился по таймауту!', clRed)
+    if result = -116 then Main.LogPrint(STR_USB_TIMEOUT, clRed)
     else
       Main.LogPrint(AnsiToUtf8(usb_strerror), ClRed);
   end;
