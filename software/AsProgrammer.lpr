@@ -13,6 +13,7 @@ uses
 {$R *.res}
 
 begin
+  Translate;
   RequireDerivedFormResource := True;
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);

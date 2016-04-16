@@ -1,0 +1,288 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: msgstr.str_45page_powerof2
+msgid "Установлен #209Ђазме#209Ђ ст#209Ђаницы к#209Ђатный двум!"
+msgstr "Page size is power of 2"
+
+#: msgstr.str_45page_std
+msgid "Установлен станда#209Ђтный #209Ђазме#209Ђ ст#209Ђаницы"
+msgstr "Default page size is set"
+
+#: msgstr.str_block_en
+msgid "Возможно включена защита на запись. Нажмите кнопку \"Снять защиту\" и све#209Ђьтесь с даташитом"
+msgstr "Possible protection is enabled. Press \"Unprotect\" and check datasheet"
+
+#: msgstr.str_changed
+msgid "Изменен"
+msgstr "Modified"
+
+#: msgstr.str_check_settings
+msgid "П#209Ђове#209Ђьте наст#209Ђойки"
+msgstr "Check settings"
+
+#: msgstr.str_combo_warn
+msgid "Чип будет сте#209Ђт и пе#209Ђезаписан. П#209Ђодолжить?"
+msgstr "IC will be erased and programmed. Continue?"
+
+#: msgstr.str_connection_error
+msgid "Ошибка подключения к USBAsp"
+msgstr "Error connecting USBAsp"
+
+#: msgstr.str_done
+msgid "Готово"
+msgstr "Done"
+
+#: msgstr.str_erasing_flash
+msgid "Сти#209Ђаю флэшку..."
+msgstr "Erasing memory..."
+
+#: msgstr.str_goto_addr
+msgid "Пе#209Ђейти по ад#209Ђесу"
+msgstr "Goto address"
+
+#: msgstr.str_i2c_no_answer
+msgid "Мик#209Ђосхема не отвечает"
+msgstr "IC not responding"
+
+#: msgstr.str_id_unknown
+msgid "(Неизвестно)"
+msgstr "(Unknown)"
+
+#: msgstr.str_mini_eeprom_support
+msgid "Данная ве#209Ђсия п#209Ђошивки не подде#209Ђживает I2C и MW!"
+msgstr "This firmware do not support I2C and MW!"
+
+#: msgstr.str_new_sreg
+msgid "Стало Sreg: "
+msgstr "New SREG"
+
+#: msgstr.str_not_found_hex
+msgid "Значение не найдено"
+msgstr "Value not found"
+
+#: msgstr.str_no_eeprom_support
+msgid "Данная ве#209Ђсия п#209Ђошивки не подде#209Ђживается!"
+msgstr "This firmware do not support memory programming"
+
+#: msgstr.str_old_sreg
+msgid "Было Sreg: "
+msgstr "Old SREG"
+
+#: msgstr.str_reading_flash
+msgid "Читаю флэшку..."
+msgstr "Reading memory"
+
+#: msgstr.str_search_hex
+msgid "Поиск HEX значения"
+msgstr "Search HEX value"
+
+#: msgstr.str_set_speed_error
+msgid "Ошибка установки ско#209Ђости SPI"
+msgstr "Error setting SPI speed"
+
+#: msgstr.str_size
+msgid "Разме#209Ђ: "
+msgstr "Size: "
+
+#: msgstr.str_specify_hex
+msgid "Укажите шестнадцате#209Ђичные числа"
+msgstr "Use HEX numbers"
+
+#: msgstr.str_start_erase
+msgid "Точно сте#209Ђеть чип?"
+msgstr "Erase IC?"
+
+#: msgstr.str_start_write
+msgid "Начать запись?"
+msgstr "Begin programming?"
+
+#: msgstr.str_time
+msgid "В#209Ђемя выполнения: "
+msgstr "Execution time"
+
+#: msgstr.str_usb_timeout
+msgid "USB_control_msg отвалился по таймауту!"
+msgstr "USB_control_msg timeout!"
+
+#: msgstr.str_user_cancel
+msgid "П#209Ђе#209Ђвано пользователем"
+msgstr "Cancel by user"
+
+#: msgstr.str_verify
+msgid "П#209Ђове#209Ђяю флэшку..."
+msgstr "Verify memory"
+
+#: msgstr.str_verify_error
+msgid "Ошибка с#209Ђавнения по ад#209Ђесу: "
+msgstr "Verification error on address: "
+
+#: msgstr.str_writing_flash
+msgid "Записываю флэшку..."
+msgstr "Programming memory"
+
+#: msgstr.str_writing_flash_wchk
+msgid "Записываю флэшку с п#209Ђове#209Ђкой..."
+msgstr "Programming memory(verify)"
+
+#: msgstr.str_wrong_bytes_read
+msgid "Количество п#209Ђочитанных байт не #209Ђавно #209Ђазме#209Ђу флэшки"
+msgstr "Number of bytes readed not equal IC size"
+
+#: msgstr.str_wrong_bytes_write
+msgid "Количество записанных байт не #209Ђавно #209Ђазме#209Ђу флэшки"
+msgstr "Number of bytes written not equal IC size"
+
+#: msgstr.str_wrong_file_size
+msgid "Разме#209Ђ файла больше #209Ђазме#209Ђа чипа"
+msgstr "File size larger than IC size"
+
+#: tmainform.buttonblock.hint
+msgid "Снять защиту"
+msgstr "Unprotect"
+
+#: tmainform.buttoncancel.hint
+msgid "Прервать текущею операцию"
+msgstr "Cancel"
+
+#: tmainform.buttonerase.hint
+msgid "Стереть EEPROM"
+msgstr "Erase IC"
+
+#: tmainform.buttonopenhex.hint
+msgid "Загрузить прошивку в редактор"
+msgstr "Open file"
+
+#: tmainform.buttonread.hint
+msgid "Прочитать EEPROM"
+msgstr "Read IC"
+
+#: tmainform.buttonreadid.hint
+msgid "Прочитать индификатор EEPROM"
+msgstr "Read ID"
+
+#: tmainform.buttonsavehex.hint
+msgid "Сохранить прошивку из редактора"
+msgstr "Save file"
+
+#: tmainform.buttonverify.hint
+msgid "Сравнить содержимое EEPROM"
+msgstr "Verify IC"
+
+#: tmainform.buttonwrite.hint
+msgid "Записать EEPROM"
+msgstr "Programm IC"
+
+#: tmainform.clearlogmenuitem.caption
+msgid "Очистить"
+msgstr "Clear"
+
+#: tmainform.comboaddrtype.hint
+msgid "Тип адресации к памяти"
+msgstr "Type of addressing"
+
+#: tmainform.combochipsize.hint
+msgid "Размер чипа в байтах"
+msgstr "IC size in bytes"
+
+#: tmainform.combochipsize.text
+msgid "Chip size"
+msgstr ""
+
+#: tmainform.comboitem1.caption
+msgid "Снять защиту -> стереть -> записать -> проверить"
+msgstr "Unprotect -> erase -> programm -> verify"
+
+#: tmainform.combomwbitlen.hint
+msgid "Длинна адреса в битах"
+msgstr "Lenght of address in bits"
+
+#: tmainform.combomwbitlen.text
+msgid "MW addr len"
+msgstr ""
+
+#: tmainform.combopagesize.hint
+msgid "Размер страницы"
+msgstr "Page size"
+
+#: tmainform.combopagesize.text
+msgid "Page size"
+msgstr ""
+
+#: tmainform.copylogmenuitem.caption
+msgctxt "TMAINFORM.COPYLOGMENUITEM.CAPTION"
+msgid "Копировать"
+msgstr "Copy"
+
+#: tmainform.label1.caption
+msgid "Страница"
+msgstr "Page"
+
+#: tmainform.label2.caption
+msgid "Размер"
+msgstr "Size"
+
+#: tmainform.label4.caption
+msgid "Тип адреса"
+msgstr "Address type"
+
+#: tmainform.label5.caption
+msgid "Длина адреса"
+msgstr "Address lenght"
+
+#: tmainform.labelchipname.caption
+msgctxt "tmainform.labelchipname.caption"
+msgid "Микросхема"
+msgstr "IC"
+
+#: tmainform.labelspicmd.caption
+msgid "Команды SPI"
+msgstr "SPI commands"
+
+#: tmainform.menuautocheck.caption
+msgid "Проверка записи"
+msgstr "Verify"
+
+#: tmainform.menuchip.caption
+msgctxt "TMAINFORM.MENUCHIP.CAPTION"
+msgid "Микросхема"
+msgstr "IC"
+
+#: tmainform.menucopytoclip.caption
+msgctxt "tmainform.menucopytoclip.caption"
+msgid "Копировать"
+msgstr "Copy"
+
+#: tmainform.menufind.caption
+msgid "Поиск"
+msgstr "Search"
+
+#: tmainform.menugotooffset.caption
+msgid "Перейти по адресу"
+msgstr "Goto address"
+
+#: tmainform.menuignorebusybit.caption
+msgid "Не проверять Busy бит"
+msgstr "Do not chek Busy bit"
+
+#: tmainform.menuitemlockflash.caption
+msgid "Поставить защиту"
+msgstr "Set the protection bits"
+
+#: tmainform.menuitemreadsreg.caption
+msgid "Прочитать SREG"
+msgstr "Read SREG"
+
+#: tmainform.menumwclock.caption
+msgctxt "TMAINFORM.MENUMWCLOCK.CAPTION"
+msgid "Частота"
+msgstr "Frequency"
+
+#: tmainform.menuoptions.caption
+msgid "Настройки"
+msgstr "Options"
+
+#: tmainform.menuspiclock.caption
+msgctxt "tmainform.menuspiclock.caption"
+msgid "Частота"
+msgstr "Frequency"

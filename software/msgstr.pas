@@ -4,7 +4,7 @@ unit msgstr;
 
 interface
 
-const
+resourcestring
   STR_CHECK_SETTINGS     = 'Проверьте настройки';
   STR_READING_FLASH      = 'Читаю флэшку...';
   STR_WRITING_FLASH      = 'Записываю флэшку...';
@@ -37,6 +37,8 @@ const
   STR_SPECIFY_HEX        = 'Укажите шестнадцатеричные числа';
   STR_NOT_FOUND_HEX      = 'Значение не найдено';
   STR_USB_TIMEOUT        = 'USB_control_msg отвалился по таймауту!';
+  STR_SIZE               = 'Размер: ';
+  STR_CHANGED            = 'Изменен';
 
 implementation
 

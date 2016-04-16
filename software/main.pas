@@ -16,7 +16,7 @@ uses
   Dialogs, StdCtrls, ExtCtrls, ComCtrls, Menus, ActnList, Buttons,
   RichMemo, KHexEditor, KEditCommon, StrUtils, usbasp25, usbasp45, usbasp95,
   usbaspi2c, usbaspmw, usbaspmulti, usbhid, libusb, dos, XMLRead, XMLWrite, DOM,
-  KControls, msgstr;
+  KControls, msgstr, Translations, LCLProc, LCLTranslator, LResources;
 
 type
 
@@ -111,7 +111,6 @@ type
     procedure ComboItem1Click(Sender: TObject);
     procedure KHexEditorKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
       );
-    procedure MenuAutoCheckClick(Sender: TObject);
     procedure MenuCopyToClipClick(Sender: TObject);
     procedure MenuFindClick(Sender: TObject);
     procedure MenuGotoOffsetClick(Sender: TObject);
@@ -138,6 +137,7 @@ type
   procedure FindHEX(FindStr: string);
   procedure SaveOptions;
   Procedure LoadOptions;
+  procedure Translate;
 
 const
   SPI_CMD_25             = 0;
@@ -159,6 +159,49 @@ var
   TimeCounter: TDateTime;
 
 {$R *.lfm}
+
+procedure Translate;
+var
+   PODirectory, Lang: String;
+
+   XMLfile: TXMLDocument;
+   Node: TDOMNode;
+begin
+
+  PODirectory:= SysToUTF8(GetCurrentDir + '/lang/');
+  Lang:='';
+
+  if FileExists('chiplist.xml') then
+  begin
+      ReadXMLFile(XMLfile, 'chiplist.xml');
+
+      Node := XMLfile.DocumentElement.FindNode('locale');
+
+      if (Node <> nil) then
+      if (Node.HasAttributes) then
+      begin
+
+        if  Node.Attributes.GetNamedItem('lang') <> nil then
+          Lang := Node.Attributes.GetNamedItem('lang').NodeValue;
+
+      end;
+
+      XMLfile.Free;
+  end;
+
+  if Lang = '' then
+  begin
+    lang := 'ru';
+    Exit;
+  end;
+
+  if FileExistsUTF8(PODirectory + Lang + '.po') then
+  begin
+    LRSTranslator:= TPOTranslator.Create(PODirectory + SysToUTF8(Lang + '.po'));
+    Translations.TranslateResourceStrings(PODirectory + SysToUTF8(Lang + '.po'));
+  end;
+
+end;               
 
 function SetBit(const value: byte; const BitNum: byte): byte;
 begin
@@ -1509,9 +1552,9 @@ end;
 
 procedure TMainForm.KHexEditorChange(Sender: TObject);
 begin
-  StatusBar.Panels.Items[0].Text := 'Размер: '+IntToStr(KHexEditor.Data.Size);
+  StatusBar.Panels.Items[0].Text := STR_SIZE+IntToStr(KHexEditor.Data.Size);
   if KHexEditor.Modified then
-    StatusBar.Panels.Items[1].Text := 'Изменен'
+    StatusBar.Panels.Items[1].Text := STR_CHANGED
   else
     StatusBar.Panels.Items[1].Text := '';
 end;
@@ -1599,11 +1642,6 @@ begin
   MenuAutoCheck.Checked := CheckTemp;
 end;
 
-
-procedure TMainForm.MenuAutoCheckClick(Sender: TObject);
-begin
-
-end;
 
 procedure TMainForm.MenuCopyToClipClick(Sender: TObject);
 begin
@@ -2290,7 +2328,13 @@ begin
     while Assigned(Node) do
     begin
 
-    MainForm.MenuChip.Add(NewItem(Node.NodeName,0, False, True, nil, 0, '')); //Раздел(SPI, I2C...)
+     if (LowerCase(Node.NodeName) = 'options') or (LowerCase(Node.NodeName) = 'locale') then
+     begin
+       Node := Node.NextSibling;
+       continue;
+     end;
+
+     MainForm.MenuChip.Add(NewItem(Node.NodeName,0, False, True, nil, 0, '')); //Раздел(SPI, I2C...)
 
      // Используем свойство ChildNodes
      with Node.ChildNodes do
@@ -2746,5 +2790,5 @@ begin
 
 end;
 
-end.
 
+end.
