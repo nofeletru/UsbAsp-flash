@@ -99,7 +99,7 @@ msgstr "Begin programming?"
 
 #: msgstr.str_time
 msgid "В#209Ђемя выполнения: "
-msgstr "Execution time"
+msgstr "Execution time "
 
 #: msgstr.str_usb_timeout
 msgid "USB_control_msg отвалился по таймауту!"
@@ -123,7 +123,7 @@ msgstr "Programming memory"
 
 #: msgstr.str_writing_flash_wchk
 msgid "Записываю флэшку с п#209Ђове#209Ђкой..."
-msgstr "Programming memory(verify)"
+msgstr "Programming memory(verifying)"
 
 #: msgstr.str_wrong_bytes_read
 msgid "Количество п#209Ђочитанных байт не #209Ђавно #209Ђазме#209Ђу флэшки"
