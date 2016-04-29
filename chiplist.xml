@@ -26,52 +26,55 @@
 	  <M25P10 size="131072" page="256" id="202011"/>
 	  <M95080 size="1024" page="32" spicmd="95"/>
 	</ST>
-     <SST>
+    <SST>
 	  <SST25VF512 size="65536" page="1" id="BF48"/>
 	  <SST25LF020A size="262144" page="SSTB" id="BF43"/>
 	  <SST25VF040B size="524288" page="SSTW" id="BF258D"/>
 	  <SST25VF080B size="1048576" page="SSTW" id="BF258E"/>
-	 </SST>
-	 <Spansion>
+	</SST>
+	<Spansion>
 	  <S25FL032 size="4194304" page="256" id="010215"/>
 	  <S25FL216K size="2097152" page="256" id="014015" spicmd="25"/>
 	  <S25FL016A size="2097152" page="256" id="010214" spicmd="25"/>
-	 </Spansion>
-     <EON>
+	</Spansion>
+    <EON>
       <EN25F80 size="1048576" page="256" id="1C3114"/>
 	  <EN25F16 size="2097152" page="256" id="1C5115"/>
-     </EON>
-     <GigaDevice>
+    </EON>
+    <GigaDevice>
       <GD25Q16 size="2097152" page="256" id="C84015"/>
 	  <GD25Q080 size="1048576" page="256" id="C84014"/>
-     </GigaDevice>
-     <MACRONIX>
-	   <MX25L4005 size="524288" page="256" id="C22013"/>
-       <MX25L8005 size="1048576" page="256" id="C22014"/>
-	   <MX25L3206E size="4194304" page="256" id="C22016"/>
-	   <MX25L1606E size="2097152" page="256" id="C22015"/>
-	   <MX25L1636D size="2097152" page="256" id="C22415"/>
-	   <MX25L6406E size="8388608" page="256" id="C22017"/>
-     </MACRONIX> 
-	 <Nansi>
-	   <N25S80 size="1048576" page="256" id="D53014"/>
-	 </Nansi>
-     <WINBOND>
-       <W25Q16 size="2097152" page="256" id="EF4015"/>
-	   <W25Q128BV size="16777216" page="256" id="EF4018"/> 
-	   <W25Q32 size="4194304" page="256" id="EF4016"/>
-	   <W25Q64 size="8388608" page="256" id="EF4017"/>
-	   <W25D80 size="1048576" page="256" id="EF3014"/>
-       <W25X32 size="4194304" page="256" id="EF3016"/>	
-       <W25X40 size="524288" page="256" id="EF3013"/>	   
-     </WINBOND>
-	 <AMIC>
-	   <A25L080 size="1048576" page="256" id="373014"/>
-	 </AMIC>
-	 <PMC>
-       <Pm25LV010 size="131072" page="256" id="7F9D7C"/>
-	   <Pm25LV020 size="262144" page="256" id="7F9D22"/>
-	   <Pm25W020 size="262144" page="256" id="7F9D7D"/>
+    </GigaDevice>
+    <MACRONIX>
+	  <MX25L4005 size="524288" page="256" id="C22013"/>
+      <MX25L8005 size="1048576" page="256" id="C22014"/>
+	  <MX25L3206E size="4194304" page="256" id="C22016"/>
+	  <MX25L1606E size="2097152" page="256" id="C22015"/>
+	  <MX25L1636D size="2097152" page="256" id="C22415"/>
+	  <MX25L6406E size="8388608" page="256" id="C22017"/>
+    </MACRONIX> 
+	<Microchip> 
+	  <x25LC040 size="512" page="16" spicmd="95"/>
+	</Microchip> 
+	<Nansi>
+	  <N25S80 size="1048576" page="256" id="D53014"/>
+	</Nansi>
+    <WINBOND>
+      <W25Q16 size="2097152" page="256" id="EF4015"/>
+	  <W25Q128BV size="16777216" page="256" id="EF4018"/> 
+	  <W25Q32 size="4194304" page="256" id="EF4016"/>
+	  <W25Q64 size="8388608" page="256" id="EF4017"/>
+	  <W25D80 size="1048576" page="256" id="EF3014"/>
+      <W25X32 size="4194304" page="256" id="EF3016"/>	
+      <W25X40 size="524288" page="256" id="EF3013"/>	   
+    </WINBOND>
+	<AMIC>
+	  <A25L080 size="1048576" page="256" id="373014"/>
+	</AMIC>
+	<PMC>
+      <Pm25LV010 size="131072" page="256" id="7F9D7C"/>
+	  <Pm25LV020 size="262144" page="256" id="7F9D22"/>
+	  <Pm25W020 size="262144" page="256" id="7F9D7D"/>
     </PMC>
    </SPI>
    <I2C>
