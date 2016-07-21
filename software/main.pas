@@ -2265,25 +2265,24 @@ begin
       ChipName := FindID(XMLfile, IDstr);
       if ChipName = '' then ChipName := FindID(XMLfile, IDstr90H);
       if ChipName = '' then ChipName := FindID(XMLfile, IDstrABH);
-
-      //Если нет записи в cfg или считалась чушь
-      if ChipName = '' then
-      begin
-        LogPrint('ID(9F): '+ IDstr +STR_ID_UNKNOWN);
-        LogPrint('ID(90): '+ IDstr90H +STR_ID_UNKNOWN);
-        LogPrint('ID(AB): '+ IDstrABH +STR_ID_UNKNOWN);
-      end
-      //Если есть
-      else
-      begin
-        LogPrint('ID(9F): '+IDstr+'('+ChipName+')');
-        LogPrint('ID(90): '+IDstr90H+'('+ChipName+')');
-        LogPrint('ID(AB): '+IDstrABH+'('+ChipName+')');
-      end;
-
+      XMLfile.Free;
     end;
 
-    XMLfile.Free;
+    //Если нет записи в cfg или считалась чушь
+    if ChipName = '' then
+    begin
+      LogPrint('ID(9F): '+ IDstr +STR_ID_UNKNOWN);
+      LogPrint('ID(90): '+ IDstr90H +STR_ID_UNKNOWN);
+      LogPrint('ID(AB): '+ IDstrABH +STR_ID_UNKNOWN);
+    end
+    //Если есть
+    else
+    begin
+      LogPrint('ID(9F): '+IDstr+'('+ChipName+')');
+      LogPrint('ID(90): '+IDstr90H+'('+ChipName+')');
+      LogPrint('ID(AB): '+IDstrABH+'('+ChipName+')');
+    end; 
+	
   finally
     UnlockControl();
   end;
