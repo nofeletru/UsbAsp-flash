@@ -1316,7 +1316,7 @@ begin
       BytesWrite := BytesWrite + UsbAspI2C_Write(hUSBDev, DevAddr, MainForm.ComboAddrType.ItemIndex, Address, datachunk, PageSize);
       Inc(Address, PageSize);
 
-      while UsbAspI2C_BUSY(hUSBdev, %10100000) do
+      while UsbAspI2C_BUSY(hUSBdev, DevAddr) do
       begin
         Application.ProcessMessages;
       end;
@@ -1359,7 +1359,7 @@ begin
       BytesWrite := BytesWrite + UsbAspI2C_Write(hUSBDev, DevAddr, MainForm.ComboAddrType.ItemIndex, Address, datachunk, PageSize);
       Inc(Address, PageSize);
 
-      while UsbAspI2C_BUSY(hUSBdev, %10100000) do
+      while UsbAspI2C_BUSY(hUSBdev, DevAddr) do
       begin
         Application.ProcessMessages;
       end;
