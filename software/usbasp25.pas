@@ -55,7 +55,8 @@ function UsbAsp25_Wrdi(devHandle: Pusb_dev_handle): integer;
 function UsbAsp25_ChipErase(devHandle: Pusb_dev_handle): integer;
 
 function UsbAsp25_WriteSR(devHandle: Pusb_dev_handle; var sreg: byte): integer;
-function UsbAsp25_ReadSR(devHandle: Pusb_dev_handle; var sreg: byte): integer;
+function UsbAsp25_WriteSR_2byte(devHandle: Pusb_dev_handle; var sreg1, sreg2: byte): integer;
+function UsbAsp25_ReadSR(devHandle: Pusb_dev_handle; var sreg: byte; opcode: byte = $05): integer;
 
 function UsbAsp_SetISPSpeed(devHandle: Pusb_dev_handle; speed: byte): integer;
 
@@ -182,10 +183,24 @@ begin
   result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 2, buff);
 end;
 
-function UsbAsp25_ReadSR(devHandle: Pusb_dev_handle; var sreg: byte): integer;
+function UsbAsp25_WriteSR_2byte(devHandle: Pusb_dev_handle; var sreg1, sreg2: byte): integer;
+var
+  buff: array[0..2] of byte;
 begin
-  sreg := $05;
-  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 0, 0, 1, sreg);
+  //Старые SST требуют Enable-Write-Status-Register (50H)
+  Buff[0] := $50;
+  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 1, buff);
+
+  //Если регистр из 2х байт
+  Buff[0] := $01;
+  Buff[1] := sreg1;
+  Buff[2] := sreg2;
+  result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 3, buff);
+end;
+
+function UsbAsp25_ReadSR(devHandle: Pusb_dev_handle; var sreg: byte; opcode: byte = $05): integer;
+begin
+  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 0, 0, 1, opcode);
   result := USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_READ, 1, 0, 1, sreg);
 end;
 

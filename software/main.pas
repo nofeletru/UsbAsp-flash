@@ -1735,7 +1735,7 @@ end;
 
 procedure TMainForm.MenuItemReadSregClick(Sender: TObject);
 var
-  sreg: byte;
+  sreg, sreg2: byte;
 begin
   try
   ButtonCancel.Tag := 0;
@@ -1748,7 +1748,9 @@ begin
   if ComboSPICMD.ItemIndex = SPI_CMD_25 then
   begin
     UsbAsp25_ReadSR(hUSBDev, sreg); //Читаем регистр
-    LogPrint('Sreg: '+IntToBin(sreg, 8));
+    UsbAsp25_ReadSR(hUSBDev, sreg2, $35); //Второй байт
+    LogPrint('Sreg: '+IntToBin(sreg, 8)+'(0x'+(IntToHex(sreg, 2)+'), ')
+                                         +IntToBin(sreg2, 8)+'(0x'+(IntToHex(sreg2, 2)+')'));
   end;
 
   if ComboSPICMD.ItemIndex = SPI_CMD_95 then
@@ -2147,7 +2149,7 @@ end;
 
 procedure TMainForm.ButtonBlockClick(Sender: TObject);
 var
-  sreg: byte;
+  sreg, sreg2: byte;
   i: integer;
   s: string;
   SLreg: array[0..31] of byte;
@@ -2162,12 +2164,18 @@ try
 
   if ComboSPICMD.ItemIndex = SPI_CMD_25 then
   begin
-    UsbAsp25_ReadSR(hUSBDev, sreg); //Читаем регистр
-    LogPrint(STR_OLD_SREG+IntToBin(sreg, 8));
+UsbAsp25_ReadSR(hUSBDev, sreg); //Читаем регистр
+    UsbAsp25_ReadSR(hUSBDev, sreg2, $35);
+    LogPrint(STR_OLD_SREG+IntToBin(sreg, 8)+'(0x'+(IntToHex(sreg, 2)+'), ')
+                                         +IntToBin(sreg2, 8)+'(0x'+(IntToHex(sreg2, 2)+')'));
 
     sreg := 0; //
+    sreg2 := 0;
     UsbAsp25_WREN(hUSBDev); //Включаем разрешение записи
     UsbAsp25_WriteSR(hUSBDev, sreg); //Сбрасываем регистр
+    sleep(20);
+    UsbAsp25_WREN(hUSBDev);
+    UsbAsp25_WriteSR_2byte(hUSBDev, sreg, sreg2);
 
     //Пока отлипнет ромка
     if UsbAsp25_Busy(hUSBDev) then
@@ -2177,7 +2185,9 @@ try
     end;
 
     UsbAsp25_ReadSR(hUSBDev, sreg); //Читаем регистр
-    LogPrint(STR_NEW_SREG+IntToBin(sreg, 8));
+    UsbAsp25_ReadSR(hUSBDev, sreg2, $35);
+    LogPrint(STR_NEW_SREG+IntToBin(sreg, 8)+'(0x'+(IntToHex(sreg, 2)+'), ')
+                                         +IntToBin(sreg2, 8)+'(0x'+(IntToHex(sreg2, 2)+')'));
   end;
 
   if ComboSPICMD.ItemIndex = SPI_CMD_95 then
