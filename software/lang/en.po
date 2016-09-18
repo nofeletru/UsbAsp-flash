@@ -286,3 +286,39 @@ msgstr "Options"
 msgctxt "tmainform.menuspiclock.caption"
 msgid "Частота"
 msgstr "Frequency"
+
+#: tsearchform.caption
+msgid "Поиск"
+msgstr "Find"
+
+#: tsearchform.casesensecheckbox.caption
+msgid "Учитывать регистр"
+msgstr "Case sensitivity"
+
+#: tsearchform.findbutton.caption
+msgid "Найти"
+msgstr "Find"
+
+#: tsearchform.frombeginingcheckbox.caption
+msgid "Искать сначала"
+msgstr "From begining"
+
+#: tsearchform.hexcheckbox.caption
+msgid "Искать HEX значение"
+msgstr "Search HEX value"
+
+#: tsearchform.replaceallcheckbox.caption
+msgid "Заменить все"
+msgstr "Replace all"
+
+#: tsearchform.replacecheckbox.caption
+msgid "Заменить"
+msgstr "Replace"
+
+#: tsearchform.replacelabel.caption
+msgid "заменить на:"
+msgstr "replace to:"
+
+#: tsearchform.searchlabel.caption
+msgid "Искать"
+msgstr "Find"

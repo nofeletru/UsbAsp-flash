@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="9"/>
     <BuildModes Active="Release"/>
-    <Units Count="32">
+    <Units Count="36">
       <Unit0>
         <Filename Value="AsProgrammer.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -18,17 +18,16 @@
         <ComponentName Value="MainForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="98"/>
-        <CursorPos X="15" Y="105"/>
-        <UsageCount Value="98"/>
+        <TopLine Value="1626"/>
+        <CursorPos X="40" Y="1644"/>
+        <UsageCount Value="102"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="usbaspi2c.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="6"/>
         <CursorPos X="63" Y="34"/>
         <UsageCount Value="202"/>
         <Loaded Value="True"/>
@@ -45,318 +44,346 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="98"/>
         <CursorPos X="10" Y="107"/>
-        <UsageCount Value="98"/>
+        <UsageCount Value="102"/>
       </Unit4>
       <Unit5>
         <Filename Value="usbasp95.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="9"/>
         <CursorPos X="21" Y="103"/>
-        <UsageCount Value="46"/>
+        <UsageCount Value="50"/>
         <Loaded Value="True"/>
       </Unit5>
       <Unit6>
         <Filename Value="msgstr.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <TopLine Value="6"/>
-        <CursorPos X="16" Y="29"/>
-        <UsageCount Value="24"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="11"/>
+        <CursorPos X="3" Y="38"/>
+        <UsageCount Value="28"/>
+        <Loaded Value="True"/>
       </Unit6>
       <Unit7>
-        <Filename Value="usbasp25.pas"/>
+        <Filename Value="search.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SearchForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
+        <TopLine Value="45"/>
+        <CursorPos X="40" Y="61"/>
+        <UsageCount Value="24"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="usbasp25.pas"/>
+        <EditorIndex Value="8"/>
         <TopLine Value="75"/>
         <CursorPos X="85" Y="87"/>
         <UsageCount Value="100"/>
         <Loaded Value="True"/>
-      </Unit7>
-      <Unit8>
+      </Unit8>
+      <Unit9>
         <Filename Value="LibUSB.pas"/>
         <CursorPos X="107" Y="339"/>
         <UsageCount Value="104"/>
-      </Unit8>
-      <Unit9>
+      </Unit9>
+      <Unit10>
         <Filename Value="usbhid.pas"/>
         <TopLine Value="10"/>
         <CursorPos X="10" Y="31"/>
         <UsageCount Value="107"/>
-      </Unit9>
-      <Unit10>
+      </Unit10>
+      <Unit11>
         <Filename Value="D:\lazarus\lcl\menus.pp"/>
         <UnitName Value="Menus"/>
         <CursorPos X="20" Y="208"/>
         <UsageCount Value="26"/>
-      </Unit10>
-      <Unit11>
+      </Unit11>
+      <Unit12>
         <Filename Value="C:\lazarusF\4_khexeditor_1.5\source\khexeditor.pas"/>
         <UnitName Value="KHexEditor"/>
         <TopLine Value="4002"/>
         <CursorPos X="101" Y="4035"/>
         <UsageCount Value="108"/>
-      </Unit11>
-      <Unit12>
+      </Unit12>
+      <Unit13>
         <Filename Value="C:\lazarusF\4_khexeditor_1.5\source\keditcommon.pas"/>
         <UnitName Value="KEditCommon"/>
         <TopLine Value="339"/>
         <CursorPos X="5" Y="119"/>
         <UsageCount Value="100"/>
-      </Unit12>
-      <Unit13>
+      </Unit13>
+      <Unit14>
         <Filename Value="D:\lazarus\lcl\actnlist.pas"/>
         <UnitName Value="ActnList"/>
         <CursorPos X="15" Y="261"/>
         <UsageCount Value="26"/>
-      </Unit13>
-      <Unit14>
+      </Unit14>
+      <Unit15>
         <Filename Value="usbasp45.pas"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="7"/>
         <CursorPos X="28" Y="67"/>
         <UsageCount Value="101"/>
         <Loaded Value="True"/>
-      </Unit14>
-      <Unit15>
+      </Unit15>
+      <Unit16>
         <Filename Value="LIBUSB Test\libusb.pp"/>
         <TopLine Value="111"/>
         <UsageCount Value="2"/>
-      </Unit15>
-      <Unit16>
+      </Unit16>
+      <Unit17>
         <Filename Value="C:\lazarusF\fpc\2.6.4\source\rtl\objpas\classes\classesh.inc"/>
         <TopLine Value="61"/>
         <CursorPos X="44" Y="103"/>
         <UsageCount Value="48"/>
-      </Unit16>
-      <Unit17>
+      </Unit17>
+      <Unit18>
         <Filename Value="C:\lazarusF\4_khexeditor_1.5\source\kfunctions.pas"/>
         <UnitName Value="KFunctions"/>
         <UsageCount Value="4"/>
-      </Unit17>
-      <Unit18>
+      </Unit18>
+      <Unit19>
         <Filename Value="..\6_kcontrols_1.6\source\khexeditor.pas"/>
         <UnitName Value="KHexEditor"/>
         <UsageCount Value="5"/>
-      </Unit18>
-      <Unit19>
+      </Unit19>
+      <Unit20>
         <Filename Value="C:\lazarusF\6_kcontrols_1.6\source\khexeditor.pas"/>
         <UnitName Value="KHexEditor"/>
         <TopLine Value="3858"/>
         <CursorPos X="11" Y="3869"/>
         <UsageCount Value="25"/>
-      </Unit19>
-      <Unit20>
+      </Unit20>
+      <Unit21>
         <Filename Value="C:\lazarusF\lcl\include\wincontrol.inc"/>
         <TopLine Value="5783"/>
         <CursorPos Y="5803"/>
         <UsageCount Value="25"/>
-      </Unit20>
-      <Unit21>
+      </Unit21>
+      <Unit22>
         <Filename Value="C:\lazarusF\lcl\include\control.inc"/>
         <TopLine Value="2089"/>
         <CursorPos Y="2109"/>
         <UsageCount Value="5"/>
-      </Unit21>
-      <Unit22>
+      </Unit22>
+      <Unit23>
         <Filename Value="C:\lazarusF\lcl\lclmessageglue.pas"/>
         <UnitName Value="LCLMessageGlue"/>
         <TopLine Value="99"/>
         <CursorPos Y="123"/>
         <UsageCount Value="5"/>
-      </Unit22>
-      <Unit23>
+      </Unit23>
+      <Unit24>
         <Filename Value="C:\lazarusF\lcl\interfaces\win32\win32callback.inc"/>
         <TopLine Value="195"/>
         <CursorPos Y="216"/>
         <UsageCount Value="5"/>
-      </Unit23>
-      <Unit24>
+      </Unit24>
+      <Unit25>
         <Filename Value="C:\lazarusF\6_kcontrols_1.6\source\keditcommon.pas"/>
         <UnitName Value="KEditCommon"/>
         <TopLine Value="16"/>
         <CursorPos X="35" Y="235"/>
         <UsageCount Value="11"/>
-      </Unit24>
-      <Unit25>
+      </Unit25>
+      <Unit26>
         <Filename Value="C:\lazarusF\lcl\graphics.pp"/>
         <UnitName Value="Graphics"/>
         <TopLine Value="1185"/>
         <CursorPos X="51" Y="1203"/>
         <UsageCount Value="8"/>
-      </Unit25>
-      <Unit26>
+      </Unit26>
+      <Unit27>
         <Filename Value="C:\lazarusF\6_kcontrols_1.6\source\kcontrols.inc"/>
         <TopLine Value="2"/>
         <CursorPos X="4" Y="11"/>
         <UsageCount Value="8"/>
-      </Unit26>
-      <Unit27>
+      </Unit27>
+      <Unit28>
         <Filename Value="C:\lazarus\lcl\stdctrls.pp"/>
         <UnitName Value="StdCtrls"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="1409"/>
         <CursorPos X="35" Y="1424"/>
         <UsageCount Value="10"/>
-      </Unit27>
-      <Unit28>
+      </Unit28>
+      <Unit29>
         <Filename Value="C:\lazarus\lcl\include\control.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="4285"/>
         <CursorPos Y="4305"/>
         <UsageCount Value="10"/>
-      </Unit28>
-      <Unit29>
+      </Unit29>
+      <Unit30>
         <Filename Value="C:\lazarus\lcl\lclproc.pas"/>
         <UnitName Value="LCLProc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="2945"/>
         <CursorPos X="28" Y="2956"/>
         <UsageCount Value="10"/>
-      </Unit29>
-      <Unit30>
+      </Unit30>
+      <Unit31>
         <Filename Value="C:\lazarus\components\lazutils\lazutf8.pas"/>
         <UnitName Value="LazUTF8"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="2301"/>
         <CursorPos Y="3387"/>
         <UsageCount Value="10"/>
-      </Unit30>
-      <Unit31>
+      </Unit31>
+      <Unit32>
         <Filename Value="C:\lazarus\fpc\2.6.4\source\packages\fcl-xml\src\dom.pp"/>
         <UnitName Value="DOM"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="95"/>
         <CursorPos X="21" Y="114"/>
         <UsageCount Value="11"/>
-      </Unit31>
+      </Unit32>
+      <Unit33>
+        <Filename Value="C:\lazarus\6_kcontrols_1.6\source\keditcommon.pas"/>
+        <UnitName Value="KEditCommon"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="261"/>
+        <CursorPos X="3" Y="281"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="C:\lazarus\6_kcontrols_1.6\source\khexeditor.pas"/>
+        <UnitName Value="KHexEditor"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="2798"/>
+        <CursorPos X="14" Y="2811"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit34>
+      <Unit35>
+        <Filename Value="C:\lazarus\lcl\dialogs.pp"/>
+        <UnitName Value="Dialogs"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="493"/>
+        <CursorPos X="20" Y="499"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit35>
     </Units>
-    <JumpHistory Count="29" HistoryIndex="28">
+    <JumpHistory Count="28" HistoryIndex="27">
       <Position1>
-        <Filename Value="main.pas"/>
-        <Caret Line="6" Column="82"/>
+        <Filename Value="search.pas"/>
+        <Caret Line="58" Column="26" TopLine="40"/>
       </Position1>
       <Position2>
-        <Filename Value="main.pas"/>
-        <Caret Line="1519" Column="15" TopLine="1491"/>
+        <Filename Value="search.pas"/>
+        <Caret Line="55" Column="4" TopLine="33"/>
       </Position2>
       <Position3>
-        <Filename Value="main.pas"/>
-        <Caret Line="163" Column="20" TopLine="152"/>
+        <Filename Value="search.pas"/>
+        <Caret Line="53" Column="24" TopLine="35"/>
       </Position3>
       <Position4>
-        <Filename Value="main.pas"/>
-        <Caret Line="19" Column="58"/>
+        <Filename Value="search.pas"/>
+        <Caret Line="51" Column="16" TopLine="38"/>
       </Position4>
       <Position5>
-        <Filename Value="main.pas"/>
-        <Caret Line="141" Column="23"/>
+        <Filename Value="search.pas"/>
+        <Caret Line="65" Column="34" TopLine="39"/>
       </Position5>
       <Position6>
-        <Filename Value="main.pas"/>
-        <Caret Line="126" Column="23" TopLine="109"/>
+        <Filename Value="C:\lazarus\6_kcontrols_1.6\source\keditcommon.pas"/>
+        <Caret Line="304" Column="17" TopLine="287"/>
       </Position6>
       <Position7>
         <Filename Value="main.pas"/>
-        <Caret Line="123" Column="32" TopLine="107"/>
+        <Caret Line="17" Column="18"/>
       </Position7>
       <Position8>
-        <Filename Value="main.pas"/>
-        <Caret Line="1538" Column="50" TopLine="1515"/>
+        <Filename Value="C:\lazarus\6_kcontrols_1.6\source\khexeditor.pas"/>
       </Position8>
       <Position9>
-        <Filename Value="main.pas"/>
-        <Caret Line="6" Column="45"/>
+        <Filename Value="C:\lazarus\6_kcontrols_1.6\source\khexeditor.pas"/>
+        <Caret Line="2831" Column="55" TopLine="2554"/>
       </Position9>
       <Position10>
-        <Filename Value="main.pas"/>
-        <Caret Line="7" Column="43"/>
+        <Filename Value="search.pas"/>
+        <Caret Line="61" Column="44" TopLine="42"/>
       </Position10>
       <Position11>
-        <Filename Value="main.pas"/>
-        <Caret Line="1531" Column="50" TopLine="1499"/>
+        <Filename Value="search.pas"/>
+        <Caret Line="51" Column="30" TopLine="43"/>
       </Position11>
       <Position12>
-        <Filename Value="main.pas"/>
-        <Caret Line="6" Column="45"/>
+        <Filename Value="search.pas"/>
+        <Caret Line="52" Column="30" TopLine="44"/>
       </Position12>
       <Position13>
-        <Filename Value="main.pas"/>
-        <Caret Line="18" Column="27"/>
+        <Filename Value="search.pas"/>
+        <Caret Line="53" Column="30" TopLine="45"/>
       </Position13>
       <Position14>
-        <Filename Value="main.pas"/>
-        <Caret Line="1627" TopLine="1621"/>
+        <Filename Value="search.pas"/>
+        <Caret Line="58" Column="38" TopLine="46"/>
       </Position14>
       <Position15>
-        <Filename Value="main.pas"/>
-        <Caret Line="113" Column="9" TopLine="96"/>
+        <Filename Value="search.pas"/>
+        <Caret Line="75" Column="40" TopLine="47"/>
       </Position15>
       <Position16>
-        <Filename Value="main.pas"/>
-        <Caret Line="185" Column="29" TopLine="174"/>
+        <Filename Value="search.pas"/>
+        <Caret Line="80" Column="3" TopLine="54"/>
       </Position16>
       <Position17>
-        <Filename Value="main.pas"/>
-        <Caret Line="112" Column="63" TopLine="95"/>
+        <Filename Value="search.pas"/>
+        <Caret Line="56" Column="35" TopLine="54"/>
       </Position17>
       <Position18>
-        <Filename Value="main.pas"/>
-        <Caret Line="196" Column="12" TopLine="177"/>
+        <Filename Value="search.pas"/>
+        <Caret Line="62" Column="34" TopLine="54"/>
       </Position18>
       <Position19>
-        <Filename Value="main.pas"/>
-        <Caret Line="201" Column="76" TopLine="174"/>
+        <Filename Value="search.pas"/>
+        <Caret Line="70" Column="26" TopLine="55"/>
       </Position19>
       <Position20>
-        <Filename Value="main.pas"/>
-        <Caret Line="180" Column="55" TopLine="163"/>
+        <Filename Value="search.pas"/>
+        <Caret Line="53" Column="23" TopLine="43"/>
       </Position20>
       <Position21>
-        <Filename Value="main.pas"/>
-        <Caret Line="2323" Column="11" TopLine="2319"/>
+        <Filename Value="C:\lazarus\6_kcontrols_1.6\source\keditcommon.pas"/>
+        <Caret Line="337" Column="26" TopLine="319"/>
       </Position21>
       <Position22>
         <Filename Value="main.pas"/>
-        <Caret Line="2338" Column="25" TopLine="2322"/>
+        <Caret Line="1563" TopLine="1540"/>
       </Position22>
       <Position23>
         <Filename Value="main.pas"/>
-        <Caret Line="2339" TopLine="2322"/>
+        <Caret Line="1557" Column="5" TopLine="1503"/>
       </Position23>
       <Position24>
         <Filename Value="main.pas"/>
-        <Caret Line="199" TopLine="181"/>
+        <Caret Line="1663" Column="3" TopLine="1652"/>
       </Position24>
       <Position25>
         <Filename Value="main.pas"/>
-        <Caret Line="205" TopLine="181"/>
+        <Caret Line="1553" TopLine="1542"/>
       </Position25>
       <Position26>
-        <Filename Value="main.pas"/>
-        <Caret Line="207" TopLine="181"/>
+        <Filename Value="search.pas"/>
+        <Caret Line="52" Column="23" TopLine="52"/>
       </Position26>
       <Position27>
-        <Filename Value="main.pas"/>
-        <Caret Line="206" TopLine="184"/>
+        <Filename Value="search.pas"/>
+        <Caret Line="66" Column="24" TopLine="53"/>
       </Position27>
       <Position28>
         <Filename Value="main.pas"/>
-        <Caret Line="198" Column="34" TopLine="185"/>
+        <Caret Line="115" Column="51" TopLine="99"/>
       </Position28>
-      <Position29>
-        <Filename Value="main.pas"/>
-        <Caret Line="1562" TopLine="1555"/>
-      </Position29>
     </JumpHistory>
   </ProjectSession>
   <Debugging>
-    <BreakPoints Count="1">
-      <Item1>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="main.pas"/>
-        <Line Value="1556"/>
-      </Item1>
-    </BreakPoints>
     <Watches Count="1">
       <Item1>
         <Expression Value="ID"/>

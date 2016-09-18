@@ -16,7 +16,7 @@ uses
   Dialogs, StdCtrls, ExtCtrls, ComCtrls, Menus, ActnList, Buttons,
   RichMemo, KHexEditor, KEditCommon, StrUtils, usbasp25, usbasp45, usbasp95,
   usbaspi2c, usbaspmw, usbaspmulti, usbhid, libusb, dos, XMLRead, XMLWrite, DOM,
-  KControls, msgstr, Translations, LCLProc, LCLTranslator, LResources;
+  KControls, msgstr, Translations, LCLProc, LCLTranslator, LResources, search;
 
 type
 
@@ -134,7 +134,6 @@ type
 
   procedure LogPrint(text: string; AColor: TColor = clDefault);
   function UsbAspEEPROMSupport(): integer;
-  procedure FindHEX(FindStr: string);
   procedure SaveOptions;
   Procedure LoadOptions;
   procedure Translate;
@@ -1649,11 +1648,8 @@ begin
 end;
 
 procedure TMainForm.MenuFindClick(Sender: TObject);
-var
-  s : string;
 begin
-   s := InputBox(STR_SEARCH_HEX,'','');
-   if s <> '' then FindHEX(Utf8ToSys(s));
+  Search.SearchForm.Show;
 end;
 
 procedure TMainForm.MenuGotoOffsetClick(Sender: TObject);
@@ -2666,35 +2662,6 @@ finally
   USB_Dev_Close(hUSBdev);
   UnlockControl();
 end;
-end;
-
-
-procedure FindHEX(FindStr: string);
-var
-  SearchData: TKEditSearchData;
-  S: string;
-begin
- Exclude(SearchData.Options, esoFirstSearch);
- Exclude(SearchData.Options, esoBackwards);
- Exclude(SearchData.Options, esoSelectedOnly);
-
- Include(SearchData.Options, esoTreatAsDigits);
- Exclude(SearchData.Options, esoEntireScope);
-
- SearchData.TextToFind:=FindStr;
-
- MainForm.KHexEditor.ExecuteCommand(ecSearch, @SearchData);
-
-  case SearchData.ErrorReason of
-    eseNoMatch: S := STR_NOT_FOUND_HEX;
-    eseNoDigitsFind: S := STR_SPECIFY_HEX;
-    eseNoDigitsReplace: S := '';
-  else
-    S := '';
-  end;
-
-  if S <> '' then
-    ShowMessage(PChar(S));
 end;
 
 procedure SaveOptions;
