@@ -207,6 +207,11 @@ begin
   Result := value or (1 shl BitNum);
 end;
 
+function IsBitSet(const value: byte; const BitNum : byte): boolean;
+begin
+  result:=((Value shr BitNum) and 1) = 1;
+end;
+
 function IsNumber(strSource: string): boolean;
 begin
   try
@@ -456,6 +461,8 @@ var
   DataChunk2: array[0..4095] of byte;
   Address, BytesWrite: cardinal;
   i: integer;
+  sreg: byte;
+  addr32bit4byte: boolean = false;
 begin
   if (StartAddress >= WriteSize) or (WriteSize = 0) {or (PageSize > WriteSize)} then
   begin
@@ -472,6 +479,17 @@ begin
   MainForm.ProgressBar.Max := WriteSize div PageSize;
 
   try
+
+    //Проверяем тип адресации 256+Mbit
+    if WriteSize > 16777215 then
+    begin
+      UsbAsp25_ReadSR(hUSBDev, sreg, $15);
+      if isBitSet(sreg, 0) then addr32bit4byte := true;
+      //Сбрасываем регистр адреса
+      sreg := 0;
+      UsbAsp25_WriteSR(hUSBDev, sreg, $c5);
+    end;
+
 
     while Address < WriteSize do
     begin
@@ -499,8 +517,27 @@ begin
         BytesWrite := BytesWrite + UsbAsp25_WriteSSTW(hUSBDev, $AD, datachunk[0], datachunk[1]);
 
       if WriteType = WT_PAGE then
-        BytesWrite := BytesWrite + UsbAsp25_Write(hUSBDev, $02, Address, datachunk, PageSize);
+      begin
 
+        if WriteSize > 16777215 then //Память больше 128Мбит
+        begin
+          if addr32bit4byte then //4 байтная адресация включена
+            BytesWrite := BytesWrite + UsbAsp25_Write32bitAddr(hUSBDev, $02, Address, datachunk, PageSize)
+          else
+          begin
+            //3 байтовая адресация включена
+
+            //старший байт адреса
+            if Address > 16777215 then UsbAsp25_WriteSR(hUSBDev, hi(hi(Address)), $c5);
+
+            BytesWrite := BytesWrite + UsbAsp25_Write(hUSBDev, $02, Address, datachunk, PageSize);
+          end;
+        end
+        else
+          //Память в пределах 128Мбит
+          BytesWrite := BytesWrite + UsbAsp25_Write(hUSBDev, $02, Address, datachunk, PageSize);
+
+      end;
 
       if not MainForm.MenuIgnoreBusyBit.Checked then  //Игнорировать проверку
       if UsbAsp25_Busy(hUSBDev) then
@@ -768,7 +805,11 @@ begin
     begin
       if ChunkSize > (ChipSize - Address) then ChunkSize := ChipSize - Address;
 
-      BytesRead := BytesRead + UsbAsp25_Read(hUSBDev, $03, Address, datachunk, ChunkSize);
+      if ChipSize > 16777215 then
+        BytesRead := BytesRead + UsbAsp25_Read32bitAddr(hUSBDev, $13, Address, datachunk, ChunkSize)
+      else
+        BytesRead := BytesRead + UsbAsp25_Read(hUSBDev, $03, Address, datachunk, ChunkSize);
+
       RomStream.WriteBuffer(datachunk, chunksize);
       Inc(Address, ChunkSize);
 
@@ -976,7 +1017,11 @@ begin
   begin
     if ChunkSize > (DataSize - Address) then ChunkSize := DataSize - Address;
 
-    BytesRead := BytesRead + UsbAsp25_Read(hUSBDev, $03, Address, datachunk, ChunkSize);
+    if DataSize > 16777215 then
+        BytesRead := BytesRead + UsbAsp25_Read32bitAddr(hUSBDev, $13, Address, datachunk, ChunkSize)
+      else
+        BytesRead := BytesRead + UsbAsp25_Read(hUSBDev, $03, Address, datachunk, ChunkSize);
+
     RomStream.ReadBuffer(DataChunkFile, ChunkSize);
 
     for i := 0 to ChunkSize -1 do

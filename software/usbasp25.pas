@@ -46,7 +46,9 @@ procedure EnterProgMode25(devHandle: Pusb_dev_handle);
 procedure ExitProgMode25(devHandle: Pusb_dev_handle);
 
 function UsbAsp25_Read(devHandle: Pusb_dev_handle; Opcode: Byte; Addr: longword; var buffer: array of byte; bufflen: integer): integer;
+function UsbAsp25_Read32bitAddr(devHandle: Pusb_dev_handle; Opcode: byte; Addr: longword; var buffer: array of byte; bufflen: integer): integer;
 function UsbAsp25_Write(devHandle: Pusb_dev_handle; Opcode: byte; Addr: longword; buffer: array of byte; bufflen: integer): integer;
+function UsbAsp25_Write32bitAddr(devHandle: Pusb_dev_handle; Opcode: byte; Addr: longword; buffer: array of byte; bufflen: integer): integer;
 
 function UsbAsp25_ReadID(devHandle: Pusb_dev_handle; var ID: array of byte): integer;
 
@@ -54,7 +56,7 @@ function UsbAsp25_Wren(devHandle: Pusb_dev_handle): integer;
 function UsbAsp25_Wrdi(devHandle: Pusb_dev_handle): integer;
 function UsbAsp25_ChipErase(devHandle: Pusb_dev_handle): integer;
 
-function UsbAsp25_WriteSR(devHandle: Pusb_dev_handle; var sreg: byte): integer;
+function UsbAsp25_WriteSR(devHandle: Pusb_dev_handle; sreg: byte; opcode: byte = $01): integer;
 function UsbAsp25_WriteSR_2byte(devHandle: Pusb_dev_handle; var sreg1, sreg2: byte): integer;
 function UsbAsp25_ReadSR(devHandle: Pusb_dev_handle; var sreg: byte; opcode: byte = $05): integer;
 
@@ -132,6 +134,21 @@ begin
   result := USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_READ, 1, 0, bufflen, buffer);
 end;
 
+function UsbAsp25_Read32bitAddr(devHandle: Pusb_dev_handle; Opcode: byte; Addr: longword; var buffer: array of byte; bufflen: integer): integer;
+var
+  buff: array[0..4] of byte;
+begin
+
+  buff[0] := Opcode;
+  buff[1] := hi(hi(addr));
+  buff[2] := lo(hi(addr));
+  buff[3] := hi(lo(addr));
+  buff[4] := lo(lo(addr));
+
+  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 0, 0, 5, buff);
+  result := USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_READ, 1, 0, bufflen, buffer);
+end;
+
 
 function UsbAsp_SetISPSpeed(devHandle: Pusb_dev_handle; speed: byte): integer;
 var
@@ -170,7 +187,7 @@ begin
   result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 1, buff);
 end;
 
-function UsbAsp25_WriteSR(devHandle: Pusb_dev_handle; var sreg: byte): integer;
+function UsbAsp25_WriteSR(devHandle: Pusb_dev_handle; sreg: byte; opcode: byte = $01): integer;
 var
   buff: array[0..1] of byte;
 begin
@@ -178,7 +195,7 @@ begin
   Buff[0] := $50;
   USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 1, buff);
   //
-  Buff[0] := $01;
+  Buff[0] := opcode;
   Buff[1] := sreg;
   result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 2, buff);
 end;
@@ -211,11 +228,26 @@ var
 begin
 
   buff[0] := Opcode;
-  buff[1] := hi(addr);
+  buff[1] := lo(hi(addr));
   buff[2] := hi(lo(addr));
-  buff[3] := lo(addr);
+  buff[3] := lo(lo(addr));
 
   USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 0, 0, 4, buff);
+  result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, bufflen, buffer);
+end;
+
+function UsbAsp25_Write32bitAddr(devHandle: Pusb_dev_handle; Opcode: byte; Addr: longword; buffer: array of byte; bufflen: integer): integer;
+var
+  buff: array[0..4] of byte;
+begin
+
+  buff[0] := Opcode;
+  buff[1] := hi(hi(addr));
+  buff[2] := lo(hi(addr));
+  buff[3] := hi(lo(addr));
+  buff[4] := lo(lo(addr));
+
+  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 0, 0, 5, buff);
   result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, bufflen, buffer);
 end;
 
