@@ -528,7 +528,11 @@ begin
             //3 байтовая адресация включена
 
             //старший байт адреса
-            if Address > 16777215 then UsbAsp25_WriteSR(hUSBDev, hi(hi(Address)), $c5);
+            if Address > 16777215 then
+            begin
+              UsbAsp25_WriteSR(hUSBDev, hi(hi(Address)), $c5);
+              UsbAsp25_WREN(hUSBDev);
+            end;
 
             BytesWrite := BytesWrite + UsbAsp25_Write(hUSBDev, $02, Address, datachunk, PageSize);
           end;
@@ -548,7 +552,12 @@ begin
 
       if (MainForm.MenuAutoCheck.Checked) and (WriteType = WT_PAGE) then
       begin
-        UsbAsp25_Read(hUSBDev, $03, Address, datachunk2, PageSize);
+	  
+        if WriteSize > 16777215 then
+          UsbAsp25_Read32bitAddr(hUSBDev, $13, Address, datachunk2, PageSize)
+        else
+          UsbAsp25_Read(hUSBDev, $03, Address, datachunk2, PageSize);
+		  
         for i:=0 to PageSize-1 do
           if DataChunk2[i] <> DataChunk[i] then
           begin
