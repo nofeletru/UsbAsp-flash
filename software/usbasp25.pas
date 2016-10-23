@@ -57,7 +57,7 @@ function UsbAsp25_Wrdi(devHandle: Pusb_dev_handle): integer;
 function UsbAsp25_ChipErase(devHandle: Pusb_dev_handle): integer;
 
 function UsbAsp25_WriteSR(devHandle: Pusb_dev_handle; sreg: byte; opcode: byte = $01): integer;
-function UsbAsp25_WriteSR_2byte(devHandle: Pusb_dev_handle; var sreg1, sreg2: byte): integer;
+function UsbAsp25_WriteSR_2byte(devHandle: Pusb_dev_handle; sreg1, sreg2: byte): integer;
 function UsbAsp25_ReadSR(devHandle: Pusb_dev_handle; var sreg: byte; opcode: byte = $05): integer;
 
 function UsbAsp_SetISPSpeed(devHandle: Pusb_dev_handle; speed: byte): integer;
@@ -200,7 +200,7 @@ begin
   result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 2, buff);
 end;
 
-function UsbAsp25_WriteSR_2byte(devHandle: Pusb_dev_handle; var sreg1, sreg2: byte): integer;
+function UsbAsp25_WriteSR_2byte(devHandle: Pusb_dev_handle; sreg1, sreg2: byte): integer;
 var
   buff: array[0..2] of byte;
 begin

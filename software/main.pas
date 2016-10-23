@@ -16,7 +16,8 @@ uses
   Dialogs, StdCtrls, ExtCtrls, ComCtrls, Menus, ActnList, Buttons,
   RichMemo, KHexEditor, KEditCommon, StrUtils, usbasp25, usbasp45, usbasp95,
   usbaspi2c, usbaspmw, usbaspmulti, usbhid, libusb, dos, XMLRead, XMLWrite, DOM,
-  KControls, msgstr, Translations, LCLProc, LCLTranslator, LResources, search;
+  KControls, msgstr, Translations, LCLProc, LCLTranslator, LResources, search,
+  sregedit;
 
 type
 
@@ -56,6 +57,7 @@ type
     MenuCopyToClip: TMenuItem;
     CopyLogMenuItem: TMenuItem;
     ClearLogMenuItem: TMenuItem;
+    MenuItemEditSreg: TMenuItem;
     MenuItemReadSreg: TMenuItem;
     MenuItemLockFlash: TMenuItem;
     MenuItem4: TMenuItem;
@@ -114,6 +116,7 @@ type
     procedure MenuCopyToClipClick(Sender: TObject);
     procedure MenuFindClick(Sender: TObject);
     procedure MenuGotoOffsetClick(Sender: TObject);
+    procedure MenuItemEditSregClick(Sender: TObject);
     procedure MenuItemLockFlashClick(Sender: TObject);
     procedure MenuItemReadSregClick(Sender: TObject);
     procedure RadioI2CChange(Sender: TObject);
@@ -137,6 +140,11 @@ type
   procedure SaveOptions;
   Procedure LoadOptions;
   procedure Translate;
+  function OpenDevice: boolean;
+  function SetBit(const value: byte; const BitNum: byte): byte;
+  function IsBitSet(const value: byte; const BitNum : byte): boolean;
+  function SetSPISpeed(OverrideSpeed: byte): boolean;
+  function IsNumber(strSource: string): boolean;
 
 const
   SPI_CMD_25             = 0;
@@ -147,13 +155,13 @@ const
 
 var
   MainForm: TMainForm;
+  hUSBDev: pusb_dev_handle; //Хендл usbasp
 
 implementation
 
 
 var
   DeviceDescription: TDeviceDescription;
-  hUSBDev: pusb_dev_handle; //Хендл usbasp
   RomF: TMemoryStream;
   TimeCounter: TDateTime;
 
@@ -1726,6 +1734,12 @@ begin
   end;
 end;
 
+procedure TMainForm.MenuItemEditSregClick(Sender: TObject);
+begin
+  if MainForm.ComboSPICMD.ItemIndex = SPI_CMD_25 then
+    sregedit.sregeditForm.Show;
+end;
+
 procedure TMainForm.MenuItemLockFlashClick(Sender: TObject);
 var
   sreg: byte;
@@ -2223,7 +2237,14 @@ UsbAsp25_ReadSR(hUSBDev, sreg); //Читаем регистр
     sreg2 := 0;
     UsbAsp25_WREN(hUSBDev); //Включаем разрешение записи
     UsbAsp25_WriteSR(hUSBDev, sreg); //Сбрасываем регистр
-    sleep(20);
+
+    //Пока отлипнет ромка
+    if UsbAsp25_Busy(hUSBDev) then
+    begin
+      LogPrint(STR_USER_CANCEL, clRed);
+      Exit;
+    end;
+
     UsbAsp25_WREN(hUSBDev);
     UsbAsp25_WriteSR_2byte(hUSBDev, sreg, sreg2);
 

@@ -273,6 +273,10 @@ msgstr "Set the protection bits"
 msgid "Прочитать SREG"
 msgstr "Read SREG"
 
+#: tmainform.menuitemeditsreg.caption
+msgid "Изменить SREG"
+msgstr "Edit SREG"
+
 #: tmainform.menumwclock.caption
 msgctxt "TMAINFORM.MENUMWCLOCK.CAPTION"
 msgid "Частота"
@@ -322,3 +326,13 @@ msgstr "replace to:"
 #: tsearchform.searchlabel.caption
 msgid "Искать"
 msgstr "Find"
+
+#: tsregeditform.buttonreadsreg.caption
+msgctxt "TSREGEDITFORM.BUTTONREADSREG.CAPTION"
+msgid "Прочитать"
+msgstr "Read"
+
+#: tsregeditform.buttonwritesreg.caption
+msgctxt "TSREGEDITFORM.BUTTONWRITESREG.CAPTION"
+msgid "Записать"
+msgstr "Write"

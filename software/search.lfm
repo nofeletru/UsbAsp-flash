@@ -3,6 +3,8 @@ object SearchForm: TSearchForm
   Height = 225
   Top = 236
   Width = 249
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
   Caption = 'Поиск'
   ClientHeight = 225
   ClientWidth = 249

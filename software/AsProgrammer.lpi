@@ -24,8 +24,8 @@
       <AutoIncrementBuild Value="True"/>
       <MajorVersionNr Value="1"/>
       <MinorVersionNr Value="3"/>
-      <RevisionNr Value="1"/>
-      <BuildNr Value="6"/>
+      <RevisionNr Value="3"/>
+      <BuildNr Value="7"/>
       <Language Value="0419"/>
       <StringTable ProductVersion=""/>
     </VersionInfo>
@@ -103,7 +103,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="8">
+    <Units Count="9">
       <Unit0>
         <Filename Value="AsProgrammer.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -142,6 +142,12 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit7>
+      <Unit8>
+        <Filename Value="sregedit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="sregeditForm"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit8>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
