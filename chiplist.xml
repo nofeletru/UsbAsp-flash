@@ -18,6 +18,7 @@
 	</AdestoTechnologies>
 	<Atmel>
 	  <AT25010 size="128" page="1" spicmd="95"/>
+	  <AT25HP256 page="128" size="262144" spicmd="25"/>
 	</Atmel>
 	<cFeon>
 	  <cFeon25Q32 size="4194304" page="256" id="1C3016"/>
