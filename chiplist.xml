@@ -40,7 +40,8 @@
 	</Spansion>
     <EON>
       <EN25F80 size="1048576" page="256" id="1C3114"/>
-	  <EN25F16 size="2097152" page="256" id="1C5115"/>
+	  <EN25F16 size="2097152" page="256" id="1C3115"/>
+	  <EN25T16 size="2097152" page="256" id="1C5115"/>
     </EON>
     <GigaDevice>
       <GD25Q16 size="2097152" page="256" id="C84015"/>
