@@ -489,7 +489,7 @@ begin
   try
 
     //Проверяем тип адресации 256+Mbit
-    if WriteSize > 16777215 then
+    if WriteSize > 16777216 then
     begin
       UsbAsp25_ReadSR(hUSBDev, sreg, $15);
       if isBitSet(sreg, 0) then addr32bit4byte := true;
@@ -527,7 +527,7 @@ begin
       if WriteType = WT_PAGE then
       begin
 
-        if WriteSize > 16777215 then //Память больше 128Мбит
+        if WriteSize > 16777216 then //Память больше 128Мбит
         begin
           if addr32bit4byte then //4 байтная адресация включена
             BytesWrite := BytesWrite + UsbAsp25_Write32bitAddr(hUSBDev, $02, Address, datachunk, PageSize)
@@ -536,7 +536,7 @@ begin
             //3 байтовая адресация включена
 
             //старший байт адреса
-            if Address > 16777215 then
+            if Address > 16777216 then
             begin
               UsbAsp25_WriteSR(hUSBDev, hi(hi(Address)), $c5);
               UsbAsp25_WREN(hUSBDev);
@@ -561,7 +561,7 @@ begin
       if (MainForm.MenuAutoCheck.Checked) and (WriteType = WT_PAGE) then
       begin
 	  
-        if WriteSize > 16777215 then
+        if WriteSize > 16777216 then
           UsbAsp25_Read32bitAddr(hUSBDev, $13, Address, datachunk2, PageSize)
         else
           UsbAsp25_Read(hUSBDev, $03, Address, datachunk2, PageSize);
@@ -822,7 +822,7 @@ begin
     begin
       if ChunkSize > (ChipSize - Address) then ChunkSize := ChipSize - Address;
 
-      if ChipSize > 16777215 then
+      if ChipSize > 16777216 then
         BytesRead := BytesRead + UsbAsp25_Read32bitAddr(hUSBDev, $13, Address, datachunk, ChunkSize)
       else
         BytesRead := BytesRead + UsbAsp25_Read(hUSBDev, $03, Address, datachunk, ChunkSize);
@@ -1034,7 +1034,7 @@ begin
   begin
     if ChunkSize > (DataSize - Address) then ChunkSize := DataSize - Address;
 
-    if DataSize > 16777215 then
+    if DataSize > 16777216 then
         BytesRead := BytesRead + UsbAsp25_Read32bitAddr(hUSBDev, $13, Address, datachunk, ChunkSize)
       else
         BytesRead := BytesRead + UsbAsp25_Read(hUSBDev, $03, Address, datachunk, ChunkSize);
