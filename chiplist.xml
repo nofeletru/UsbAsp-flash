@@ -38,6 +38,9 @@
 	  <S25FL216K size="2097152" page="256" id="014015" spicmd="25"/>
 	  <S25FL016A size="2097152" page="256" id="010214" spicmd="25"/>
 	</Spansion>
+	<ELM-Technology>
+	  <GD25Q64 size="8388608" page="256" id="C84017"/>
+	</ELM-Technology>
     <EON>
       <EN25F80 size="1048576" page="256" id="1C3114"/>
 	  <EN25F16 size="2097152" page="256" id="1C3115"/>
