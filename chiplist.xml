@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-
+<?xml version="1.0" encoding="utf-8"?>
 <!--- 
   size - размер данных микросхемы памяти в байтах(DEC)
   page - размер страницы микросхемы памяти в байтах(DEC). Для SST AAI Word programm - SSTW. Для SST AAI Byte programm - SSTB. 
@@ -7,111 +6,112 @@
   spicmd - команды для серий микросхем памяти 25, 45, 95
   <locale lang="ru"/> -  выбор файла локализации . 
  -->
- 
- <chiplist>
-   <SPI>
+<chiplist>
+  <SPI>
     <KB90XX>
-	  <KB9012 size="131072" page="128" id="0" spicmd="KB"/>
-	</KB90XX>
+      <KB9012 id="0" page="128" size="131072" spicmd="KB"/>
+    </KB90XX>
     <AdestoTechnologies>
-	  <AT45DB041D size="540672" page="264" id="1F2400" spicmd="45"/>
-	</AdestoTechnologies>
-	<Atmel>
-	  <AT25010 size="128" page="1" spicmd="95"/>
-	  <AT25HP256 page="128" size="32768" spicmd="95"/>
-	</Atmel>
-	<cFeon>
-	  <cFeon25Q32 size="4194304" page="256" id="1C3016"/>
-	</cFeon>
+      <AT45DB041D id="1F2400" page="264" size="540672" spicmd="45"/>
+    </AdestoTechnologies>
+    <Atmel>
+      <AT25010 page="1" size="128" spicmd="95"/>
+      <AT25HP256 page="128" size="32768" spicmd="95"/>
+    </Atmel>
+    <cFeon>
+      <cFeon25Q32 id="1C3016" page="256" size="4194304"/>
+    </cFeon>
     <ST>
-	  <M25P10 size="131072" page="256" id="202011"/>
-	  <M95080 size="1024" page="32" spicmd="95"/>
-	</ST>
+      <M25P10 id="202011" page="256" size="131072"/>
+      <M95080 page="32" size="1024" spicmd="95"/>
+    </ST>
     <SST>
-	  <SST25VF512 size="65536" page="1" id="BF48"/>
-	  <SST25LF020A size="262144" page="SSTB" id="BF43"/>
-	  <SST25VF040B size="524288" page="SSTW" id="BF258D"/>
-	  <SST25VF080B size="1048576" page="SSTW" id="BF258E"/>
-	</SST>
-	<Spansion>
-	  <S25FL032 size="4194304" page="256" id="010215"/>
-	  <S25FL216K size="2097152" page="256" id="014015" spicmd="25"/>
-	  <S25FL016A size="2097152" page="256" id="010214" spicmd="25"/>
-	</Spansion>
-	<ELM-Technology>
-	  <GD25Q64 size="8388608" page="256" id="C84017"/>
-	</ELM-Technology>
+      <SST25VF512 id="BF48" page="1" size="65536"/>
+      <SST25LF020A id="BF43" page="SSTB" size="262144"/>
+      <SST25VF040B id="BF258D" page="SSTW" size="524288"/>
+      <SST25VF080B id="BF258E" page="SSTW" size="1048576"/>
+    </SST>
+    <Spansion>
+      <S25FL032 id="010215" page="256" size="4194304"/>
+      <S25FL216K id="014015" page="256" size="2097152" spicmd="25"/>
+      <S25FL016A id="010214" page="256" size="2097152" spicmd="25"/>
+    </Spansion>
+    <ELM-Technology>
+      <GD25Q64 id="C84017" page="256" size="8388608"/>
+    </ELM-Technology>
     <EON>
-      <EN25F80 size="1048576" page="256" id="1C3114"/>
-	  <EN25F16 size="2097152" page="256" id="1C3115"/>
-	  <EN25T16 size="2097152" page="256" id="1C5115"/>
+      <EN25F80 id="1C3114" page="256" size="1048576"/>
+      <EN25F16 id="1C3115" page="256" size="2097152"/>
+      <EN25T16 id="1C5115" page="256" size="2097152"/>
     </EON>
     <GigaDevice>
-      <GD25Q16 size="2097152" page="256" id="C84015"/>
-	  <GD25Q080 size="1048576" page="256" id="C84014"/>
+      <GD25Q16 id="C84015" page="256" size="2097152"/>
+      <GD25Q080 id="C84014" page="256" size="1048576"/>
     </GigaDevice>
     <MACRONIX>
-	  <MX25L4005 size="524288" page="256" id="C22013"/>
-      <MX25L8005 size="1048576" page="256" id="C22014"/>
-	  <MX25L3206E size="4194304" page="256" id="C22016"/>
-	  <MX25L1606E size="2097152" page="256" id="C22015"/>
-	  <MX25L1636D size="2097152" page="256" id="C22415"/>
-	  <MX25L6406E size="8388608" page="256" id="C22017"/>
-    </MACRONIX> 
-	<Microchip> 
-	  <x25LC040 size="512" page="16" spicmd="95"/>
-	</Microchip> 
-	<Nansi>
-	  <N25S80 size="1048576" page="256" id="D53014"/>
-	</Nansi>
+      <MX25L4005 id="C22013" page="256" size="524288"/>
+      <MX25L8005 id="C22014" page="256" size="1048576"/>
+      <MX25L3206E id="C22016" page="256" size="4194304"/>
+      <MX25L1606E id="C22015" page="256" size="2097152"/>
+      <MX25L1636D id="C22415" page="256" size="2097152"/>
+      <MX25L6406E id="C22017" page="256" size="8388608"/>
+    </MACRONIX>
+    <Microchip>
+      <x25LC040 page="16" size="512" spicmd="95"/>
+    </Microchip>
+    <Nansi>
+      <N25S80 id="D53014" page="256" size="1048576"/>
+    </Nansi>
     <WINBOND>
-      <W25Q16 size="2097152" page="256" id="EF4015"/> 
-	  <W25Q32 size="4194304" page="256" id="EF4016"/>
-	  <W25Q64 size="8388608" page="256" id="EF4017"/>
-	  <W25Q128BV size="16777216" page="256" id="EF4018"/>
-	  <W25Q256FV size="33554432" page="256" id="EF4019"/>
-	  <W25D80 size="1048576" page="256" id="EF3014"/>
-      <W25X32 size="4194304" page="256" id="EF3016"/>	
-      <W25X40 size="524288" page="256" id="EF3013"/>	   
+      <W25Q16 id="EF4015" page="256" size="2097152"/>
+      <W25Q32 id="EF4016" page="256" size="4194304"/>
+      <W25Q64 id="EF4017" page="256" size="8388608"/>
+      <W25Q128BV id="EF4018" page="256" size="16777216"/>
+      <W25Q256FV id="EF4019" page="256" size="33554432"/>
+      <W25D80 id="EF3014" page="256" size="1048576"/>
+      <W25X32 id="EF3016" page="256" size="4194304"/>
+      <W25X40 id="EF3013" page="256" size="524288"/>
     </WINBOND>
-	<AMIC>
-	  <A25L080 size="1048576" page="256" id="373014"/>
-	</AMIC>
-	<PMC>
-      <Pm25LV010 size="131072" page="256" id="7F9D7C"/>
-	  <Pm25LV020 size="262144" page="256" id="7F9D22"/>
-	  <Pm25W020 size="262144" page="256" id="7F9D7D"/>
+    <AMIC>
+      <A25L080 id="373014" page="256" size="1048576"/>
+    </AMIC>
+    <PMC>
+      <Pm25LV010 id="7F9D7C" page="256" size="131072"/>
+      <Pm25LV020 id="7F9D22" page="256" size="262144"/>
+      <Pm25W020 id="7F9D7D" page="256" size="262144"/>
     </PMC>
-   </SPI>
-   <I2C>
-     <x24Lxxx>
-	   <x24LC01 size="128"  page="8" addrtype="1"/>
-	   <x24LC02 size="256"  page="8" addrtype="1"/>
-	   <x24LC04 size="512"  page="16" addrtype="2"/>
-       <x24LC08 size="1024" page="16" addrtype="3"/>
-	   <x24LC16 size="2048" page="16" addrtype="4"/>
-	   <x24LC32 size="4096" page="32" addrtype="5"/>
-	   <x24LC64 size="8192" page="32" addrtype="5"/>
-	   <x24LC128 size="16384" page="64" addrtype="5"/>
-	   <x24LC256 size="32768" page="64" addrtype="5"/>
-	   <x24LC512 size="65536" page="128" addrtype="5"/>
-	 </x24Lxxx>
-	 <x24Cxx>
-	   <AT24C01 size="128"  page="4" addrtype="0"/>
-       <x24C01A size="128"  page="2" addrtype="1"/>
-	   <x24C02A size="256"  page="2" addrtype="1"/>
-	   <x24C04A size="512"  page="8" addrtype="2"/>	 
-	 </x24Cxx>
-   </I2C>
-   <Microwire>
-     <Microchip>
-       <M93C86 size="2048" addrbitlen="10"/>
-	   <M93C76 size="1024" addrbitlen="10"/>
-	   <M93C66 size="512" addrbitlen="8"/>
-	   <M93C56 size="256" addrbitlen="8"/>
-	   <M93C46 size="128" addrbitlen="6"/>
-	   <M93C06 size="16" addrbitlen="6"/>
-	 </Microchip>
-   </Microwire>
- <locale lang="ru"/>  
- </chiplist>
+  </SPI>
+  <I2C>
+    <x24Lxxx>
+      <x24LC01 page="8" size="128" addrtype="1"/>
+      <x24LC02 page="8" size="256" addrtype="1"/>
+      <x24LC04 page="16" size="512" addrtype="2"/>
+      <x24LC08 page="16" size="1024" addrtype="3"/>
+      <x24LC16 page="16" size="2048" addrtype="4"/>
+      <x24LC32 page="32" size="4096" addrtype="5"/>
+      <x24LC64 page="32" size="8192" addrtype="5"/>
+      <x24LC128 page="64" size="16384" addrtype="5"/>
+      <x24LC256 page="64" size="32768" addrtype="5"/>
+      <x24LC512 page="128" size="65536" addrtype="5"/>
+      <x24LC1024 page="128" size="131072" addrtype="6"/>
+    </x24Lxxx>
+    <x24Cxx>
+      <AT24C01 page="4" size="128" addrtype="0"/>
+      <x24C01A page="2" size="128" addrtype="1"/>
+      <x24C02A page="2" size="256" addrtype="1"/>
+      <x24C04A page="8" size="512" addrtype="2"/>
+    </x24Cxx>
+  </I2C>
+  <Microwire>
+    <Microchip>
+      <M93C86 size="2048" addrbitlen="10"/>
+      <M93C76 size="1024" addrbitlen="10"/>
+      <M93C66 size="512" addrbitlen="8"/>
+      <M93C56 size="256" addrbitlen="8"/>
+      <M93C46 size="128" addrbitlen="6"/>
+      <M93C06 size="16" addrbitlen="6"/>
+    </Microchip>
+  </Microwire>
+  <locale lang="ru"/>
+  <options verify="0" mw_speed="32Khz" spi_speed="1_5Mhz"/>
+</chiplist>

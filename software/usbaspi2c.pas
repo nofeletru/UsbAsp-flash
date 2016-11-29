@@ -5,7 +5,7 @@ unit usbaspi2c;
 interface
 
 uses
-  Classes, SysUtils, libusb, usbhid;
+  Classes, SysUtils, libusb, usbhid, utilfunc;
 
 const
   USBASP_FUNC_I2C_INIT		 = 70;
@@ -30,7 +30,7 @@ const
 
 procedure EnterProgModeI2C(devHandle: Pusb_dev_handle);
 function UsbAspI2C_BUSY(devHandle: Pusb_dev_handle; Address: byte): Boolean;
-function UsbAspI2C_Read(devHandle: Pusb_dev_handle; DevAddr, AddrType: byte; Address: word;var buffer: array of byte; bufflen: integer): integer;
+function UsbAspI2C_Read(devHandle: Pusb_dev_handle; DevAddr, AddrType: byte; Address: longword;var buffer: array of byte; bufflen: integer): integer;
 function UsbAspI2C_Write(devHandle: Pusb_dev_handle; DevAddr, AddrType: byte; Addr: longword; buffer: array of byte; bufflen: integer): integer;
 
 implementation
@@ -53,7 +53,7 @@ begin
 end;
 
 //Возвращает сколько байт прочитали
-function UsbAspI2C_Read(devHandle: Pusb_dev_handle; DevAddr, AddrType: byte; Address: word;var buffer: array of byte; bufflen: integer): integer;
+function UsbAspI2C_Read(devHandle: Pusb_dev_handle; DevAddr, AddrType: byte; Address: longword;var buffer: array of byte; bufflen: integer): integer;
 var
   value, index: Integer;
 begin
@@ -61,10 +61,24 @@ begin
   DevAddr := DevAddr or %10100000;
 
   //шайтанама
-  if (AddrType = I2C_ADDR_TYPE_2BYTE) or (AddrType = I2C_ADDR_TYPE_2BYTE_1BIT) then
+  //TODO: Только с нулевого адреса автоинкрементом, так как не учитываются все типы адресации
+  //TODO: 24LC1025
+  //TODO: Привести в читабельный вид
+  //TODO: Сбрасывать биты адресации(a0 a1 a2)
+
+  if (AddrType = I2C_ADDR_TYPE_2BYTE) then
   begin
     value := (I2C_2BYTE_ADDR shl 8) or (DevAddr);
-    index := Address;
+    index := Word(Address);
+  end else
+  if (AddrType = I2C_ADDR_TYPE_2BYTE_1BIT) then
+  begin
+    value := (I2C_2BYTE_ADDR shl 8) or (DevAddr);
+
+    if Hi(Address) and (1 shl 0) <> 0 then
+      value := value or (1 shl 1);
+
+    index := Word(Address);
   end else
   if AddrType = I2C_ADDR_TYPE_7BIT  then
   begin
@@ -89,7 +103,9 @@ begin
   //Lo(index)  = 4; Lo адрес
   //Hi(index)  = 5; Hi адрес
   //шайтанама
-  //TODO: Moar addr types
+  //TODO: 24LC1025
+  //TODO: Привести в читабельный вид
+  //TODO: Сбрасывать биты адресации(a0 a1 a2)
 
   DevAddr := DevAddr or %10100000;
 
