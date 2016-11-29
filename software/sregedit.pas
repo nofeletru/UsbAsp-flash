@@ -52,7 +52,7 @@ var
 
 implementation
 
-uses main, usbasp25, usbhid, msgstr;
+uses main, usbasp25, usbhid, msgstr, utilfunc;
 
 {$R *.lfm}
 

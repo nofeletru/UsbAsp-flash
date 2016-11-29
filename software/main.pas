@@ -1,6 +1,5 @@
 unit main;
 
-//TODO: Толстая i2c   добавить
 //TODO: Облагородить лог
 
 //TODO: at45 установка размера странцы
@@ -17,7 +16,7 @@ uses
   RichMemo, KHexEditor, KEditCommon, StrUtils, usbasp25, usbasp45, usbasp95,
   usbaspi2c, usbaspmw, usbaspmulti, usbhid, libusb, dos, XMLRead, XMLWrite, DOM,
   KControls, msgstr, Translations, LCLProc, LCLTranslator, LResources, search,
-  sregedit;
+  sregedit, utilfunc;
 
 type
 
@@ -141,10 +140,7 @@ type
   Procedure LoadOptions;
   procedure Translate;
   function OpenDevice: boolean;
-  function SetBit(const value: byte; const BitNum: byte): byte;
-  function IsBitSet(const value: byte; const BitNum : byte): boolean;
   function SetSPISpeed(OverrideSpeed: byte): boolean;
-  function IsNumber(strSource: string): boolean;
 
 const
   SPI_CMD_25             = 0;
@@ -209,26 +205,6 @@ begin
   end;
 
 end;               
-
-function SetBit(const value: byte; const BitNum: byte): byte;
-begin
-  Result := value or (1 shl BitNum);
-end;
-
-function IsBitSet(const value: byte; const BitNum : byte): boolean;
-begin
-  result:=((Value shr BitNum) and 1) = 1;
-end;
-
-function IsNumber(strSource: string): boolean;
-begin
-  try
-    StrToInt(strSource);
-    Result:=true;
-  except
-    on EConvertError do Result:=false;
-  end;
-end;
 
 procedure LogPrint(text: string; AColor: TColor = clDefault);
 var

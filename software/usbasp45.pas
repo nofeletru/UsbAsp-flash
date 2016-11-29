@@ -5,7 +5,7 @@ unit usbasp45;
 interface
 
 uses
-  Classes, Forms, SysUtils, libusb, usbhid;
+  Classes, Forms, SysUtils, libusb, usbhid, utilfunc;
 
 const
   // ISP SCK speed identifiers
@@ -39,8 +39,6 @@ const
   USBASP_FUNC_25_READ            = 51;
   USBASP_FUNC_25_WRITE  	 = 52;
 
-function BitNum(value: cardinal): integer;
-
 function UsbAsp45_Busy(devHandle: Pusb_dev_handle): boolean;
 
 function UsbAsp45_isPagePowerOfTwo(devHandle: Pusb_dev_handle): boolean;
@@ -62,25 +60,6 @@ function UsbAsp45_ReadSectorLockdown(devHandle: Pusb_dev_handle; var buffOut: ar
 implementation
 
 uses Main;
-
-//сколько бит нужно для хранения данного значения
-function BitNum(value: cardinal): integer;
-var
-  i: integer;
-  m: cardinal;
-begin
-
-  i:= 0;
-  m:= 1;
-
-  while m < value do
-  begin
-    m := m*2;
-    Inc(i);
-  end;
-
-  result := i;
-end;
 
 //Пока отлипнет ромка
 function UsbAsp45_Busy(devHandle: Pusb_dev_handle): boolean;
