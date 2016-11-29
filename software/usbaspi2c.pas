@@ -31,7 +31,7 @@ const
 procedure EnterProgModeI2C(devHandle: Pusb_dev_handle);
 function UsbAspI2C_BUSY(devHandle: Pusb_dev_handle; Address: byte): Boolean;
 function UsbAspI2C_Read(devHandle: Pusb_dev_handle; DevAddr, AddrType: byte; Address: longword;var buffer: array of byte; bufflen: integer): integer;
-function UsbAspI2C_Write(devHandle: Pusb_dev_handle; DevAddr, AddrType: byte; Addr: longword; buffer: array of byte; bufflen: integer): integer;
+function UsbAspI2C_Write(devHandle: Pusb_dev_handle; DevAddr, AddrType: byte; Address: longword; buffer: array of byte; bufflen: integer): integer;
 
 implementation
 
@@ -60,41 +60,92 @@ begin
 
   DevAddr := DevAddr or %10100000;
 
-  //шайтанама
-  //TODO: Только с нулевого адреса автоинкрементом, так как не учитываются все типы адресации
   //TODO: 24LC1025
-  //TODO: Привести в читабельный вид
-  //TODO: Сбрасывать биты адресации(a0 a1 a2)
+
+
+  if AddrType = I2C_ADDR_TYPE_7BIT  then
+  begin
+    value := 0;
+    value := (Byte(Address) shl 1);
+    index := 0;
+  end;
+
+  if AddrType = I2C_ADDR_TYPE_1BYTE  then
+  begin
+    value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
+    index := Byte(Address);
+  end;
+
+  if AddrType = I2C_ADDR_TYPE_1BYTE_1BIT then
+  begin
+    if IsBitSet(Hi(Word(Address)), 0) then
+      DevAddr := SetBit(DevAddr, 1)
+    else
+      DevAddr := ClearBit(DevAddr, 1);
+
+    value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
+    index := Byte(Address);
+  end;
+
+  if AddrType = I2C_ADDR_TYPE_1BYTE_2BIT then
+  begin
+    if IsBitSet(Hi(Word(Address)), 0) then
+      DevAddr := SetBit(DevAddr, 1)
+    else
+      DevAddr := ClearBit(DevAddr, 1);
+
+    if IsBitSet(Hi(Word(Address)), 1) then
+      DevAddr := SetBit(DevAddr, 2)
+    else
+      DevAddr := ClearBit(DevAddr, 2);
+
+    value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
+    index := Byte(Address);
+  end;
+
+  if AddrType = I2C_ADDR_TYPE_1BYTE_3BIT then
+  begin
+    if IsBitSet(Hi(Word(Address)), 0) then
+      DevAddr := SetBit(DevAddr, 1)
+    else
+      DevAddr := ClearBit(DevAddr, 1);
+
+    if IsBitSet(Hi(Word(Address)), 1) then
+      DevAddr := SetBit(DevAddr, 2)
+    else
+      DevAddr := ClearBit(DevAddr, 2);
+
+    if IsBitSet(Hi(Word(Address)), 2) then
+      DevAddr := SetBit(DevAddr, 3)
+    else
+      DevAddr := ClearBit(DevAddr, 3);
+
+    value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
+    index := Byte(Address);
+  end;
 
   if (AddrType = I2C_ADDR_TYPE_2BYTE) then
   begin
     value := (I2C_2BYTE_ADDR shl 8) or (DevAddr);
     index := Word(Address);
-  end else
+  end;
+
   if (AddrType = I2C_ADDR_TYPE_2BYTE_1BIT) then
   begin
+    if IsBitSet(Hi(Address), 0) then
+      DevAddr := SetBit(DevAddr, 1)
+    else
+      DevAddr := ClearBit(DevAddr, 1);
+
     value := (I2C_2BYTE_ADDR shl 8) or (DevAddr);
-
-    if Hi(Address) and (1 shl 0) <> 0 then
-      value := value or (1 shl 1);
-
     index := Word(Address);
-  end else
-  if AddrType = I2C_ADDR_TYPE_7BIT  then
-  begin
-    value := %00000000;
-    index := 0;
-  end else
-  begin
-    value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
-    index := 0;
   end;
 
   result := USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_I2C_READ, value, index, bufflen, buffer);
 end;
 
 //Возвращает сколько байт записали
-function UsbAspI2C_Write(devHandle: Pusb_dev_handle; DevAddr, AddrType: byte; Addr: longword; buffer: array of byte; bufflen: integer): integer;
+function UsbAspI2C_Write(devHandle: Pusb_dev_handle; DevAddr, AddrType: byte; Address: longword; buffer: array of byte; bufflen: integer): integer;
 var
   value, index: Integer;
 begin
@@ -102,78 +153,86 @@ begin
   //Hi(value)  = 3; Посылать ли первый(lo) или второй(hi) байт
   //Lo(index)  = 4; Lo адрес
   //Hi(index)  = 5; Hi адрес
-  //шайтанама
+
   //TODO: 24LC1025
-  //TODO: Привести в читабельный вид
-  //TODO: Сбрасывать биты адресации(a0 a1 a2)
 
   DevAddr := DevAddr or %10100000;
 
   if AddrType = I2C_ADDR_TYPE_7BIT then
   begin
-    Value := (I2C_0BYTE_ADDR shl 8) or (Byte(Addr) shl 1); //7 бит
+    Value := (I2C_0BYTE_ADDR shl 8) or (Byte(Address) shl 1); //7 бит
     index := 0;
   end;
 
   if AddrType = I2C_ADDR_TYPE_1BYTE then
   begin
     Value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
-    index := Byte(Addr);
+    index := Byte(Address);
   end;
 
   if AddrType = I2C_ADDR_TYPE_1BYTE_1BIT then
   begin
-    Value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
+    if IsBitSet(Hi(Word(Address)), 0) then
+      DevAddr := SetBit(DevAddr, 1)
+    else
+      DevAddr := ClearBit(DevAddr, 1);
 
-    if (Hi(Word(Addr)) and (1 shl 0)) <> 0 then
-      value := value or (1 shl 1);
-
-    index := Byte(Addr);
+    value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
+    index := Byte(Address);
   end;
 
   if AddrType = I2C_ADDR_TYPE_1BYTE_2BIT then
   begin
-    Value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
+    if IsBitSet(Hi(Word(Address)), 0) then
+      DevAddr := SetBit(DevAddr, 1)
+    else
+      DevAddr := ClearBit(DevAddr, 1);
 
-    if (Hi(Word(Addr)) and (1 shl 0)) <> 0 then
-      value := value or (1 shl 1);
+    if IsBitSet(Hi(Word(Address)), 1) then
+      DevAddr := SetBit(DevAddr, 2)
+    else
+      DevAddr := ClearBit(DevAddr, 2);
 
-    if (Hi(Word(Addr)) and (1 shl 1)) <> 0 then
-      value := value or (1 shl 2);
-
-    index := Byte(Addr);
+    value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
+    index := Byte(Address);
   end;
 
   if AddrType = I2C_ADDR_TYPE_1BYTE_3BIT then
   begin
-    Value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
+    if IsBitSet(Hi(Word(Address)), 0) then
+      DevAddr := SetBit(DevAddr, 1)
+    else
+      DevAddr := ClearBit(DevAddr, 1);
 
-    if (Hi(Word(Addr)) and (1 shl 0)) <> 0 then
-      value := value or (1 shl 1);
+    if IsBitSet(Hi(Word(Address)), 1) then
+      DevAddr := SetBit(DevAddr, 2)
+    else
+      DevAddr := ClearBit(DevAddr, 2);
 
-    if (Hi(Word(Addr)) and (1 shl 1)) <> 0 then
-      value := value or (1 shl 2);
+    if IsBitSet(Hi(Word(Address)), 2) then
+      DevAddr := SetBit(DevAddr, 3)
+    else
+      DevAddr := ClearBit(DevAddr, 3);
 
-    if (Hi(Word(Addr)) and (1 shl 2)) <> 0 then
-      value := value or (1 shl 3);
-
-    index := Byte(Addr);
+    value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
+    index := Byte(Address);
   end;
 
   if AddrType = I2C_ADDR_TYPE_2BYTE then
   begin
     value := (I2C_2BYTE_ADDR shl 8) or (DevAddr);
-    index := Word(Addr);
+    index := Word(Address);
   end;
 
   if AddrType = I2C_ADDR_TYPE_2BYTE_1BIT then
   begin
+    if IsBitSet(Hi(Address), 0) then
+      DevAddr := SetBit(DevAddr, 1)
+    else
+      DevAddr := ClearBit(DevAddr, 1);
+
     value := (I2C_2BYTE_ADDR shl 8) or (DevAddr);
-
-    if Hi(Addr) and (1 shl 0) <> 0 then
-      value := value or (1 shl 1);
-
-    index := Word(Addr);
+    index := Word(Address);
   end;
 
 
