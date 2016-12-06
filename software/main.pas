@@ -2290,7 +2290,7 @@ var
   XMLfile: TXMLDocument;
   ID: array[0..2] of byte;
   ID90H: array[0..1] of byte;
-  IDABH: array[0..2] of byte;
+  IDABH: byte;
   IDstr: string[6];
   IDstr90H: string[4];
   IDstrABH: string[6];
@@ -2301,20 +2301,20 @@ begin
     LockControl();
     FillByte(ID, 3, $FF);
     FillByte(ID90H, 2, $FF);
-    FillByte(IDABH, 3, $FF);
+    FillByte(IDABH, 1, $FF);
     if not SetSPISpeed(0) then exit;
 
     EnterProgMode25(hUSBdev);
     UsbAsp25_ReadID(hUSBDev, ID);
     UsbAsp25_Read(hUSBDev, $90, 0, ID90H, 2); //SST
-    UsbAsp25_Read(hUSBDev, $AB, 0, IDABH, 3); //SST
+    UsbAsp25_Read(hUSBDev, $AB, 0, IDABH, 1); //SST
     ExitProgMode25(hUSBdev);
 
     USB_Dev_Close(hUSBdev);
 
     IDstr := Upcase(IntToHex(ID[0], 2)+IntToHex(ID[1], 2)+IntToHex(ID[2], 2));
     IDstr90H := Upcase(IntToHex(ID90H[0], 2)+IntToHex(ID90H[1], 2));
-    IDstrABH := Upcase(IntToHex(IDABH[0], 2)+IntToHex(IDABH[1], 2)+IntToHex(IDABH[2], 2));
+    IDstrABH := Upcase(IntToHex(IDABH, 2));
 
     if FileExists('chiplist.xml') then
     begin
