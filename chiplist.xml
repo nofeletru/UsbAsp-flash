@@ -36,18 +36,18 @@
       <S25FL216K id="014015" page="256" size="2097152" spicmd="25"/>
       <S25FL016A id="010214" page="256" size="2097152" spicmd="25"/>
     </Spansion>
-    <ELM-Technology>
-      <GD25Q64 id="C84017" page="256" size="8388608"/>
-    </ELM-Technology>
     <EON>
       <EN25F80 id="1C3114" page="256" size="1048576"/>
       <EN25F16 id="1C3115" page="256" size="2097152"/>
       <EN25T16 id="1C5115" page="256" size="2097152"/>
     </EON>
-    <GigaDevice>
+    <GigaDevice_ELM-Technology>
+	  <GD25Q080 id="C84014" page="256" size="1048576"/>
       <GD25Q16 id="C84015" page="256" size="2097152"/>
-      <GD25Q080 id="C84014" page="256" size="1048576"/>
-    </GigaDevice>
+	  <GD25Q32 id="C84016" page="256" size="4194304"/> 
+	  <GD25Q64 id="C84017" page="256" size="8388608"/>
+	  <GD25LQ128CVIG id="C86018" page="256" size="16777216"/>
+    </GigaDevice_ELM-Technology>
     <MACRONIX>
       <MX25L4005 id="C22013" page="256" size="524288"/>
       <MX25L8005 id="C22014" page="256" size="1048576"/>
