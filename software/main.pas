@@ -56,6 +56,9 @@ type
     MenuCopyToClip: TMenuItem;
     CopyLogMenuItem: TMenuItem;
     ClearLogMenuItem: TMenuItem;
+    MenuHWUSBASP: TMenuItem;
+    MenuHWCH341A: TMenuItem;
+    MenuItemHardware: TMenuItem;
     MenuItemBenchmark: TMenuItem;
     MenuItemEditSreg: TMenuItem;
     MenuItemReadSreg: TMenuItem;
@@ -116,6 +119,8 @@ type
     procedure MenuCopyToClipClick(Sender: TObject);
     procedure MenuFindClick(Sender: TObject);
     procedure MenuGotoOffsetClick(Sender: TObject);
+    procedure MenuHWCH341AClick(Sender: TObject);
+    procedure MenuHWUSBASPClick(Sender: TObject);
     procedure MenuItemBenchmarkClick(Sender: TObject);
     procedure MenuItemEditSregClick(Sender: TObject);
     procedure MenuItemLockFlashClick(Sender: TObject);
@@ -232,6 +237,22 @@ function OpenDevice: boolean;
 var
   err: integer;
 begin
+
+  if CH341 then
+  begin
+    err := CH341OpenDevice(0);
+    if err < 0 then
+    begin
+      LogPrint(STR_CONNECT_ERROR_CH+'('+IntToStr(err)+')', ClRed);
+      result := false;
+      Exit;
+    end else
+    begin
+       result := true;
+       Exit;
+    end;
+  end;
+
   err := USBOpenDevice(hUSBDev, DeviceDescription);
   if err <> 0 then
   begin
@@ -1713,6 +1734,16 @@ begin
   end;
 end;
 
+procedure TMainForm.MenuHWCH341AClick(Sender: TObject);
+begin
+  CH341 := true;
+end;
+
+procedure TMainForm.MenuHWUSBASPClick(Sender: TObject);
+begin
+  CH341 := false;
+end;
+
 procedure TMainForm.MenuItemBenchmarkClick(Sender: TObject);
 var
   buffer: array[0..2047] of byte;
@@ -2794,6 +2825,14 @@ begin
     if MainForm.MenuMW8Khz.Checked then
       TDOMElement(ParentNode).SetAttribute('mw_speed', '8Khz');
 
+    if MainForm.MenuHWUSBASP.Checked then
+      TDOMElement(ParentNode).SetAttribute('hw', 'usbasp');
+    if MainForm.MenuHWCH341A.Checked then
+    begin
+      TDOMElement(ParentNode).SetAttribute('hw', 'ch341a');
+      CH341 := true;
+    end;
+
     Node.Appendchild(parentNode);
 
     WriteXMLFile(XMLfile, 'chiplist.xml');
@@ -2845,6 +2884,14 @@ begin
         if OptVal = '32Khz' then MainForm.MenuMW32Khz.Checked := true;
         if OptVal = '16Khz' then MainForm.MenuMW16Khz.Checked := true;
         if OptVal = '8Khz' then MainForm.MenuMW8Khz.Checked := true;
+      end;
+
+      if  Node.Attributes.GetNamedItem('hw') <> nil then
+      begin
+        OptVal := Node.Attributes.GetNamedItem('hw').NodeValue;
+
+        if OptVal = 'usbasp' then MainForm.MenuHWUSBASP.Checked := true;
+        if OptVal = 'ch341a' then MainForm.MenuHWCH341A.Checked := true;
       end;
 
     end;

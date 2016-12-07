@@ -3,7 +3,7 @@ unit usbhid;
 interface
 
 uses
-  Classes, SysUtils, libusb, Graphics, msgstr;
+  Classes, SysUtils, libusb, Graphics, msgstr, CH341DLL;
 
 type
  TPString = array [0..255] of Char;
@@ -145,6 +145,14 @@ end;
 
 function USBSendControlMessage(devHandle: Pusb_dev_handle; direction: byte; request, value, index, bufflen: integer; var buffer: array of byte): integer;
 begin
+  if CH341 then
+  begin
+    CH341Set_D5_D0(0, $29, 0); //Вручную дергаем cs
+    if not CH341StreamSPI4(0, 0, bufflen, @buffer) then result :=0 else result := bufflen;
+    if (value = 1)then CH341Set_D5_D0(0, $29, 1); //Отпускаем cs
+    exit;
+  end;
+
   Result := usb_control_msg(devHandle, USB_TYPE_VENDOR or USB_RECIP_DEVICE or direction, request, value, index, buffer, bufflen, 10000);
   if result < 0 then
   begin
@@ -156,6 +164,13 @@ end;
 
 function USB_Dev_Close(dev: pusb_dev_handle): longword;
 begin
+
+  if CH341 then
+  begin
+    CH341CloseDevice(0);
+    Exit;
+  end;
+
   if dev <> nil then
   begin
     result := USB_Close(dev);

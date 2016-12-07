@@ -570,6 +570,22 @@ object MainForm: TMainForm
         end
       end
     end
+    object MenuItemHardware: TMenuItem
+      Caption = 'Программатор'
+      object MenuHWUSBASP: TMenuItem
+        AutoCheck = True
+        Caption = 'UsbAsp'
+        Checked = True
+        RadioItem = True
+        OnClick = MenuHWUSBASPClick
+      end
+      object MenuHWCH341A: TMenuItem
+        AutoCheck = True
+        Caption = 'CH341a'
+        RadioItem = True
+        OnClick = MenuHWCH341AClick
+      end
+    end
   end
   object ImageList: TImageList
     Height = 32

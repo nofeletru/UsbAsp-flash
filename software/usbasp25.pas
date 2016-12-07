@@ -5,7 +5,7 @@ unit usbasp25;
 interface
 
 uses
-  Classes, Forms, SysUtils, libusb, usbhid;
+  Classes, Forms, SysUtils, libusb, usbhid, CH341DLL;
 
 const
   // ISP SCK speed identifiers
@@ -94,6 +94,13 @@ procedure EnterProgMode25(devHandle: Pusb_dev_handle);
 var
   dummy: byte;
 begin
+  if CH341 then
+  begin
+    //CH341SetTimeout(0, 1000,1000);
+     CH341SetStream(0, %10000001);
+     exit;
+  end;
+
   USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_CONNECT, 0, 0, 0, dummy);
   sleep(50);
 end;
@@ -103,6 +110,12 @@ procedure ExitProgMode25(devHandle: Pusb_dev_handle);
 var
   dummy: byte;
 begin
+  if CH341 then
+  begin
+     CH341Set_D5_D0(0, 0, 0);
+     exit;
+  end;
+
   if devHandle <> nil then
     USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_DISCONNECT, 0, 0, 0, dummy);
 end;
@@ -154,6 +167,13 @@ function UsbAsp_SetISPSpeed(devHandle: Pusb_dev_handle; speed: byte): integer;
 var
   buff: byte;
 begin
+
+  if CH341 then
+  begin
+    result := 0;
+    exit;
+  end;
+
   buff := $FF;
   USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_SETISPSCK, speed, 0, 1, buff);
   result := buff;
