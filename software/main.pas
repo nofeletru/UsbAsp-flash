@@ -2828,10 +2828,7 @@ begin
     if MainForm.MenuHWUSBASP.Checked then
       TDOMElement(ParentNode).SetAttribute('hw', 'usbasp');
     if MainForm.MenuHWCH341A.Checked then
-    begin
       TDOMElement(ParentNode).SetAttribute('hw', 'ch341a');
-      CH341 := true;
-    end;
 
     Node.Appendchild(parentNode);
 
@@ -2891,7 +2888,11 @@ begin
         OptVal := Node.Attributes.GetNamedItem('hw').NodeValue;
 
         if OptVal = 'usbasp' then MainForm.MenuHWUSBASP.Checked := true;
-        if OptVal = 'ch341a' then MainForm.MenuHWCH341A.Checked := true;
+        if OptVal = 'ch341a' then
+        begin
+          MainForm.MenuHWCH341A.Checked := true;
+          CH341 := true;
+        end;
       end;
 
     end;
