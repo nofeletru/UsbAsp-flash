@@ -374,7 +374,7 @@ procedure ReadFlashMW(var RomStream: TMemoryStream; AddrBitLen: byte; StartAddre
 var
   ChunkSize: Word;
   BytesRead: integer;
-  DataChunk: array[0..4095] of byte;
+  DataChunk: array[0..2047] of byte;
   Address: cardinal;
 begin
   if (StartAddress >= ChipSize) or (ChipSize = 0) then
@@ -420,7 +420,7 @@ end;
 
 procedure WriteFlashMW(var RomStream: TMemoryStream; AddrBitLen: byte; StartAddress, ChipSize: cardinal);
 var
-  DataChunk: array[0..4095] of byte;
+  DataChunk: array[0..2047] of byte;
   Address, BytesWrite: cardinal;
   ChunkSize: Word;
 begin
@@ -465,8 +465,8 @@ end;
 
 procedure WriteFlash25(var RomStream: TMemoryStream; StartAddress, WriteSize: cardinal; PageSize: word; WriteType: integer);
 var
-  DataChunk: array[0..4095] of byte;
-  DataChunk2: array[0..4095] of byte;
+  DataChunk: array[0..2047] of byte;
+  DataChunk2: array[0..2047] of byte;
   Address, BytesWrite: cardinal;
   i: integer;
   sreg: byte;
@@ -594,8 +594,8 @@ end;
 
 procedure WriteFlash95(var RomStream: TMemoryStream; StartAddress, WriteSize: cardinal; PageSize: word; ChipSize: integer);
 var
-  DataChunk: array[0..4095] of byte;
-  DataChunk2: array[0..4095] of byte;
+  DataChunk: array[0..2047] of byte;
+  DataChunk2: array[0..2047] of byte;
   Address, BytesWrite: cardinal;
   i: integer;
 begin
@@ -663,8 +663,8 @@ end;
 //write size in pages
 procedure WriteFlashKB(var RomStream: TMemoryStream; StartAddress, WriteSize: cardinal; PageSize: word);
 var
-  DataChunk: array[0..4095] of byte;
-  DataChunk2: array[0..4095] of byte;
+  DataChunk: array[0..2047] of byte;
+  DataChunk2: array[0..2047] of byte;
   Address, BytesWrite: cardinal;
   i: integer;
 begin
@@ -732,8 +732,8 @@ end;
 
 procedure WriteFlash45(var RomStream: TMemoryStream; StartAddress, ChipSize: cardinal; PageSize: word; WriteType: integer);
 var
-  DataChunk: array[0..4095] of byte;
-  DataChunk2: array[0..4095] of byte;
+  DataChunk: array[0..2047] of byte;
+  DataChunk2: array[0..2047] of byte;
   PageAddress, BytesWrite: cardinal;
   i: integer;
 begin
@@ -797,8 +797,8 @@ end;
 procedure ReadFlash25(var RomStream: TMemoryStream; StartAddress, ChipSize: cardinal);
 var
   ChunkSize: Word;
-  BytesRead: integer; //4095
-  DataChunk: array[0..4095] of byte;
+  BytesRead: integer;
+  DataChunk: array[0..2047] of byte;
   Address: cardinal;
 begin
   if (StartAddress >= ChipSize) or (ChipSize = 0) then
@@ -853,7 +853,7 @@ procedure ReadFlash95(var RomStream: TMemoryStream; StartAddress, ChipSize: card
 var
   ChunkSize: Word;
   BytesRead: integer;
-  DataChunk: array[0..4095] of byte;
+  DataChunk: array[0..2047] of byte;
   Address: cardinal;
 begin
   if (StartAddress >= ChipSize) or (ChipSize = 0) then
@@ -954,7 +954,7 @@ end;
 procedure ReadFlashKB(var RomStream: TMemoryStream; StartAddress, ChipSize: cardinal);
 var
   ChunkSize: byte;
-  BytesRead: integer; //4095
+  BytesRead: integer;
   DataChunk: byte;
   Address: cardinal;
 begin
@@ -1010,8 +1010,8 @@ procedure VerifyFlash25(var RomStream: TMemoryStream; StartAddress, DataSize: ca
 var
   ChunkSize: Word;
   BytesRead, i: integer;
-  DataChunk: array[0..4095] of byte;
-  DataChunkFile: array[0..4095] of byte;
+  DataChunk: array[0..2047] of byte;
+  DataChunkFile: array[0..2047] of byte;
   Address: cardinal;
 begin
   if (StartAddress >= DataSize) or (DataSize = 0) then
@@ -1020,7 +1020,7 @@ begin
     exit;
   end;
 
-  ChunkSize := 4096;
+  ChunkSize := SizeOf(DataChunk);
   if ChunkSize > DataSize then ChunkSize := DataSize;
 
   LogPrint(STR_VERIFY);
@@ -1074,8 +1074,8 @@ procedure VerifyFlash95(var RomStream: TMemoryStream; StartAddress, DataSize, Ch
 var
   ChunkSize: Word;
   BytesRead, i: integer;
-  DataChunk: array[0..4095] of byte;
-  DataChunkFile: array[0..4095] of byte;
+  DataChunk: array[0..2047] of byte;
+  DataChunkFile: array[0..2047] of byte;
   Address: cardinal;
 begin
   if (StartAddress >= DataSize) or (DataSize = 0) then
@@ -1084,7 +1084,7 @@ begin
     exit;
   end;
 
-  ChunkSize := 4096;
+  ChunkSize := SizeOf(DataChunk);
   if ChunkSize > DataSize then ChunkSize := DataSize;
 
   LogPrint(STR_VERIFY);
@@ -1194,8 +1194,8 @@ procedure VerifyFlashMW(var RomStream: TMemoryStream; AddrBitLen: byte; StartAdd
 var
   ChunkSize: Word;
   BytesRead, i: integer;
-  DataChunk: array[0..4095] of byte;
-  DataChunkFile: array[0..4095] of byte;
+  DataChunk: array[0..2047] of byte;
+  DataChunkFile: array[0..2047] of byte;
   Address: cardinal;
 begin
   if (StartAddress >= ChipSize) or (ChipSize = 0) then
@@ -1247,7 +1247,7 @@ end;
 procedure VerifyFlashKB(var RomStream: TMemoryStream; StartAddress, ChipSize: cardinal);
 var
   ChunkSize: byte;
-  BytesRead: integer; //4095
+  BytesRead: integer;
   DataChunk: byte;
   DataChunkFile: byte;
   Address: cardinal;
@@ -1311,7 +1311,7 @@ procedure ReadFlashI2C(var RomStream: TMemoryStream; ChipSize: cardinal; DevAddr
 var
   ChunkSize: Word;
   BytesRead: integer;
-  DataChunk: array[0..4095] of byte;
+  DataChunk: array[0..2047] of byte;
   Address: cardinal;
 begin
   if ChipSize = 0 then
@@ -1355,7 +1355,7 @@ end;
 
 procedure WriteFlashI2C(var RomStream: TMemoryStream; StartAddress, WriteSize: cardinal; PageSize: word; DevAddr: byte);
 var
-  DataChunk: array[0..4095] of byte;
+  DataChunk: array[0..2047] of byte;
   Address, BytesWrite: cardinal;
 begin
   if (StartAddress >= WriteSize) or (WriteSize = 0) {or (PageSize > WriteSize)} then
@@ -1398,7 +1398,7 @@ end;
 
 procedure EraseFlashI2C(StartAddress, WriteSize: cardinal; PageSize: word; DevAddr: byte);
 var
-  DataChunk: array[0..4095] of byte;
+  DataChunk: array[0..2047] of byte;
   Address, BytesWrite: cardinal;
 begin
   if (StartAddress >= WriteSize) or (WriteSize = 0) then
@@ -1443,8 +1443,8 @@ procedure VerifyFlashI2C(var RomStream: TMemoryStream; DataSize: cardinal; DevAd
 var
   ChunkSize: Word;
   BytesRead, i: integer;
-  DataChunk: array[0..4095] of byte;
-  DataChunkFile: array[0..4095] of byte;
+  DataChunk: array[0..2047] of byte;
+  DataChunkFile: array[0..2047] of byte;
   Address: cardinal;
 begin
   if (DataSize = 0) then
