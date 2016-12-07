@@ -16,7 +16,7 @@ uses
   RichMemo, KHexEditor, KEditCommon, StrUtils, usbasp25, usbasp45, usbasp95,
   usbaspi2c, usbaspmw, usbaspmulti, usbhid, libusb, dos, XMLRead, XMLWrite, DOM,
   KControls, msgstr, Translations, LCLProc, LCLTranslator, LResources, search,
-  sregedit, utilfunc;
+  sregedit, utilfunc, CH341DLL;
 
 type
 
@@ -56,6 +56,7 @@ type
     MenuCopyToClip: TMenuItem;
     CopyLogMenuItem: TMenuItem;
     ClearLogMenuItem: TMenuItem;
+    MenuItemBenchmark: TMenuItem;
     MenuItemEditSreg: TMenuItem;
     MenuItemReadSreg: TMenuItem;
     MenuItemLockFlash: TMenuItem;
@@ -115,6 +116,7 @@ type
     procedure MenuCopyToClipClick(Sender: TObject);
     procedure MenuFindClick(Sender: TObject);
     procedure MenuGotoOffsetClick(Sender: TObject);
+    procedure MenuItemBenchmarkClick(Sender: TObject);
     procedure MenuItemEditSregClick(Sender: TObject);
     procedure MenuItemLockFlashClick(Sender: TObject);
     procedure MenuItemReadSregClick(Sender: TObject);
@@ -152,6 +154,7 @@ const
 var
   MainForm: TMainForm;
   hUSBDev: pusb_dev_handle; //Хендл usbasp
+  CH341: boolean = false;
 
 implementation
 
@@ -1710,6 +1713,40 @@ begin
   end;
 end;
 
+procedure TMainForm.MenuItemBenchmarkClick(Sender: TObject);
+var
+  buffer: array[0..2047] of byte;
+  i, cycles: integer;
+  t: TDateTime;
+begin
+  if not OpenDevice() then exit;
+  if not SetSPISpeed(0) then exit;
+  EnterProgMode25(hUSBdev);
+
+  cycles := 128;
+
+  if CH341 then
+  begin
+    LogPrint('DLL ver: '+IntToStr(CH341GetVersion()));
+    LogPrint('DRV ver: '+IntToStr(CH341GetDrvVersion()));
+    cycles := 256;
+  end;
+
+  LogPrint('Benchmark 2048 bytes * '+ IntToStr(cycles) +' cycles');
+  Application.ProcessMessages();
+  TimeCounter := Time();
+
+  for i:=0 to cycles do
+    UsbAsp25_Read(hUSBdev, 0, 0, buffer, sizeof(buffer));
+
+  t :=  Time() - TimeCounter;
+  LogPrint(STR_TIME + TimeToStr(t));
+
+  LogPrint(IntToStr( (cycles*2048) div ((StrToInt(FormatDateTime('nn',t)) * 60) + StrToInt(FormatDateTime('ss',t)))) +'bytes/s');
+  ExitProgMode25(hUSBdev);
+  USB_Dev_Close(hUSBdev);
+end;
+
 procedure TMainForm.MenuItemEditSregClick(Sender: TObject);
 begin
   if MainForm.ComboSPICMD.ItemIndex = SPI_CMD_25 then
@@ -2306,8 +2343,8 @@ begin
 
     EnterProgMode25(hUSBdev);
     UsbAsp25_ReadID(hUSBDev, ID);
-    UsbAsp25_Read(hUSBDev, $90, 0, ID90H, 2); //SST
-    UsbAsp25_Read(hUSBDev, $AB, 0, IDABH, 1); //SST
+    UsbAsp25_Read(hUSBDev, $90, 0, ID90H, 2);
+    UsbAsp25_Read(hUSBDev, $AB, 0, IDABH, 1);
     ExitProgMode25(hUSBdev);
 
     USB_Dev_Close(hUSBdev);
