@@ -155,6 +155,9 @@ const
   SPI_CMD_KB             = 2;
   SPI_CMD_95             = 3;
 
+  HW_USBASP              = 0;
+  HW_CH341A              = 1;
+
 
 var
   MainForm: TMainForm;
@@ -1494,6 +1497,33 @@ begin
   MainForm.ProgressBar.Position := 0;
 end;
 
+procedure SelectHW(programmer: integer);
+begin
+  if programmer = HW_USBASP then
+  begin
+    MainForm.MenuSPIClock.Enabled:= true;
+    MainForm.MenuMicrowire.Enabled:= true;
+    MainForm.RadioI2C.Enabled:= true;
+    MainForm.RadioMw.Enabled:= true;
+    MainForm.MenuChip.Find('I2C').Enabled:= true;
+    MainForm.MenuChip.Find('Microwire').Enabled:= true;
+    CH341 := false;
+  end;
+
+  if programmer = HW_CH341A then
+  begin
+    MainForm.MenuSPIClock.Enabled:= false;
+    MainForm.MenuMicrowire.Enabled:= false;
+    MainForm.RadioI2C.Enabled:= false;
+    MainForm.RadioMw.Enabled:= false;
+    MainForm.RadioSPI.Checked:= true;
+    MainForm.MenuChip.Find('I2C').Enabled:= false;
+    MainForm.MenuChip.Find('Microwire').Enabled:= false;
+    CH341 := true;
+  end;
+
+end;
+
 procedure LockControl;
 begin
   //MainForm.ToolBar.Enabled := false;
@@ -1736,12 +1766,12 @@ end;
 
 procedure TMainForm.MenuHWCH341AClick(Sender: TObject);
 begin
-  CH341 := true;
+  SelectHW(HW_CH341A);
 end;
 
 procedure TMainForm.MenuHWUSBASPClick(Sender: TObject);
 begin
-  CH341 := false;
+  SelectHW(HW_USBASP);
 end;
 
 procedure TMainForm.MenuItemBenchmarkClick(Sender: TObject);
@@ -1753,6 +1783,7 @@ begin
   if not OpenDevice() then exit;
   if not SetSPISpeed(0) then exit;
   EnterProgMode25(hUSBdev);
+  LockControl();
 
   cycles := 128;
 
@@ -1768,14 +1799,23 @@ begin
   TimeCounter := Time();
 
   for i:=0 to cycles do
+  begin
     UsbAsp25_Read(hUSBdev, 0, 0, buffer, sizeof(buffer));
+    Application.ProcessMessages;
+    if MainForm.ButtonCancel.Tag <> 0 then
+      begin
+        LogPrint(STR_USER_CANCEL, clRed);
+        Break;
+      end;
+  end;
 
   t :=  Time() - TimeCounter;
-  LogPrint(STR_TIME + TimeToStr(t));
 
-  LogPrint(IntToStr( (cycles*2048) div ((StrToInt(FormatDateTime('nn',t)) * 60) + StrToInt(FormatDateTime('ss',t)))) +'bytes/s');
+  LogPrint(STR_TIME + TimeToStr(t)+' '+
+    IntToStr( (cycles*sizeof(buffer)) div ((StrToInt(FormatDateTime('nn',t)) * 60) + StrToInt(FormatDateTime('ss',t)))) +' bytes/s');
   ExitProgMode25(hUSBdev);
   USB_Dev_Close(hUSBdev);
+  UnlockControl();
 end;
 
 procedure TMainForm.MenuItemEditSregClick(Sender: TObject);
@@ -2891,7 +2931,7 @@ begin
         if OptVal = 'ch341a' then
         begin
           MainForm.MenuHWCH341A.Checked := true;
-          CH341 := true;
+          SelectHW(HW_CH341A);
         end;
       end;
 
