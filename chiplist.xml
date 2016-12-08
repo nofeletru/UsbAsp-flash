@@ -83,9 +83,10 @@
   </SPI>
   <I2C>
     <x24Lxxx>
-      <x24LC01 page="8" size="128" addrtype="1"/>
-      <x24LC02 page="8" size="256" addrtype="1"/>
-      <x24LC04 page="16" size="512" addrtype="2"/>
+	  <AT24C01 page="1" size="128" addrtype="0"/>
+      <x24LC01 page="1" size="128" addrtype="1"/>
+      <x24LC02 page="1" size="256" addrtype="1"/>
+      <x24LC04 page="1" size="512" addrtype="2"/>
       <x24LC08 page="16" size="1024" addrtype="3"/>
       <x24LC16 page="16" size="2048" addrtype="4"/>
       <x24LC32 page="32" size="4096" addrtype="5"/>
@@ -95,12 +96,6 @@
       <x24LC512 page="128" size="65536" addrtype="5"/>
       <x24LC1024 page="128" size="131072" addrtype="6"/>
     </x24Lxxx>
-    <x24Cxx>
-      <AT24C01 page="4" size="128" addrtype="0"/>
-      <x24C01A page="2" size="128" addrtype="1"/>
-      <x24C02A page="2" size="256" addrtype="1"/>
-      <x24C04A page="8" size="512" addrtype="2"/>
-    </x24Cxx>
   </I2C>
   <Microwire>
     <Microchip>
