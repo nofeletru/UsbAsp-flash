@@ -29,6 +29,10 @@ msgstr "IC will be erased and programmed. Continue?"
 msgid "Ошибка подключения к USBAsp"
 msgstr "Error connecting USBAsp"
 
+#: msgstr.str_connect_error_ch
+msgid "Ошибка подключения к CH341"
+msgstr "Error connecting CH341"
+
 #: msgstr.str_done
 msgid "Готово"
 msgstr "Done"
@@ -136,6 +140,10 @@ msgstr "Number of bytes written not equal IC size"
 #: msgstr.str_wrong_file_size
 msgid "Разме#209Ђ файла больше #209Ђазме#209Ђа чипа"
 msgstr "File size larger than IC size"
+
+#: tmainform.menuitemhardware.caption
+msgid "Программатор"
+msgstr "Hardware"
 
 #: tmainform.buttonblock.hint
 msgid "Снять защиту"
