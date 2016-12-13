@@ -9,7 +9,7 @@ uses
 
 function SetBit(const value: byte; const BitNum: byte): byte;
 function ClearBit(const value: byte; const BitNum: byte): byte;
-function IsBitSet(const value: byte; const BitNum : byte): boolean;
+function IsBitSet(const value: DWORD; const BitNum : byte): boolean;
 function BitNum(value: cardinal): integer;
 
 function IsNumber(strSource: string): boolean;
@@ -26,7 +26,7 @@ begin
   Result := value and (not (1 shl BitNum));
 end;
 
-function IsBitSet(const value: byte; const BitNum : byte): boolean;
+function IsBitSet(const value: DWORD; const BitNum : byte): boolean;
 begin
   result:=((Value shr BitNum) and 1) = 1;
 end;

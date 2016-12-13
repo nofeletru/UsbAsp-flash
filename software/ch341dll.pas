@@ -16,7 +16,7 @@ interface
 // 运行环境: Windows 98/ME, Windows 2000/XP
 // support USB chip: CH341, CH341A
 // USB => Parallel, I2C, SPI, JTAG ...
-//
+// Частичный перевод TIFA
 uses SysUtils;
 const
      FILE_DEVICE_UNKNOWN = $22;
@@ -284,12 +284,12 @@ Function CH341AbortWrite(  // 放弃数据块写操作
 	iIndex:cardinal ):boolean;Stdcall; external 'CH341DLL.DLL';  // 指定CH341设备序号
 
 
-Function CH341GetStatus(  // 通过CH341直接输入数据和状态
-	iIndex:cardinal;  // 指定CH341设备序号
-	iStatus:PULONG ):boolean;Stdcall; external 'CH341DLL.DLL';  // 指向一个双字单元,用于保存状态数据,参考下面的位说明
-// 位7-位0对应CH341的D7-D0引脚
-// 位8对应CH341的ERR#引脚, 位9对应CH341的PEMP引脚, 位10对应CH341的INT#引脚, 位11对应CH341的SLCT引脚, 位23对应CH341的SDA引脚
-// 位13对应CH341的BUSY/WAIT#引脚, 位14对应CH341的AUTOFD#/DATAS#引脚,位15对应CH341的SLCTIN#/ADDRS#引脚
+Function CH341GetStatus(  // Получить состояние входный пинов
+	iIndex:cardinal;  // номер устройства
+	iStatus:PULONG ):boolean;Stdcall; external 'CH341DLL.DLL';  // DWORD с данными о состоянии
+// Бит 7-0 соответствует D7-D0
+// Бит 8 ERR#, 9 PEMP, 10 INT#, 11 SLCT, 23 SDA
+// Бит 13 BUSY/WAIT#, 14 AUTOFD#/DATAS#,15 SLCTIN#/ADDRS#
 
 
 Function CH341ReadI2C(  // 从I2C接口读取一个字节数据
@@ -398,7 +398,7 @@ Function CH341WriteRead(  // 执行数据流命令,先输出再输入
 	oReadLength:PULONG;  // 指向长度单元,返回后为实际读取的长度
 	oReadBuffer:PVOID ):boolean;Stdcall; external 'CH341DLL.DLL' ;  // 指向一个足够大的缓冲区,用于保存读取的数据
 
-Function CH341SetStream(  // Настройка режимов сериального порта
+Function CH341SetStream(  // Настройка режимов последовательного порта
 	iIndex:cardinal;  // номер устройства
 	iMode:cardinal ):boolean;Stdcall; external 'CH341DLL.DLL' ;  // режим
 // биты 1-0: частота I2C, 00=20KHz,01=100KHz(стандартная),10=400KHz,11=750KHz
@@ -410,12 +410,12 @@ Function CH341SetDelaymS(  // 设置硬件异步延时,调用后很快返回,而
 	iIndex:cardinal;  // 指定CH341设备序号
 	iDelay:cardinal ):boolean;Stdcall; external 'CH341DLL.DLL' ;  // 指定延时的毫秒数
 
-Function CH341StreamI2C(  // 处理I2C数据流
-	iIndex:cardinal;  // 指定CH341设备序号
-	iWriteLength:cardinal;  // 准备写出的数据字节数
-	iWriteBuffer:pvoid;  // 指向一个缓冲区,放置准备写出的数据,首字节通常是I2C设备地址及读写方向位
-	iReadLength:cardinal;  // 准备读取的数据字节数
-	oReadBuffer:pvoid ):boolean;stdcall; external 'CH341DLL.DLL' ;  // 指向一个缓冲区,返回后是读入的数据
+Function CH341StreamI2C(  // обмен данными по I2C
+	iIndex:cardinal;  // номер устройства
+	iWriteLength:cardinal;  // Сколько байт писать
+	iWriteBuffer:pvoid;  // ссылка на буфер записи(первый байт, как правило, адрес устройсва и R/W бит)
+	iReadLength:cardinal;  // Сколько байт читать
+	oReadBuffer:pvoid ):boolean;stdcall; external 'CH341DLL.DLL' ;  // ссылка на буфер чтения
 
 // EEPROM型号
 type
@@ -443,21 +443,21 @@ Function CH341GetInput(  // 通过CH341直接输入数据和状态,效率比CH34
 // 位8对应CH341的ERR#引脚, 位9对应CH341的PEMP引脚, 位10对应CH341的INT#引脚, 位11对应CH341的SLCT引脚, 位23对应CH341的SDA引脚
 // 位13对应CH341的BUSY/WAIT#引脚, 位14对应CH341的AUTOFD#/DATAS#引脚,位15对应CH341的SLCTIN#/ADDRS#引脚
 
-Function CH341SetOutput(  // 设置CH341的I/O方向,并通过CH341直接输出数据
-// ***** 谨慎使用该API, 防止修改I/O方向使输入引脚变为输出引脚导致与其它输出引脚之间短路而损坏芯片 *****
-	iIndex:cardinal;  // 指定CH341设备序号
-	iEnable:cardinal;  // 数据有效标志,参考下面的位说明
-// 位0为1说明iSetDataOut的位15-位8有效,否则忽略
-// 位1为1说明iSetDirOut的位15-位8有效,否则忽略
-// 位2为1说明iSetDataOut的7-位0有效,否则忽略
-// 位3为1说明iSetDirOut的位7-位0有效,否则忽略
-// 位4为1说明iSetDataOut的位23-位16有效,否则忽略
-	iSetDirOut:cardinal;  // 设置I/O方向,某位清0则对应引脚为输入,某位置1则对应引脚为输出,并口方式下默认值为0x000FC000,参考下面的位说明
-	iSetDataOut:cardinal ):boolean;Stdcall; external 'CH341DLL.DLL' ;  // 输出数据,如果I/O方向为输出,那么某位清0时对应引脚输出低电平,某位置1时对应引脚输出高电平,参考下面的位说明
-// 位7-位0对应CH341的D7-D0引脚
-// 位8对应CH341的ERR#引脚, 位9对应CH341的PEMP引脚, 位10对应CH341的INT#引脚, 位11对应CH341的SLCT引脚
-// 位13对应CH341的WAIT#引脚, 位14对应CH341的DATAS#/READ#引脚,位15对应CH341的ADDRS#/ADDR/ALE引脚
-// 以下引脚只能输出,不考虑I/O方向: 位16对应CH341的RESET#引脚, 位17对应CH341的WRITE#引脚, 位18对应CH341的SCL引脚, 位29对应CH341的SDA引脚
+Function CH341SetOutput(  // Управление портами ввода/вывода
+// ***** Будте осторожны, можно коротнуть пины и все такое *****
+	iIndex:cardinal;  // номер устройства
+	iEnable:cardinal;  // К каким портам применять
+// бит 0=1 iSetDataOut 15-8 действительны, если 0 то игнор
+// бит 1=1 iSetDirOut 15-8
+// бит 2=1 iSetDataOut 7-0
+// бит 3=1 iSetDirOut 7-0
+// бит 4=1 iSetDataOut 23-16
+	iSetDirOut:cardinal;  // направление 0=вход, 1=выход. По умолчанию 0x000FC000
+	iSetDataOut:cardinal ):boolean;Stdcall; external 'CH341DLL.DLL' ;  // установка состояний пинов
+// биты 7-0 = D7-D0
+// 8 = ERR#, 9 = PEMP, 10 = INT#, 11 = SLCT
+// 13 = WAIT#, 14 = DATAS#/READ#,15 = ADDRS#/ADDR/ALE
+// следующие выводы только на выход: 16 = RESET#, 17 = WRITE#, 18 = SCL, 19 = SDA
 
 Function CH341Set_D5_D0(  // Управление портами ввода/вывода D0-D5
 // ***** Будте осторожны, можно коротнуть пины, а также помешать работе SPI *****

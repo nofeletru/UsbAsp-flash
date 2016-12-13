@@ -5,7 +5,7 @@ unit usbaspi2c;
 interface
 
 uses
-  Classes, SysUtils, libusb, usbhid, utilfunc;
+  Classes, SysUtils, libusb, usbhid, utilfunc, CH341DLL;
 
 const
   USBASP_FUNC_I2C_INIT		 = 70;
@@ -35,6 +35,8 @@ function UsbAspI2C_Write(devHandle: Pusb_dev_handle; DevAddr, AddrType: byte; Ad
 
 implementation
 
+uses main;
+
 procedure EnterProgModeI2C(devHandle: Pusb_dev_handle);
 var
   dummy: byte;
@@ -44,11 +46,51 @@ begin
 end;
 
 function UsbAspI2C_BUSY(devHandle: Pusb_dev_handle; Address: byte): Boolean;
+procedure SendBit(bit: byte);
+begin
+  if boolean(bit) then
+  begin
+    CH341SetOutput(0, $10, 0, $0); //scl low
+    CH341SetOutput(0, $10, 0, $80000); //1
+    CH341SetOutput(0, $10, 0, $C0000); //scl hi
+  end
+  else
+  begin
+    CH341SetOutput(0, $10, 0, $0); //scl low
+    CH341SetOutput(0, $10, 0, $0); //0
+    CH341SetOutput(0, $10, 0, $40000); //scl hi
+  end;
+end;
+
 var
   Status: byte;
-begin
-  USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_I2C_ACK, Address, 0, 1, Status);
+  pins, i: cardinal;
 
+begin
+  if CH341 then
+  begin
+    CH341SetOutput(0, $10, 0, $40000); //sda low(start)
+
+    for i:=7 downto 1 do
+    begin
+      if IsBitSet(Address, i) then SendBit(1) else SendBit(0);
+    end;
+
+    //rw
+    SendBit(0);
+    //ack
+    SendBit(1);
+    CH341GetStatus(0, @pins);
+    Result := IsBitSet(pins, 23);
+    //stop
+    SendBit(0);
+
+    CH341SetOutput(0, $10, 0, $C0000); //sda hi
+    exit;
+  end;
+
+
+  USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_I2C_ACK, Address, 0, 1, Status);
   Result := not Boolean(Status);
 end;
 
