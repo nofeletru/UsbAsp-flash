@@ -32,7 +32,7 @@ function USBSendControlMessage(devHandle: Pusb_dev_handle; direction: byte; requ
 
 implementation
 
-uses main;
+uses main, usbaspi2c;
 
 function usbGetStringAscii(handle: pusb_dev_handle; index: Integer; langid: Integer; var buf: TPString; buflen: Integer): integer;
 var
@@ -144,9 +144,50 @@ Result := errorCode;
 end;
 
 function USBSendControlMessage(devHandle: Pusb_dev_handle; direction: byte; request, value, index, bufflen: integer; var buffer: array of byte): integer;
+var
+  writebuff: array[0..2] of byte;
+  full_buffer: array of byte;
+  address_size: byte;
 begin
   if CH341 then
   begin
+
+    if request = USBASP_FUNC_I2C_READ then
+    begin
+      writebuff[0] := byte(value);
+      writebuff[1] := hi(word(index));
+      writebuff[2] := lo(word(index));
+      address_size := hi(word(value))+1; //байты адреса + байт адреса устройства
+
+      if not CH341StreamI2C(0, address_size, @writebuff, bufflen, @buffer) then result :=0 else result := bufflen;
+      exit;
+    end;
+
+    if request = USBASP_FUNC_I2C_WRITE then
+    begin
+      address_size := hi(word(value))+1;
+      SetLength(full_buffer, SizeOf(buffer)+address_size);
+
+      full_buffer[0] := byte(value);
+
+      if address_size = I2C_1BYTE_ADDR+1 then
+      begin
+        full_buffer[1] := lo(word(index));
+      end;
+
+      if address_size = I2C_2BYTE_ADDR+1 then
+      begin
+        full_buffer[1] := hi(word(index));
+        full_buffer[2] := lo(word(index));
+      end;
+
+      move(buffer, full_buffer[address_size], bufflen);
+
+      if not CH341StreamI2C(0, address_size+bufflen, @full_buffer[0], 0, nil) then result :=0 else result := bufflen;
+      exit;
+    end;
+
+    //spi
     CH341Set_D5_D0(0, $29, 0); //Вручную дергаем cs
     if not CH341StreamSPI4(0, 0, bufflen, @buffer) then result :=0 else result := bufflen;
     if (value = 1)then CH341Set_D5_D0(0, $29, 1); //Отпускаем cs

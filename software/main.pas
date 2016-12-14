@@ -1503,9 +1503,7 @@ begin
   begin
     MainForm.MenuSPIClock.Enabled:= true;
     MainForm.MenuMicrowire.Enabled:= true;
-    MainForm.RadioI2C.Enabled:= true;
     MainForm.RadioMw.Enabled:= true;
-    MainForm.MenuChip.Find('I2C').Enabled:= true;
     MainForm.MenuChip.Find('Microwire').Enabled:= true;
     CH341 := false;
   end;
@@ -1514,10 +1512,7 @@ begin
   begin
     MainForm.MenuSPIClock.Enabled:= false;
     MainForm.MenuMicrowire.Enabled:= false;
-    MainForm.RadioI2C.Enabled:= false;
     MainForm.RadioMw.Enabled:= false;
-    MainForm.RadioSPI.Checked:= true;
-    MainForm.MenuChip.Find('I2C').Enabled:= false;
     MainForm.MenuChip.Find('Microwire').Enabled:= false;
     CH341 := true;
   end;
