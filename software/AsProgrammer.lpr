@@ -13,7 +13,8 @@ uses
 {$R *.res}
 
 begin
-  Translate;
+  LoadXML;
+  Translate(ChipListFile);
   RequireDerivedFormResource := True;
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);

@@ -108,7 +108,6 @@ type
     procedure ClearLogMenuItemClick(Sender: TObject);
     procedure ComboSPICMDChange(Sender: TObject);
     procedure CopyLogMenuItemClick(Sender: TObject);
-    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ChipClick(Sender: TObject);
@@ -139,13 +138,15 @@ type
     { private declarations }
   public
     { public declarations }
+
   end;
 
   procedure LogPrint(text: string; AColor: TColor = clDefault);
   function UsbAspEEPROMSupport(): integer;
-  procedure SaveOptions;
-  Procedure LoadOptions;
-  procedure Translate;
+  procedure SaveOptions(XMLfile: TXMLDocument);
+  Procedure LoadOptions(XMLfile: TXMLDocument);
+  procedure LoadXML;
+  procedure Translate(XMLfile: TXMLDocument);
   function OpenDevice: boolean;
   function SetSPISpeed(OverrideSpeed: byte): boolean;
 
@@ -158,9 +159,11 @@ const
   HW_USBASP              = 0;
   HW_CH341A              = 1;
 
+  ChipListFileName       ='chiplist.xml';
 
 var
   MainForm: TMainForm;
+  ChipListFile: TXMLDocument;
   hUSBDev: pusb_dev_handle; //Хендл usbasp
   CH341: boolean = false;
 
@@ -174,20 +177,34 @@ var
 
 {$R *.lfm}
 
-procedure Translate;
+procedure LoadXML;
+begin
+  ChipListFile := nil;
+  if FileExists(ChipListFileName) then
+  begin
+    try
+      ReadXMLFile(ChipListFile, ChipListFileName);
+    except
+      on E: EXMLReadError do
+      begin
+        ShowMessage(E.Message);
+        ChipListFile := nil;
+      end;
+    end;
+  end;
+end;
+
+procedure Translate(XMLfile: TXMLDocument);
 var
    PODirectory, Lang: String;
-
-   XMLfile: TXMLDocument;
    Node: TDOMNode;
 begin
 
   PODirectory:= SysToUTF8(GetCurrentDir + '/lang/');
   Lang:='';
 
-  if FileExists('chiplist.xml') then
+  if XMLfile <> nil then
   begin
-      ReadXMLFile(XMLfile, 'chiplist.xml');
 
       Node := XMLfile.DocumentElement.FindNode('locale');
 
@@ -199,8 +216,6 @@ begin
           Lang := Node.Attributes.GetNamedItem('lang').NodeValue;
 
       end;
-
-      XMLfile.Free;
   end;
 
   if Lang = '' then
@@ -1698,12 +1713,15 @@ var
   end;
 
 begin
-  iNode := XMLDoc.DocumentElement.FirstChild;
-  Result := '';
-  while iNode <> nil do
+  if XMLDoc <> nil then
   begin
-    ProcessNode(iNode, result); // Рекурсия
-    iNode := iNode.NextSibling;
+    iNode := XMLDoc.DocumentElement.FirstChild;
+    Result := '';
+    while iNode <> nil do
+    begin
+      ProcessNode(iNode, result); // Рекурсия
+      iNode := iNode.NextSibling;
+    end;
   end;
 end;
 
@@ -2421,7 +2439,16 @@ begin
 
     if FileExists('chiplist.xml') then
     begin
-      ReadXMLFile(XMLfile, 'chiplist.xml');
+
+      try
+        ReadXMLFile(XMLfile, 'chiplist.xml');
+      except
+        on E: EXMLReadError do
+        begin
+          ShowMessage(E.Message);
+        end;
+      end;
+
       ChipName := FindID(XMLfile, IDstr);
       if ChipName = '' then ChipName := FindID(XMLfile, IDstr90H);
       if ChipName = '' then ChipName := FindID(XMLfile, IDstrABH);
@@ -2472,16 +2499,14 @@ begin
   ButtonCancel.Tag:= 1;
 end;
 
-procedure LoadChipList;
+procedure LoadChipList(XMLfile: TXMLDocument);
 var
-  XMLfile: TXMLDocument;
   Node: TDOMNode;
   j, i: integer;
 begin
-  XMLfile := nil;
-  if FileExists('chiplist.xml') then
+  if XMLfile <> nil then
   begin
-    ReadXMLFile(XMLfile, 'chiplist.xml');
+
     Node := XMLfile.DocumentElement.FirstChild;
 
     while Assigned(Node) do
@@ -2514,7 +2539,6 @@ begin
     end;
   end;
 
-  XMLfile.Free;
 end;
 
 { TMainForm }
@@ -2542,19 +2566,20 @@ begin
   DeviceDescription.idVENDOR:= $16C0;
   DeviceDescription.idPRODUCT:= $05DC;
 
-  LoadChipList();
+  LoadChipList(ChipListFile);
   RomF := TMemoryStream.Create;
 
   KHexEditor.SetCharMapping(EditorCharMapping());
   KHexEditor.ExecuteCommand(ecOverwriteMode);
-  LoadOptions;
+  LoadOptions(ChipListFile);
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   MainForm.KHexEditor.Free;
   RomF.Free;
-  SaveOptions;
+  SaveOptions(ChipListFile);
+  ChipListFile.Free;
 end;
 
 procedure TMainForm.ButtonReadClick(Sender: TObject);
@@ -2676,12 +2701,6 @@ procedure TMainForm.CopyLogMenuItemClick(Sender: TObject);
 begin
   Log.CopyToClipboard;
 end;
-
-procedure TMainForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
-begin
-  SaveOptions;
-end;
-
 
 procedure TMainForm.ButtonEraseClick(Sender: TObject);
 var
@@ -2818,15 +2837,12 @@ finally
 end;
 end;
 
-procedure SaveOptions;
+procedure SaveOptions(XMLfile: TXMLDocument);
 var
-  XMLfile: TXMLDocument;
   Node, ParentNode: TDOMNode;
 begin
-  if FileExists('chiplist.xml') then
+  if XMLfile <> nil then
   begin
-    ReadXMLFile(XMLfile, 'chiplist.xml');
-
     //Удаляем старую запись
     Node := XMLfile.DocumentElement.FindNode('options');
     if (Node <> nil) then XMLfile.DocumentElement.RemoveChild(Node);
@@ -2868,21 +2884,17 @@ begin
     Node.Appendchild(parentNode);
 
     WriteXMLFile(XMLfile, 'chiplist.xml');
-    XMLfile.Free;
   end;
 
 end;
 
-procedure LoadOptions;
+procedure LoadOptions(XMLfile: TXMLDocument);
 var
-    XMLfile: TXMLDocument;
     Node, parentNode: TDOMNode;
     OptVal: string;
 begin
-  if FileExists('chiplist.xml') then
+  if XMLfile <> nil then
   begin
-    ReadXMLFile(XMLfile, 'chiplist.xml');
-
     Node := XMLfile.DocumentElement.FindNode('options');
 
     if (Node <> nil) then
@@ -2931,8 +2943,6 @@ begin
       end;
 
     end;
-
-    XMLfile.Free;
   end;
 
 end;
