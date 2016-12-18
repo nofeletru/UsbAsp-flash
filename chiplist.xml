@@ -22,6 +22,7 @@
       <cFeon25Q32 id="1C3016" page="256" size="4194304"/>
     </cFeon>
     <ST>
+	  <M25P05-A id="202010" page="256" size="65536"/>
       <M25P10 id="202011" page="256" size="131072"/>
       <M95080 page="32" size="1024" spicmd="95"/>
     </ST>
@@ -49,6 +50,7 @@
 	  <GD25LQ128CVIG id="C86018" page="256" size="16777216"/>
     </GigaDevice_ELM-Technology>
     <MACRONIX>
+	  <MX25L1005 id="C22011" page="256" size="131072"/>
       <MX25L4005 id="C22013" page="256" size="524288"/>
       <MX25L8005 id="C22014" page="256" size="1048576"/>
       <MX25L3206E id="C22016" page="256" size="4194304"/>
