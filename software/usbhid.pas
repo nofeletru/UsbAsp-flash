@@ -3,7 +3,7 @@ unit usbhid;
 interface
 
 uses
-  Classes, SysUtils, libusb, Graphics, msgstr, CH341DLL;
+  Classes, SysUtils, libusb, Graphics, msgstr, CH341DLL, ch341mw, utilfunc;
 
 type
  TPString = array [0..255] of Char;
@@ -32,7 +32,7 @@ function USBSendControlMessage(devHandle: Pusb_dev_handle; direction: byte; requ
 
 implementation
 
-uses main, usbaspi2c;
+uses main, usbaspi2c, usbaspmw;
 
 function usbGetStringAscii(handle: pusb_dev_handle; index: Integer; langid: Integer; var buf: TPString; buflen: Integer): integer;
 var
@@ -151,6 +151,22 @@ var
 begin
   if CH341 then
   begin
+
+    if request = USBASP_FUNC_MW_READ then
+    begin
+      if (value shr (index-2)) = 0 then
+        ch341mw_sendop((value shr (index-4)), index-2)
+      else
+        result := ch341mw_read(index-2, value, buffer, bufflen);
+
+        exit;
+    end;
+
+    if request = USBASP_FUNC_MW_WRITE then
+    begin
+      result := ch341mw_write(lo(word(index))-2, value, buffer, bufflen);
+      exit;
+    end;
 
     if request = USBASP_FUNC_I2C_READ then
     begin

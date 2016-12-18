@@ -16,7 +16,7 @@ uses
   RichMemo, KHexEditor, KEditCommon, StrUtils, usbasp25, usbasp45, usbasp95,
   usbaspi2c, usbaspmw, usbaspmulti, usbhid, libusb, dos, XMLRead, XMLWrite, DOM,
   KControls, msgstr, Translations, LCLProc, LCLTranslator, LResources, search,
-  sregedit, utilfunc, CH341DLL;
+  sregedit, utilfunc, CH341DLL, ch341mw;
 
 type
 
@@ -453,7 +453,11 @@ begin
   Address := StartAddress;
   MainForm.ProgressBar.Max := ChipSize;
 
-  ChunkSize := 64;
+  if CH341 then
+    ChunkSize := 2
+  else
+    ChunkSize := 64;
+
   if ChunkSize > ChipSize then ChunkSize := ChipSize;
 
   try
@@ -465,6 +469,12 @@ begin
 
       BytesWrite := BytesWrite + UsbAspMW_Write(hUSBDev, AddrBitLen, Address, datachunk, ChunkSize);
       Inc(Address, ChunkSize div 2);
+
+      if CH341 then
+        while ch341mw_busy do
+        begin
+          Application.ProcessMessages;
+        end;
 
       MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + ChunkSize;
       Application.ProcessMessages;
@@ -1518,8 +1528,8 @@ begin
   begin
     MainForm.MenuSPIClock.Enabled:= true;
     MainForm.MenuMicrowire.Enabled:= true;
-    MainForm.RadioMw.Enabled:= true;
-    MainForm.MenuChip.Find('Microwire').Enabled:= true;
+    //MainForm.RadioMw.Enabled:= true;
+    //MainForm.MenuChip.Find('Microwire').Enabled:= true;
     CH341 := false;
   end;
 
@@ -1527,8 +1537,8 @@ begin
   begin
     MainForm.MenuSPIClock.Enabled:= false;
     MainForm.MenuMicrowire.Enabled:= false;
-    MainForm.RadioMw.Enabled:= false;
-    MainForm.MenuChip.Find('Microwire').Enabled:= false;
+    //MainForm.RadioMw.Enabled:= false;
+    //MainForm.MenuChip.Find('Microwire').Enabled:= false;
     CH341 := true;
   end;
 
@@ -2518,19 +2528,19 @@ begin
        continue;
      end;
 
-     MainForm.MenuChip.Add(NewItem(Node.NodeName,0, False, True, nil, 0, '')); //Раздел(SPI, I2C...)
+     MainForm.MenuChip.Add(NewItem(Node.NodeName, 0, False, True, nil, 0, '')); //Раздел(SPI, I2C...)
 
      // Используем свойство ChildNodes
      with Node.ChildNodes do
      try
        for j := 0 to (Count - 1) do
        begin
-         MainForm.MenuChip.Find(Node.NodeName).Add(NewItem(Item[j].NodeName,0, False, True, nil, 0, '')); //Раздел Фирма
+         MainForm.MenuChip.Find(Node.NodeName).Add(NewItem(Item[j].NodeName ,0, False, True, nil, 0, '')); //Раздел Фирма
 
          for i := 0 to (Item[j].ChildNodes.Count - 1) do
            MainForm.MenuChip.Find(Node.NodeName).
              Find(Item[j].NodeName).
-               Add(NewItem(Item[j].ChildNodes.Item[i].NodeName,0, False, True, @MainForm.ChipClick, 0, '' )); //Чип
+               Add(NewItem(Item[j].ChildNodes.Item[i].NodeName, 0, False, True, @MainForm.ChipClick, 0, '' )); //Чип
        end;
      finally
        Free;
@@ -2820,10 +2830,13 @@ try
     UsbAspMW_Ewen(hUSBdev, StrToInt(ComboMWBitLen.Text));
     UsbAspMW_ChipErase(hUSBdev, StrToInt(ComboMWBitLen.Text));
 
-    while (UsbAspMW_Busy(hUSBdev)) do
-    begin
-       Application.ProcessMessages;
-    end;
+    if CH341 then
+      while ch341mw_busy do
+         Application.ProcessMessages
+    else
+      while (UsbAspMW_Busy(hUSBdev)) do
+         Application.ProcessMessages;
+
   end;
 
 
