@@ -10,6 +10,7 @@ uses
 function SetBit(const value: byte; const BitNum: byte): byte;
 function ClearBit(const value: byte; const BitNum: byte): byte;
 function IsBitSet(const value: DWORD; const BitNum : byte): boolean;
+procedure BitSet(bit_val: byte; var val: byte; bit_num: byte);
 function BitNum(value: cardinal): integer;
 
 function IsNumber(strSource: string): boolean;
@@ -29,6 +30,14 @@ end;
 function IsBitSet(const value: DWORD; const BitNum : byte): boolean;
 begin
   result:=((Value shr BitNum) and 1) = 1;
+end;
+
+procedure BitSet(bit_val: byte; var val: byte; bit_num: byte);
+begin
+  if Boolean(bit_val) then
+   val := SetBit(val, bit_num)
+  else
+   val := ClearBit(val, bit_num);
 end;
 
 //сколько бит нужно для хранения данного значения

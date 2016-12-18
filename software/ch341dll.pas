@@ -493,13 +493,13 @@ Function CH341StreamSPI5(  // 处理SPI数据流,5线接口,时钟线为DCK/D3�
 	ioBuffer:PVOID;  // 指向一个缓冲区,放置准备从DOUT写出的数据,返回后是从DIN读入的数据
 	ioBuffer2:PVOID ):boolean;Stdcall; external 'CH341DLL.DLL' ;  // 指向第二个缓冲区,放置准备从DOUT2写出的数据,返回后是从DIN2读入的数据
 
-Function CH341BitStreamSPI(  // 处理SPI位数据流,4线/5线接口,时钟线为DCK/D3引脚,输出数据线为DOUT/DOUT2引脚,输入数据线为DIN/DIN2引脚,片选线为D0/D1/D2,速度约8K位*2
-		iIndex:cardinal;  // 指定CH341设备序号
-	        iLength:cardinal;  // 准备传输的数据位数,一次最多896,建议不超过256
-	        ioBuffer:PVOID ):boolean;Stdcall; external 'CH341DLL.DLL' ;  // 指向一个缓冲区,放置准备从DOUT/DOUT2/D2-D0写出的数据,返回后是从DIN/DIN2读入的数据
-//* SPI时序: DCK/D3引脚为时钟输出, 默认为低电平, DOUT/D5和DOUT2/D4引脚在时钟上升沿之前输出, DIN/D7和DIN2/D6引脚在时钟下降沿之后输入 */
-//* ioBuffer中的一个字节共8位分别对应D7-D0引脚, 位5输出到DOUT, 位4输出到DOUT2, 位2-位0输出到D2-D0, 位7从DIN输入, 位6从DIN2输入, 位3数据忽略 */
-//* 在调用该API之前,应该先调用CH341Set_D5_D0设置CH341的D5-D0引脚的I/O方向,并设置引脚的默认电平 */
+Function CH341BitStreamSPI(  // Обработка битов SPI ,4/5 проводной, DCK/D3, DOUT/DOUT2, DIN/DIN2, cs = D0/D1/D2
+		iIndex:cardinal;  // номер устройства
+	        iLength:cardinal;  // количество бит для передачи, максимум 896, рекомендуется 256
+	        ioBuffer:PVOID ):boolean;Stdcall; external 'CH341DLL.DLL' ;  // в буфере соответствующие биты записываются и устанавливаются после чтения
+//* SPI: DCK/D3 клок, по умолчанию низкий уровень, DOUT/D5 DOUT2/D4 по восходящему фронту такта, DIN/D7 DIN2/D6 по спадающему фронту */
+//* ioBuffer байт = D7-D0, 5 бит DOUT, 4 бит DOUT2, 2-0 бит D2-D0, 7 бит DIN, 6 бит DIN2, бит 3 игнорируется */
+//* перед вызывом данной функции установить требуемые уровни и направление CH341Set_D5_D0 */
 
 
 Function CH341SetBufUpload(  // 设定内部缓冲上传模式
