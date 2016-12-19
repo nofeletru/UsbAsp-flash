@@ -25,6 +25,8 @@ type
     { public declarations }
   end;
 
+  procedure FindChip(XMLfile: TXMLDocument; chipname: string; chipid: string = '');
+
 var
   ChipSearchForm: TChipSearchForm;
 
@@ -34,9 +36,10 @@ uses main;
 
 {$R *.lfm}
 
-procedure FindChip(XMLfile: TXMLDocument; chipname: string);
+//Ищет чип по имени. Если id не пустое то только по id.
+procedure FindChip(XMLfile: TXMLDocument; chipname: string; chipid: string = '');
 var
-  Node: TDOMNode;
+  Node, ChipNode: TDOMNode;
   j, i: integer;
   cs: string;
 begin
@@ -57,9 +60,25 @@ begin
 
          for i := 0 to (Item[j].ChildNodes.Count - 1) do
          begin
-           cs := Item[j].ChildNodes.Item[i].NodeName; //Чип
-           if pos(Upcase(chipname), Upcase(cs)) > 0 then
-           ChipSearchForm.ListBoxChips.Items.Append(cs+' ('+ Item[j].NodeName +')');
+
+           ChipNode := Item[j].ChildNodes.Item[i];
+           if chipid <> '' then
+           begin
+             if (ChipNode.HasAttributes) then
+               if  ChipNode.Attributes.GetNamedItem('id') <> nil then
+               begin
+                 cs := ChipNode.Attributes.GetNamedItem('id').NodeValue; //id
+                 if Upcase(cs) = Upcase(chipid) then
+                   ChipSearchForm.ListBoxChips.Items.Append(ChipNode.NodeName+' ('+ Item[j].NodeName +')');
+               end;
+           end
+           else
+           begin
+             cs := ChipNode.NodeName; //Чип
+             if pos(Upcase(chipname), Upcase(cs)) > 0 then
+               ChipSearchForm.ListBoxChips.Items.Append(cs+' ('+ Item[j].NodeName +')');
+           end;
+
          end;
        end;
      finally

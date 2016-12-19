@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, richmemopackage, kcontrolslaz, main, usbaspi2c, usbaspmw, usbaspmulti,
-  usbasp95, search, sregedit, ch341mw;
+  usbasp95, search, sregedit, ch341mw, findchip;
 
 {$R *.res}
 
@@ -20,6 +20,7 @@ begin
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TSearchForm, SearchForm);
   Application.CreateForm(TsregeditForm, sregeditForm);
+  Application.CreateForm(TChipSearchForm, ChipSearchForm);
   Application.Run;
 end.
 

@@ -11,12 +11,12 @@ unit main;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics,
-  Dialogs, StdCtrls, ExtCtrls, ComCtrls, Menus, ActnList, Buttons,
-  RichMemo, KHexEditor, KEditCommon, StrUtils, usbasp25, usbasp45, usbasp95,
-  usbaspi2c, usbaspmw, usbaspmulti, usbhid, libusb, dos, XMLRead, XMLWrite, DOM,
-  KControls, msgstr, Translations, LCLProc, LCLTranslator, LResources, search,
-  sregedit, utilfunc, CH341DLL, ch341mw, findchip;
+  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  ExtCtrls, ComCtrls, Menus, ActnList, Buttons, RichMemo, KHexEditor,
+  KEditCommon, StrUtils, usbasp25, usbasp45, usbasp95, usbaspi2c, usbaspmw,
+  usbaspmulti, usbhid, libusb, dos, XMLRead, XMLWrite, DOM, KControls, msgstr,
+  Translations, LCLProc, LCLTranslator, LResources, ValEdit, search, sregedit,
+  utilfunc, CH341DLL, ch341mw, findchip;
 
 type
 
@@ -1530,8 +1530,6 @@ begin
   begin
     MainForm.MenuSPIClock.Enabled:= true;
     MainForm.MenuMicrowire.Enabled:= true;
-    //MainForm.RadioMw.Enabled:= true;
-    //MainForm.MenuChip.Find('Microwire').Enabled:= true;
     CH341 := false;
   end;
 
@@ -1539,8 +1537,6 @@ begin
   begin
     MainForm.MenuSPIClock.Enabled:= false;
     MainForm.MenuMicrowire.Enabled:= false;
-    //MainForm.RadioMw.Enabled:= false;
-    //MainForm.MenuChip.Find('Microwire').Enabled:= false;
     CH341 := true;
   end;
 
@@ -1655,7 +1651,6 @@ begin
   XMLfile.Free;
 end;
 
-
 procedure TMainForm.KHexEditorKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -1670,71 +1665,6 @@ begin
     StatusBar.Panels.Items[1].Text := STR_CHANGED
   else
     StatusBar.Panels.Items[1].Text := '';
-end;
-
-function FindID(XMLDoc: TXMLDocument; ChipID: string): string;
-var
-  iNode: TDOMNode;
-
-  procedure ProcessNode(Node: TDOMNode; var ChipName: string);
-  var
-    cNode: TDOMNode;
-    s: string;
-  begin
-    if Node = nil then Exit; // выходим, если достигнут конец документа
-
-    //узел
-    if Node.HasAttributes and (Node.Attributes.Length>0) then
-    begin
-      cNode := Node.Attributes.GetNamedItem('id');
-      if CNode <> nil then s:= CNode.NodeValue else s := '';
-    end
-    else
-      s:='';
-
-    if Upcase(s) = Upcase(ChipId) then
-    begin
-      ChipName := Node.NodeName;
-      MainForm.LabelChipName.Caption:= Node.NodeName;
-      MainForm.ComboChipSize.Text:= Node.Attributes.GetNamedItem('size').NodeValue;
-      MainForm.ComboPageSize.Text:= Node.Attributes.GetNamedItem('page').NodeValue;
-
-      if  Node.Attributes.GetNamedItem('spicmd') <> nil then
-      begin
-        if UpperCase(Node.Attributes.GetNamedItem('spicmd').NodeValue) = 'KB'then
-          MainForm.ComboSPICMD.ItemIndex:= 2;
-        if Node.Attributes.GetNamedItem('spicmd').NodeValue = '45' then
-          MainForm.ComboSPICMD.ItemIndex:= 1 else
-        if Node.Attributes.GetNamedItem('spicmd').NodeValue = '25' then
-          MainForm.ComboSPICMD.ItemIndex:= 0;
-      end
-      else
-        MainForm.ComboSPICMD.ItemIndex := 0;
-
-    end;
-
-    // переходим к дочернему узлу
-    cNode := Node.FirstChild;
-
-    // проходим по всем дочерним узлам
-    while cNode <> nil do
-    begin
-      ProcessNode(cNode, ChipName);
-      cNode := cNode.NextSibling;
-    end;
-  end;
-
-begin
-  if XMLDoc <> nil then
-  begin
-    iNode := XMLDoc.DocumentElement.FirstChild;
-    Result := '';
-    while iNode <> nil do
-    begin
-      ProcessNode(iNode, result); // Рекурсия
-      iNode := iNode.NextSibling;
-    end;
-  end;
 end;
 
 procedure TMainForm.ComboItem1Click(Sender: TObject);
@@ -2466,27 +2396,29 @@ begin
         end;
       end;
 
-      ChipName := FindID(XMLfile, IDstr);
-      if ChipName = '' then ChipName := FindID(XMLfile, IDstr90H);
-      if ChipName = '' then ChipName := FindID(XMLfile, IDstrABH);
+      ChipSearchForm.ListBoxChips.Clear;
+
+      FindChip.FindChip(XMLfile, '', IDstr);
+      if ChipSearchForm.ListBoxChips.Items.Capacity = 0 then FindChip.FindChip(XMLfile, '', IDstr90H);
+      if ChipSearchForm.ListBoxChips.Items.Capacity = 0 then FindChip.FindChip(XMLfile, '', IDstrABH);
+
+      if ChipSearchForm.ListBoxChips.Items.Capacity > 0 then
+      begin
+        ChipSearchForm.Show;
+        LogPrint('ID(9F): '+ IDstr);
+        LogPrint('ID(90): '+ IDstr90H);
+        LogPrint('ID(AB): '+ IDstrABH);
+      end
+      else
+      begin
+        LogPrint('ID(9F): '+ IDstr +STR_ID_UNKNOWN);
+        LogPrint('ID(90): '+ IDstr90H +STR_ID_UNKNOWN);
+        LogPrint('ID(AB): '+ IDstrABH +STR_ID_UNKNOWN);
+      end;
+
       XMLfile.Free;
     end;
 
-    //Если нет записи в cfg или считалась чушь
-    if ChipName = '' then
-    begin
-      LogPrint('ID(9F): '+ IDstr +STR_ID_UNKNOWN);
-      LogPrint('ID(90): '+ IDstr90H +STR_ID_UNKNOWN);
-      LogPrint('ID(AB): '+ IDstrABH +STR_ID_UNKNOWN);
-    end
-    //Если есть
-    else
-    begin
-      LogPrint('ID(9F): '+IDstr+'('+ChipName+')');
-      LogPrint('ID(90): '+IDstr90H+'('+ChipName+')');
-      LogPrint('ID(AB): '+IDstrABH+'('+ChipName+')');
-    end; 
-	
   finally
     UnlockControl();
   end;
