@@ -141,6 +141,11 @@
       <PM25WD020 id="9D32" page="256" size="262144"/>
       <PM25WD040 id="9D33" page="256" size="524288"/>
     </PMC>
+	<PFLASH>
+	  <Pm25LV010 id="7F9D7C" page="256" size="131072"/>
+      <Pm25LV020 id="7F9D22" page="256" size="262144"/>
+      <Pm25W020 id="7F9D7D" page="256" size="262144"/>
+	</PFLASH>
     <DEUTRON>
       <AC25LV512 id="9D7B00" page="256" size="65536"/>
       <AC25LV010 id="9D7C00" page="256" size="131072"/>
