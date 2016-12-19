@@ -1696,6 +1696,8 @@ end;
 
 procedure TMainForm.MenuFindChipClick(Sender: TObject);
 begin
+  ChipSearchForm.EditSearch.Text:= '';
+  ChipSearchForm.ListBoxChips.Items.Clear;
   ChipSearchForm.Show;
 end;
 
@@ -2397,6 +2399,7 @@ begin
       end;
 
       ChipSearchForm.ListBoxChips.Clear;
+      ChipSearchForm.EditSearch.Text:= '';
 
       FindChip.FindChip(XMLfile, '', IDstr);
       if ChipSearchForm.ListBoxChips.Items.Capacity = 0 then FindChip.FindChip(XMLfile, '', IDstr90H);
