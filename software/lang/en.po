@@ -265,6 +265,11 @@ msgstr "Copy"
 msgid "Поиск"
 msgstr "Search"
 
+#: tmainform.menufindchip.caption
+msgctxt "tmainform.menufindchip.caption"
+msgid "Поиск"
+msgstr "Search"
+
 #: tmainform.menugotooffset.caption
 msgid "Перейти по адресу"
 msgstr "Goto address"
@@ -344,3 +349,11 @@ msgstr "Read"
 msgctxt "TSREGEDITFORM.BUTTONWRITESREG.CAPTION"
 msgid "Записать"
 msgstr "Write"
+
+#: tchipsearchform.caption
+msgid "Поиск микросхемы"
+msgstr "Find IC"
+
+#: tchipsearchform.label1.caption
+msgid "Маркировка содержит:"
+msgstr "IC мarking contain:"
