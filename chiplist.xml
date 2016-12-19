@@ -714,6 +714,7 @@
       <W25Q10EW_1.8V id="EF6011" page="256" size="131072"/>
       <W25Q128BV id="EF4018" page="256" size="16777216"/>
       <W25Q128FV id="EF4018" page="256" size="16777216"/>
+	  <W25Q256FV id="EF4019" page="256" size="33554432"/>
       <W25Q128FW_1.8V id="EF6018" page="256" size="16777216"/>
       <W25Q16 id="EF4015" page="256" size="2097152"/>
       <W25Q16BV id="EF4015" page="256" size="2097152"/>
