@@ -1,0 +1,44 @@
+object ChipSearchForm: TChipSearchForm
+  Left = 796
+  Height = 360
+  Top = 277
+  Width = 250
+  BorderStyle = bsSizeToolWin
+  Caption = 'Поиск микросхемы'
+  ClientHeight = 360
+  ClientWidth = 250
+  Position = poMainFormCenter
+  LCLVersion = '1.4.4.0'
+  object ListBoxChips: TListBox
+    Left = 8
+    Height = 296
+    Top = 56
+    Width = 234
+    ItemHeight = 0
+    OnDblClick = ListBoxChipsDblClick
+    Sorted = True
+    TabOrder = 0
+  end
+  object EditSearch: TEdit
+    Left = 14
+    Height = 23
+    Top = 24
+    Width = 222
+    OnChange = EditSearchChange
+    TabOrder = 1
+  end
+  object Bevel1: TBevel
+    Left = 8
+    Height = 43
+    Top = 8
+    Width = 234
+  end
+  object Label1: TLabel
+    Left = 14
+    Height = 15
+    Top = 9
+    Width = 128
+    Caption = 'Маркировка содержит:'
+    ParentColor = False
+  end
+end

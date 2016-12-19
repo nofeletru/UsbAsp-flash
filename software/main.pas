@@ -16,7 +16,7 @@ uses
   RichMemo, KHexEditor, KEditCommon, StrUtils, usbasp25, usbasp45, usbasp95,
   usbaspi2c, usbaspmw, usbaspmulti, usbhid, libusb, dos, XMLRead, XMLWrite, DOM,
   KControls, msgstr, Translations, LCLProc, LCLTranslator, LResources, search,
-  sregedit, utilfunc, CH341DLL, ch341mw;
+  sregedit, utilfunc, CH341DLL, ch341mw, findchip;
 
 type
 
@@ -58,6 +58,7 @@ type
     ClearLogMenuItem: TMenuItem;
     MenuHWUSBASP: TMenuItem;
     MenuHWCH341A: TMenuItem;
+    MenuFindChip: TMenuItem;
     MenuItemHardware: TMenuItem;
     MenuItemBenchmark: TMenuItem;
     MenuItemEditSreg: TMenuItem;
@@ -116,6 +117,7 @@ type
     procedure KHexEditorKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
       );
     procedure MenuCopyToClipClick(Sender: TObject);
+    procedure MenuFindChipClick(Sender: TObject);
     procedure MenuFindClick(Sender: TObject);
     procedure MenuGotoOffsetClick(Sender: TObject);
     procedure MenuHWCH341AClick(Sender: TObject);
@@ -1760,6 +1762,11 @@ end;
 procedure TMainForm.MenuCopyToClipClick(Sender: TObject);
 begin
   MainForm.KHexEditor.ExecuteCommand(ecCopy);
+end;
+
+procedure TMainForm.MenuFindChipClick(Sender: TObject);
+begin
+  ChipSearchForm.Show;
 end;
 
 procedure TMainForm.MenuFindClick(Sender: TObject);

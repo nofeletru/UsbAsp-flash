@@ -480,6 +480,10 @@ object MainForm: TMainForm
     top = 240
     object MenuChip: TMenuItem
       Caption = 'Микросхема'
+      object MenuFindChip: TMenuItem
+        Caption = 'Поиск'
+        OnClick = MenuFindChipClick
+      end
     end
     object MenuOptions: TMenuItem
       Caption = 'Настройки'
