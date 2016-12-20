@@ -42,6 +42,9 @@
       <AF25BC128 page="64" size="16384" spicmd="95"/>
       <AF25BC256 page="64" size="32768" spicmd="95"/>
     </APLUS>
+	<Boya>
+	  <BY25D80 id="684014" page="256" size="1048576"/>
+	</Boya>
     <CATALYST_CSI>
       <CAT25010 page="16" size="128" spicmd="95"/>
       <CAT25020 page="16" size="256" spicmd="95"/>
@@ -818,6 +821,9 @@
       <TS25L16BP id="202015" page="256" size="2097152"/>
       <TS25L16P id="372015" page="256" size="2097152"/>
     </ZEMPRO>
+	<Zbit>
+	  <ZB25D16 id="5E4015" page="256" size="2097152"/>
+	</Zbit>
     <Berg_Micro>
       <BG25Q40A id="E04013" page="256" size="524288"/>
       <BG25Q80A id="E04014" page="256" size="1048576"/>
