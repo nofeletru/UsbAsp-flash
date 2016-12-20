@@ -119,6 +119,7 @@
       <EN25QH32 id="1C7016" otp="16368" page="256" size="4194304"/>
       <EN25QH64 id="1C7017" otp="32752" page="256" size="8388608"/>
       <EN25QH128 id="1C7018" otp="65520" page="256" size="16777216"/>
+	  <EN25QH256 id="1C7019" otp="0" page="256" size="33554432"/>
       <EN25T80 id="1C5114" otp="4080" page="256" size="1048576"/>
       <EN25T16 id="1C5115" otp="8176" page="256" size="2097152"/>
       <EN25F64 id="1C3117" otp="32752" page="256" size="8388608"/>
@@ -235,6 +236,7 @@
       <GD25Q128B id="C84018" page="256" size="16777216"/>
       <GD25Q128C id="C84018" page="256" size="16777216"/>
 	  <GD25LQ128C id="C86018" page="256" size="16777216"/>
+	  <GD25LQ256C_1.8V id="C86019" page="256" size="33554432"/>
       <MD25T80 id="C83114" page="256" size="1048576"/>
       <MD25D20 id="514012" page="256" size="262144"/>
       <MD25D40 id="514013" page="256" size="524288"/>
@@ -419,6 +421,8 @@
       <MX25V8006E id="C22014" page="256" size="1048576"/>
       <MX25V8035 id="C22554" page="256" size="1048576"/>
       <MX25V8035F id="C22314" page="256" size="1048576"/>
+	  <MX66U51235F_1.8V id="C2253A" page="256" size="67108864"/>
+	  <MX66U1G45G_1.8V id="C2253B" page="256" size="134217728"/>
     </MACRONIX>
     <MICROCHIP>
       <_25AA010A page="16" size="128" spicmd="95"/>
@@ -466,6 +470,8 @@
     <MICRON>
       <N25Q032A id="20BA16" page="256" size="4194304"/>
       <N25Q064A id="20BA17" page="256" size="8388608"/>
+	  <N25Q512A83 id="20BA20" page="256" size="67108864"/>
+	  <N25Q00AA13G id="20BA21" page="256" size="134217728"/>
     </MICRON>
     <MSHINE>
       <MS25X512 id="373010" page="256" size="65536"/>
