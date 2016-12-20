@@ -146,6 +146,23 @@
       <Pm25LV020 id="7F9D22" page="256" size="262144"/>
       <Pm25W020 id="7F9D7D" page="256" size="262144"/>
 	</PFLASH>
+	<TERRA>
+	  <TS25L512A id="373010" page="256" size="65536"/>
+	  <TS25L010A id="373011" page="256" size="131072"/>
+	  <TS25L020A id="373012" page="256" size="262144"/>
+	  <TS25L16AP id="202015" page="256" size="2097152"/>
+	  <TS25L16BP id="202015" page="256" size="2097152"/>
+	  <ZP25L16P id="202015" page="256" size="2097152"/>
+	  <TS25L16PE id="208015" page="256" size="2097152"/>
+	  <TS25L80PE id="208014" page="256" size="1048576"/>
+	  <TS25L032A id="373016" page="256" size="4194304"/>
+	  <TS25L40P id="202013" page="256" size="524288"/>
+	</TERRA>
+	<Generalplus> 
+	  <GPR25L005E id="C22010" page="256" size="65536"/>
+	  <GPR25L161B id="C22015" page="256" size="262144"/>
+	  <GPR25L020B id="C22012" page="256" size="262144"/>
+	</Generalplus>
     <DEUTRON>
       <AC25LV512 id="9D7B00" page="256" size="65536"/>
       <AC25LV010 id="9D7C00" page="256" size="131072"/>
