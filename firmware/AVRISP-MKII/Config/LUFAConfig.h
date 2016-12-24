@@ -1,13 +1,13 @@
 /*
              LUFA Library
-     Copyright (C) Dean Camera, 2015.
+     Copyright (C) Dean Camera, 2016.
 
   dean [at] fourwalledcubicle [dot] com
            www.lufa-lib.org
 */
 
 /*
-  Copyright 2015  Dean Camera (dean [at] fourwalledcubicle [dot] com)
+  Copyright 2016  Dean Camera (dean [at] fourwalledcubicle [dot] com)
 
   Permission to use, copy, modify, distribute, and sell this
   software and its documentation for any purpose is hereby granted
@@ -61,13 +61,13 @@
 		#define USE_STATIC_OPTIONS               (USB_DEVICE_OPT_FULLSPEED | USB_OPT_REG_ENABLED | USB_OPT_AUTO_PLL)
 		#define USB_DEVICE_ONLY
 //		#define USB_HOST_ONLY
-//		#define USB_STREAM_TIMEOUT_MS            1000
+//		#define USB_STREAM_TIMEOUT_MS            {Insert Value Here}
 //		#define NO_LIMITED_CONTROLLER_CONNECT
 		#define NO_SOF_EVENTS
 
 		/* USB Device Mode Driver Related Tokens: */
 //		#define USE_RAM_DESCRIPTORS
-//		#define USE_FLASH_DESCRIPTORS
+		#define USE_FLASH_DESCRIPTORS
 //		#define USE_EEPROM_DESCRIPTORS
 		#define NO_INTERNAL_SERIAL
 		#define FIXED_CONTROL_ENDPOINT_SIZE      16
