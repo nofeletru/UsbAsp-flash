@@ -29,7 +29,7 @@ const
 
   PARAM_SCK_DURATION            = $98;
 
-  IN_EP                         = $83;
+  IN_EP                         = $82;
   OUT_EP                        = $02;
 
 
