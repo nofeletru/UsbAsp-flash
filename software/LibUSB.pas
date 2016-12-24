@@ -324,8 +324,8 @@ function  usb_get_descriptor_by_endpoint(udev: pusb_dev_handle;ep: longword;ttyp
 function  usb_get_descriptor(udev: pusb_dev_handle;ttype: byte;index: byte;var buf;size: longword): longword; cdecl;
 
 // <arch>.c
-function  usb_bulk_write(dev: pusb_dev_handle;ep : longword; var bytes;size,timeout:longword): longword; cdecl;
-function  usb_bulk_read(dev: pusb_dev_handle;ep: longword; var bytes; size,timeout:longword): longword; cdecl;
+function  usb_bulk_write(dev: pusb_dev_handle;ep : longword; var bytes;size,timeout:longword): integer; cdecl;
+function  usb_bulk_read(dev: pusb_dev_handle;ep: longword; var bytes; size,timeout:longword): integer; cdecl;
 
 function  usb_interrupt_write(dev: pusb_dev_handle;ep : longword; var bytes; size, timeout: longword): longword; cdecl;
 function  usb_interrupt_read(dev: pusb_dev_handle;ep : longword; var bytes; size, timeout: longword): longword; cdecl;
@@ -362,8 +362,8 @@ function  usb_get_descriptor_by_endpoint(udev: pusb_dev_handle;ep: longword;ttyp
 function  usb_get_descriptor(udev: pusb_dev_handle;ttype: byte;index: byte;var buf;size: longword): longword; cdecl; external LIBUSB_DLL_NAME name 'usb_get_descriptor';
 
 // <arch>.c
-function  usb_bulk_write(dev: pusb_dev_handle;ep : longword; var bytes;size,timeout:longword): longword; cdecl; external LIBUSB_DLL_NAME name 'usb_bulk_write';
-function  usb_bulk_read(dev: pusb_dev_handle;ep: longword; var bytes; size,timeout:longword): longword; cdecl; external LIBUSB_DLL_NAME name 'usb_bulk_read';
+function  usb_bulk_write(dev: pusb_dev_handle;ep : longword; var bytes;size,timeout:longword): integer; cdecl; external LIBUSB_DLL_NAME name 'usb_bulk_write';
+function  usb_bulk_read(dev: pusb_dev_handle;ep: longword; var bytes; size,timeout:longword): integer; cdecl; external LIBUSB_DLL_NAME name 'usb_bulk_read';
 
 function  usb_interrupt_write(dev: pusb_dev_handle;ep : longword; var bytes; size, timeout: longword): longword; cdecl; external LIBUSB_DLL_NAME name 'usb_interrupt_write';
 function  usb_interrupt_read(dev: pusb_dev_handle;ep : longword; var bytes; size, timeout: longword): longword; cdecl; external LIBUSB_DLL_NAME name 'usb_interrupt_read';
