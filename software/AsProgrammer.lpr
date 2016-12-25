@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, richmemopackage, kcontrolslaz, main, usbaspi2c, usbaspmw, usbaspmulti,
-  usbasp95, search, sregedit, ch341mw, findchip;
+  usbasp95, search, sregedit, ch341mw, findchip, avrispmk2;
 
 {$R *.res}
 

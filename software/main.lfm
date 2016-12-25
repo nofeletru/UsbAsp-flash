@@ -407,6 +407,15 @@ object MainForm: TMainForm
       ParentColor = False
       Visible = False
     end
+    object Button1: TButton
+      Left = 576
+      Height = 25
+      Top = 8
+      Width = 75
+      Caption = 'Button1'
+      OnClick = Button1Click
+      TabOrder = 8
+    end
   end
   object KHexEditor: TKHexEditor
     Left = 0
@@ -452,7 +461,7 @@ object MainForm: TMainForm
     Font.Height = -12
     HideSelection = False
     Lines.Strings = (
-      'Программатор SPI, I2C, Microwire EEPROM v1.3.8'
+      'Программатор SPI, I2C, Microwire EEPROM v1.3.9'
       'http://forum.easyelectronics.ru/viewtopic.php?f=17&t=10947'
       'tifa@nm.ru'
     )
@@ -539,6 +548,51 @@ object MainForm: TMainForm
             RadioItem = True
           end
         end
+        object MenuAVRISPSPIClock: TMenuItem
+          Caption = 'Частота'
+          object MenuAVRISP8MHz: TMenuItem
+            AutoCheck = True
+            Caption = '8(4) MHz'
+            Checked = True
+            RadioItem = True
+          end
+          object MenuAVRISP4MHz: TMenuItem
+            Tag = 1
+            AutoCheck = True
+            Caption = '4 MHz'
+            RadioItem = True
+          end
+          object MenuAVRISP2MHz: TMenuItem
+            Tag = 2
+            AutoCheck = True
+            Caption = '2 MHz'
+            RadioItem = True
+          end
+          object MenuAVRISP1MHz: TMenuItem
+            Tag = 3
+            AutoCheck = True
+            Caption = '1 MHz'
+            RadioItem = True
+          end
+          object MenuAVRISP500KHz: TMenuItem
+            Tag = 4
+            AutoCheck = True
+            Caption = '500 KHz'
+            RadioItem = True
+          end
+          object MenuAVRISP250KHz: TMenuItem
+            Tag = 5
+            AutoCheck = True
+            Caption = '250 KHz'
+            RadioItem = True
+          end
+          object MenuAVRISP125KHz: TMenuItem
+            Tag = 6
+            AutoCheck = True
+            Caption = '125 KHz'
+            RadioItem = True
+          end
+        end
         object MenuIgnoreBusyBit: TMenuItem
           AutoCheck = True
           Caption = 'Не проверять Busy бит'
@@ -588,6 +642,12 @@ object MainForm: TMainForm
         Caption = 'CH341a'
         RadioItem = True
         OnClick = MenuHWCH341AClick
+      end
+      object MenuHWAVRISP: TMenuItem
+        AutoCheck = True
+        Caption = 'AVRISP-MKII'
+        RadioItem = True
+        OnClick = MenuHWAVRISPClick
       end
     end
   end

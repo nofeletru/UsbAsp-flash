@@ -17,12 +17,15 @@ const
   SPI_SPEED_250               = 5;   // 250KHz SPI
   SPI_SPEED_125               = 6;   // 125KHz SPI
 
+  STATUS_CMD_UNKNOWN            = $C9;
 
   CMD_ENTER_PROGMODE_SPI25      = $30;
   CMD_LEAVE_PROGMODE_SPI25      = $31;
 
   CMD_SPI25_READ		= $32;
   CMD_SPI25_WRITE		= $33;
+
+  CMD_FIRMWARE_VER              = $34;
 
   CMD_SET_PARAMETER             = $02;
   CMD_GET_PARAMETER             = $03;
@@ -32,7 +35,10 @@ const
   IN_EP                         = $82;
   OUT_EP                        = $02;
 
+  STREAM_TIMEOUT_MS             = 1000;
 
+
+function is_firmware_supported(): boolean;
 function arvisp_spi_read(cs: byte; var buffer: array of byte; bufflen: word): integer;
 function arvisp_spi_write(cs: byte; var buffer: array of byte; bufflen: word): integer;
 function avrisp_set_ckl(value: byte): boolean;
@@ -42,6 +48,18 @@ function avrisp_leave_progmode(): boolean;
 implementation
 
 uses main;
+
+function is_firmware_supported(): boolean;
+var
+  buffer: array[0..1] of byte;
+begin
+ result := true;
+
+ buffer[0]:= CMD_FIRMWARE_VER;
+ usb_bulk_write(hUSBDev, OUT_EP, buffer, 1, STREAM_TIMEOUT_MS);
+ usb_bulk_read(hUSBDev, IN_EP, buffer, 2, STREAM_TIMEOUT_MS);
+ if buffer[1] = STATUS_CMD_UNKNOWN then result := false;
+end;
 
 function arvisp_spi_read(cs: byte; var buffer: array of byte; bufflen: word): integer;
 var
@@ -53,9 +71,9 @@ begin
   buff[2] := hi(bufflen);
   buff[3] := cs;
 
-  usb_bulk_write(hUSBDev, OUT_EP, buff, 4, 10000);
+  usb_bulk_write(hUSBDev, OUT_EP, buff, 4, STREAM_TIMEOUT_MS);
 
-  result := usb_bulk_read(hUSBDev, IN_EP, buffer, bufflen, 10000);
+  result := usb_bulk_read(hUSBDev, IN_EP, buffer, bufflen, STREAM_TIMEOUT_MS);
 end;
 
 function arvisp_spi_write(cs: byte; var buffer: array of byte; bufflen: word): integer;
@@ -72,10 +90,9 @@ begin
 
   Move(buffer, full_buffer[4], bufflen);
 
-  result := usb_bulk_write(hUSBDev, OUT_EP, full_buffer[0], bufflen+4, 10000) - 4;
+  result := usb_bulk_write(hUSBDev, OUT_EP, full_buffer[0], bufflen+4, STREAM_TIMEOUT_MS) - 4;
 
 end;
-
 
 function avrisp_set_ckl(value: byte): boolean;
 var
@@ -86,8 +103,8 @@ begin
  buffer[0]:= CMD_SET_PARAMETER;
  buffer[1]:= PARAM_SCK_DURATION;
  buffer[2]:= value;
- if usb_bulk_write(hUSBDev, OUT_EP, buffer, 3, 10000) <> 3 then result := false;
- if usb_bulk_read(hUSBDev, IN_EP, buffer, 2, 10000) <> 2 then result := false;
+ if usb_bulk_write(hUSBDev, OUT_EP, buffer, 3, STREAM_TIMEOUT_MS) <> 3 then result := false;
+ if usb_bulk_read(hUSBDev, IN_EP, buffer, 2, STREAM_TIMEOUT_MS) <> 2 then result := false;
  if buffer[1] <> 0 then result := false;
 end;
 
@@ -98,8 +115,8 @@ begin
  result := true;
 
  buffer[0]:= CMD_ENTER_PROGMODE_SPI25;
- if usb_bulk_write(hUSBDev, OUT_EP, buffer, 1, 10000) <> 1 then result := false;
- if usb_bulk_read(hUSBDev, IN_EP, buffer, 2, 10000) <> 2 then result := false;
+ if usb_bulk_write(hUSBDev, OUT_EP, buffer, 1, STREAM_TIMEOUT_MS) <> 1 then result := false;
+ if usb_bulk_read(hUSBDev, IN_EP, buffer, 2, STREAM_TIMEOUT_MS) <> 2 then result := false;
  if buffer[1] <> 0 then result := false;
 end;
 
@@ -110,8 +127,8 @@ begin
  result := true;
 
  buffer[0]:= CMD_LEAVE_PROGMODE_SPI25;
- if usb_bulk_write(hUSBDev, OUT_EP, buffer, 1, 10000) <> 1 then result := false;
- if usb_bulk_read(hUSBDev, IN_EP, buffer, 2, 10000) <> 2 then result := false;
+ if usb_bulk_write(hUSBDev, OUT_EP, buffer, 1, STREAM_TIMEOUT_MS) <> 1 then result := false;
+ if usb_bulk_read(hUSBDev, IN_EP, buffer, 2, STREAM_TIMEOUT_MS) <> 2 then result := false;
  if buffer[1] <> 0 then result := false;
 end;
 

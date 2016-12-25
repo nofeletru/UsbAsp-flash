@@ -67,7 +67,7 @@ function UsbAsp25_WriteSSTW(devHandle: Pusb_dev_handle; Opcode: byte; Data1, Dat
 
 implementation
 
-uses Main;
+uses Main, avrispmk2;
 
 //Пока отлипнет ромка
 function UsbAsp25_Busy(devHandle: Pusb_dev_handle): boolean;
@@ -101,6 +101,12 @@ begin
      exit;
   end;
 
+  if AVRISP then
+  begin
+    avrisp_enter_progmode();
+    exit;
+  end;
+
   USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_CONNECT, 0, 0, 0, dummy);
   sleep(50);
 end;
@@ -114,6 +120,12 @@ begin
   begin
      CH341Set_D5_D0(0, 0, 0);
      exit;
+  end;
+
+  if AVRISP then
+  begin
+    avrisp_leave_progmode();
+    exit;
   end;
 
   if devHandle <> nil then
@@ -171,6 +183,12 @@ begin
   if CH341 then
   begin
     result := 0;
+    exit;
+  end;
+
+  if AVRISP then
+  begin
+    if avrisp_set_ckl(speed) then result := 0 else result := -1;
     exit;
   end;
 

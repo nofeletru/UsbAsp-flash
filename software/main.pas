@@ -16,13 +16,14 @@ uses
   KEditCommon, StrUtils, usbasp25, usbasp45, usbasp95, usbaspi2c, usbaspmw,
   usbaspmulti, usbhid, libusb, dos, XMLRead, XMLWrite, DOM, KControls, msgstr,
   Translations, LCLProc, LCLTranslator, LResources, ValEdit, search, sregedit,
-  utilfunc, CH341DLL, ch341mw, findchip;
+  utilfunc, CH341DLL, ch341mw, findchip, avrispmk2, DateUtils;
 
 type
 
   { TMainForm }
 
   TMainForm = class(TForm)
+    Button1: TButton;
     CheckBox_I2C_A2: TCheckBox;
     CheckBox_I2C_A1: TCheckBox;
     CheckBox_I2C_A0: TCheckBox;
@@ -59,6 +60,15 @@ type
     MenuHWUSBASP: TMenuItem;
     MenuHWCH341A: TMenuItem;
     MenuFindChip: TMenuItem;
+    MenuHWAVRISP: TMenuItem;
+    MenuAVRISPSPIClock: TMenuItem;
+    MenuAVRISP8MHz: TMenuItem;
+    MenuAVRISP4MHz: TMenuItem;
+    MenuAVRISP2MHz: TMenuItem;
+    MenuAVRISP1MHz: TMenuItem;
+    MenuAVRISP500KHz: TMenuItem;
+    MenuAVRISP250KHz: TMenuItem;
+    MenuAVRISP125KHz: TMenuItem;
     MenuItemHardware: TMenuItem;
     MenuItemBenchmark: TMenuItem;
     MenuItemEditSreg: TMenuItem;
@@ -104,6 +114,7 @@ type
     ButtonCancel: TToolButton;
     ToolButton4: TToolButton;
     ToolButton5: TToolButton;
+    procedure Button1Click(Sender: TObject);
     procedure ButtonEraseClick(Sender: TObject);
     procedure ButtonReadClick(Sender: TObject);
     procedure ClearLogMenuItemClick(Sender: TObject);
@@ -116,6 +127,7 @@ type
     procedure ComboItem1Click(Sender: TObject);
     procedure KHexEditorKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
       );
+    procedure MenuHWAVRISPClick(Sender: TObject);
     procedure MenuCopyToClipClick(Sender: TObject);
     procedure MenuFindChipClick(Sender: TObject);
     procedure MenuFindClick(Sender: TObject);
@@ -160,20 +172,23 @@ const
 
   HW_USBASP              = 0;
   HW_CH341A              = 1;
+  HW_AVRISPMK2           = 2;
 
-  ChipListFileName       ='chiplist.xml';
+  ChipListFileName       = 'chiplist.xml';
 
 var
   MainForm: TMainForm;
   ChipListFile: TXMLDocument;
   hUSBDev: pusb_dev_handle; //Хендл usbasp
   CH341: boolean = false;
+  AVRISP: boolean = false;
 
 implementation
 
 
 var
   DeviceDescription: TDeviceDescription;
+  avrisp_DeviceDescription: TDeviceDescription;
   RomF: TMemoryStream;
   TimeCounter: TDateTime;
 
@@ -273,6 +288,30 @@ begin
     end;
   end;
 
+  if AVRISP then
+  begin
+    err := USBOpenDevice(hUSBDev, avrisp_DeviceDescription);
+    if err <> 0 then
+    begin
+      LogPrint(STR_CONNECT_ERROR_AVR+'('+IntToStr(err)+')', ClRed);
+      hUSBDev := nil;
+      result := false;
+      Exit;
+    end;
+
+    usb_set_configuration(hUSBDev, 1);
+    usb_claim_interface(hUSBDev, 0);
+    //Есть ли в прошивке наши команды
+    if not is_firmware_supported then
+    begin
+        USB_Dev_Close(hUSBDev);
+        LogPrint(STR_NO_EEPROM_SUPPORT, clRed);
+        result := false
+    end
+       else result := true;
+    exit;
+  end;
+
   err := USBOpenDevice(hUSBDev, DeviceDescription);
   if err <> 0 then
   begin
@@ -351,7 +390,6 @@ begin
 
 end;
 
-
 //Установка скорости spi и Microwire
 function SetSPISpeed(OverrideSpeed: byte): boolean;
 var
@@ -360,13 +398,26 @@ var
 begin
   if MainForm.RadioSPI.Checked then
   begin
-    if MainForm.Menu3Mhz.Checked then Speed := MainForm.Menu3Mhz.Tag;
-    if MainForm.Menu1_5Mhz.Checked then Speed := MainForm.Menu1_5Mhz.Tag;
-    if MainForm.Menu750Khz.Checked then Speed := MainForm.Menu750Khz.Tag;
-    if MainForm.Menu375Khz.Checked then Speed := MainForm.Menu375Khz.Tag;
-    if MainForm.Menu187_5Khz.Checked then Speed := MainForm.Menu187_5Khz.Tag;
-    if MainForm.Menu93_75Khz.Checked then Speed := MainForm.Menu93_75Khz.Tag;
-    if MainForm.Menu32Khz.Checked then Speed := MainForm.Menu32Khz.Tag;
+    if AVRISP then
+    begin
+      if MainForm.MenuAVRISP8Mhz.Checked then Speed := MainForm.MenuAVRISP8Mhz.Tag;
+      if MainForm.MenuAVRISP4Mhz.Checked then Speed := MainForm.MenuAVRISP4Mhz.Tag;
+      if MainForm.MenuAVRISP2Mhz.Checked then Speed := MainForm.MenuAVRISP2Mhz.Tag;
+      if MainForm.MenuAVRISP1Mhz.Checked then Speed := MainForm.MenuAVRISP1Mhz.Tag;
+      if MainForm.MenuAVRISP500Khz.Checked then Speed := MainForm.MenuAVRISP500Khz.Tag;
+      if MainForm.MenuAVRISP250Khz.Checked then Speed := MainForm.MenuAVRISP250Khz.Tag;
+      if MainForm.MenuAVRISP125Khz.Checked then Speed := MainForm.MenuAVRISP125Khz.Tag;
+    end
+    else
+    begin
+      if MainForm.Menu3Mhz.Checked then Speed := MainForm.Menu3Mhz.Tag;
+      if MainForm.Menu1_5Mhz.Checked then Speed := MainForm.Menu1_5Mhz.Tag;
+      if MainForm.Menu750Khz.Checked then Speed := MainForm.Menu750Khz.Tag;
+      if MainForm.Menu375Khz.Checked then Speed := MainForm.Menu375Khz.Tag;
+      if MainForm.Menu187_5Khz.Checked then Speed := MainForm.Menu187_5Khz.Tag;
+      if MainForm.Menu93_75Khz.Checked then Speed := MainForm.Menu93_75Khz.Tag;
+      if MainForm.Menu32Khz.Checked then Speed := MainForm.Menu32Khz.Tag;
+    end;
   end;
 
   if MainForm.RadioMw.Checked then
@@ -1528,16 +1579,29 @@ procedure SelectHW(programmer: integer);
 begin
   if programmer = HW_USBASP then
   begin
-    MainForm.MenuSPIClock.Enabled:= true;
+    MainForm.MenuSPIClock.Visible:= true;
+    MainForm.MenuAVRISPSPIClock.Visible:= false;
     MainForm.MenuMicrowire.Enabled:= true;
     CH341 := false;
+    AVRISP := false;
   end;
 
   if programmer = HW_CH341A then
   begin
-    MainForm.MenuSPIClock.Enabled:= false;
+    MainForm.MenuSPIClock.Visible:= false;
+    MainForm.MenuAVRISPSPIClock.Visible:= false;
     MainForm.MenuMicrowire.Enabled:= false;
     CH341 := true;
+    AVRISP := false;
+  end;
+
+  if programmer = HW_AVRISPMK2 then
+  begin
+    MainForm.MenuSPIClock.Visible:= false;
+    MainForm.MenuAVRISPSPIClock.Visible:= true;
+    MainForm.MenuMicrowire.Enabled:= false;
+    CH341 := false;
+    AVRISP := true;
   end;
 
 end;
@@ -1736,31 +1800,34 @@ begin
   SelectHW(HW_USBASP);
 end;
 
+procedure TMainForm.MenuHWAVRISPClick(Sender: TObject);
+begin
+  SelectHW(HW_AVRISPMK2);
+end;
+
 procedure TMainForm.MenuItemBenchmarkClick(Sender: TObject);
 var
   buffer: array[0..2047] of byte;
   i, cycles: integer;
   t: TDateTime;
+  timeval: integer;
+  ms, sec, d: word;
 begin
   if not OpenDevice() then exit;
   if not SetSPISpeed(0) then exit;
   EnterProgMode25(hUSBdev);
   LockControl();
 
-  cycles := 128;
+  if CH341 or AVRISP then
+    cycles := 256
+  else
+    cycles := 32;
 
-  if CH341 then
-  begin
-    LogPrint('DLL ver: '+IntToStr(CH341GetVersion()));
-    LogPrint('DRV ver: '+IntToStr(CH341GetDrvVersion()));
-    cycles := 256;
-  end;
-
-  LogPrint('Benchmark 2048 bytes * '+ IntToStr(cycles) +' cycles');
+  LogPrint('Benchmark read 2048 bytes * '+ IntToStr(cycles) +' cycles');
   Application.ProcessMessages();
   TimeCounter := Time();
 
-  for i:=0 to cycles do
+  for i:=1 to cycles do
   begin
     UsbAsp25_Read(hUSBdev, 0, 0, buffer, sizeof(buffer));
     Application.ProcessMessages;
@@ -1772,9 +1839,38 @@ begin
   end;
 
   t :=  Time() - TimeCounter;
+  DecodeDateTime(t, d, d, d, d, d, sec, ms);
+
+  timeval := (sec * 1000) + ms;
+  if timeval = 0 then timeval := 1;
 
   LogPrint(STR_TIME + TimeToStr(t)+' '+
-    IntToStr( (cycles*sizeof(buffer)) div ((StrToInt(FormatDateTime('nn',t)) * 60) + StrToInt(FormatDateTime('ss',t)))) +' bytes/s');
+    IntToStr( Trunc(((cycles*sizeof(buffer)) / timeval) * 1000)) +' bytes/s');
+
+  LogPrint('Benchmark write 2048 bytes * '+ IntToStr(cycles) +' cycles');
+  Application.ProcessMessages();
+  TimeCounter := Time();
+
+  for i:=1 to cycles do
+  begin
+    UsbAsp25_Write(hUSBdev, 0, 0, buffer, sizeof(buffer));
+    Application.ProcessMessages;
+    if MainForm.ButtonCancel.Tag <> 0 then
+      begin
+        LogPrint(STR_USER_CANCEL, clRed);
+        Break;
+      end;
+  end;
+
+  t :=  Time() - TimeCounter;
+  DecodeDateTime(t, d, d, d, d, d, sec, ms);
+
+  timeval := (sec * 1000) + ms;
+  if timeval = 0 then timeval := 1;
+
+  LogPrint(STR_TIME + TimeToStr(t)+' '+
+    IntToStr( Trunc(((cycles*sizeof(buffer)) / timeval) * 1000)) +' bytes/s');
+
   ExitProgMode25(hUSBdev);
   USB_Dev_Close(hUSBdev);
   UnlockControl();
@@ -2518,6 +2614,9 @@ begin
   DeviceDescription.idVENDOR:= $16C0;
   DeviceDescription.idPRODUCT:= $05DC;
 
+  avrisp_DeviceDescription.idVENDOR:= $03EB;
+  avrisp_DeviceDescription.idPRODUCT:= $2104;
+
   LoadChipList(ChipListFile);
   RomF := TMemoryStream.Create;
 
@@ -2792,6 +2891,37 @@ finally
 end;
 end;
 
+procedure TMainForm.Button1Click(Sender: TObject);
+const
+     CMD_ENTER_PROGMODE_ISP  =    $10;
+     CMD_LEAVE_PROGMODE_ISP  =    $11;
+var
+  buf: array[0..255] of byte;
+  b: array[0..255] of char;
+  i: integer;
+begin
+  OpenDevice();
+  Main.LogPrint(AnsiToUtf8(usb_strerror), ClRed);
+  // EnterProgMode25(hUSBdev);
+ avrisp_enter_progmode() ;
+ //  logPrint('no prog');
+
+{ buf[0]:=3;
+ buf[1]:=$9E;
+ buf[2]:=$FF;
+ i := usb_bulk_write(hUSBDev, $02, buf, 2, 1000);
+ Main.LogPrint(AnsiToUtf8(usb_strerror), ClRed);
+
+ i := usb_bulk_read(hUSBDev, $83, buf, 3, 1000);
+ Main.LogPrint(IntToStr(buf[2])); }
+
+ USB_Dev_Close(hUSBDev);
+ Main.LogPrint(AnsiToUtf8(usb_strerror), ClRed);
+
+ //for i:= 0 to 15 do
+ //  MainForm.Log.Lines.Append(IntToHex(byte(b[i]), 2));
+end;
+
 procedure SaveOptions(XMLfile: TXMLDocument);
 var
   Node, ParentNode: TDOMNode;
@@ -2835,6 +2965,8 @@ begin
       TDOMElement(ParentNode).SetAttribute('hw', 'usbasp');
     if MainForm.MenuHWCH341A.Checked then
       TDOMElement(ParentNode).SetAttribute('hw', 'ch341a');
+    if MainForm.MenuHWAVRISP.Checked then
+      TDOMElement(ParentNode).SetAttribute('hw', 'avrisp');
 
     Node.Appendchild(parentNode);
 
@@ -2845,7 +2977,7 @@ end;
 
 procedure LoadOptions(XMLfile: TXMLDocument);
 var
-    Node, parentNode: TDOMNode;
+    Node: TDOMNode;
     OptVal: string;
 begin
   if XMLfile <> nil then
@@ -2889,12 +3021,24 @@ begin
       begin
         OptVal := Node.Attributes.GetNamedItem('hw').NodeValue;
 
-        if OptVal = 'usbasp' then MainForm.MenuHWUSBASP.Checked := true;
+        if OptVal = 'usbasp' then
+        begin
+          MainForm.MenuHWUSBASP.Checked := true;
+          SelectHW(HW_USBASP);
+        end;
+
         if OptVal = 'ch341a' then
         begin
           MainForm.MenuHWCH341A.Checked := true;
           SelectHW(HW_CH341A);
         end;
+
+        if OptVal = 'avrisp' then
+        begin
+          MainForm.MenuHWAVRISP.Checked := true;
+          SelectHW(HW_AVRISPMK2);
+        end;
+
       end;
 
     end;

@@ -3,7 +3,8 @@ unit usbhid;
 interface
 
 uses
-  Classes, SysUtils, libusb, Graphics, msgstr, CH341DLL, ch341mw, utilfunc;
+  Classes, SysUtils, libusb, Graphics, msgstr, CH341DLL, ch341mw, utilfunc,
+    avrispmk2;
 
 type
  TPString = array [0..255] of Char;
@@ -32,7 +33,7 @@ function USBSendControlMessage(devHandle: Pusb_dev_handle; direction: byte; requ
 
 implementation
 
-uses main, usbaspi2c, usbaspmw;
+uses main, usbaspi2c, usbaspmw, usbasp25;
 
 function usbGetStringAscii(handle: pusb_dev_handle; index: Integer; langid: Integer; var buf: TPString; buflen: Integer): integer;
 var
@@ -210,6 +211,20 @@ begin
     exit;
   end;
 
+  if AVRISP then
+  begin
+    if request = USBASP_FUNC_25_READ then
+      Result := arvisp_spi_read(value, buffer, bufflen);
+    if request = USBASP_FUNC_25_WRITE then
+      Result := arvisp_spi_write(value, buffer, bufflen);
+
+    if result < 0 then
+        if result = -116 then Main.LogPrint(STR_USB_TIMEOUT, clRed)
+      else
+        Main.LogPrint(AnsiToUtf8(usb_strerror), ClRed);
+    exit;
+  end;
+
   Result := usb_control_msg(devHandle, USB_TYPE_VENDOR or USB_RECIP_DEVICE or direction, request, value, index, buffer, bufflen, 10000);
   if result < 0 then
   begin
@@ -230,6 +245,9 @@ begin
 
   if dev <> nil then
   begin
+    if AVRISP then
+      usb_release_interface(dev, 0);
+
     result := USB_Close(dev);
     dev := nil;
   end;
