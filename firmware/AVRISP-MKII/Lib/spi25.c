@@ -15,6 +15,17 @@ void SPI_Set_CS(uint8_t line_level)
 	}
 }
 
+void give_firmware_ver(void)
+{
+	Endpoint_ClearOUT();
+	Endpoint_SelectEndpoint(AVRISP_DATA_IN_EPADDR);
+	Endpoint_SetEndpointDirection(ENDPOINT_DIR_IN);
+
+	Endpoint_Write_8(CMD_FIRMWARE_VER);
+	Endpoint_Write_8(FIRMWARE_VER);
+	Endpoint_ClearIN();	
+}
+
 void SPI_Enter25Mode(void)
 {
 	Endpoint_ClearOUT();
@@ -58,7 +69,7 @@ void SPI_25Read(void)
 	SPI_Set_CS(0); 
 
 	/* Read each byte from the device and write them to the packet for the host */
-	for (uint16_t CurrentByte = 0; CurrentByte < BytesToRead; CurrentByte++)
+	while (BytesToRead > 0)
 	{
 
 		/* Read the next byte */
@@ -70,7 +81,8 @@ void SPI_25Read(void)
 			Endpoint_ClearIN();
 			Endpoint_WaitUntilReady();
 		}
-
+		
+		BytesToRead--;
 	}
 	
 	if (Endpoint_BytesInEndpoint() > 0) 
@@ -87,7 +99,7 @@ void SPI_25Write(void)
 {	
 	uint16_t BytesToWrite;
 	uint8_t  ChunkToWrite;
-	uint8_t  ProgData[64];
+	uint8_t  ProgData[128];
 	uint8_t  cs_hi;
 	
 	BytesToWrite = Endpoint_Read_16_LE();
@@ -97,12 +109,12 @@ void SPI_25Write(void)
 	
 	while (BytesToWrite > 0)
 	{	
-		if (BytesToWrite < 64) ChunkToWrite = BytesToWrite; 
-			else ChunkToWrite = 64;
+		if (BytesToWrite < sizeof(ProgData)) ChunkToWrite = BytesToWrite; 
+			else ChunkToWrite = sizeof(ProgData);
 			
 		Endpoint_Read_Stream_LE(&ProgData, ChunkToWrite, NULL);
 		
-		for (uint16_t CurrentByte = 0; CurrentByte < ChunkToWrite; CurrentByte++)
+		for (uint8_t CurrentByte = 0; CurrentByte < ChunkToWrite; CurrentByte++)
 		{
 			ISPTarget_SendByte(ProgData[CurrentByte]);
 			BytesToWrite--;

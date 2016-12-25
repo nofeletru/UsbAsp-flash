@@ -101,6 +101,7 @@ void V2Protocol_ProcessCommand(void)
 		case CMD_RESET_PROTECTION:
 			V2Protocol_ResetProtection();
 			break;
+		//	
 		case CMD_ENTER_PROGMODE_SPI25:
 			SPI_Enter25Mode();
 			break;
@@ -113,6 +114,9 @@ void V2Protocol_ProcessCommand(void)
 		case CMD_SPI25_WRITE:
 			SPI_25Write();
 			break;			
+		case CMD_FIRMWARE_VER:
+			give_firmware_ver();
+			break;
 #if defined(ENABLE_ISP_PROTOCOL)
 		case CMD_ENTER_PROGMODE_ISP:
 			ISPProtocol_EnterISPMode();
