@@ -72,8 +72,8 @@ void SPI_25Read(void)
 	while (BytesToRead > 0)
 	{
 
-		/* Read the next byte */
-		Endpoint_Write_8(ISPTarget_ReceiveByte());
+		/* Read the next byte */		
+		Endpoint_Write_8(SPI_TransferByte(0));
 
 		/* Check if the endpoint bank is currently full, if so send the packet */
 		if (!(Endpoint_IsReadWriteAllowed()))
@@ -116,7 +116,7 @@ void SPI_25Write(void)
 		
 		for (uint8_t CurrentByte = 0; CurrentByte < ChunkToWrite; CurrentByte++)
 		{
-			ISPTarget_SendByte(ProgData[CurrentByte]);
+			SPI_TransferByte(ProgData[CurrentByte]);
 			BytesToWrite--;
 		}
 	}
