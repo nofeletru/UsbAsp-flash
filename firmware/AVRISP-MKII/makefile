@@ -16,10 +16,10 @@ ARCH         = AVR8
 BOARD        = TEENSY2
 F_CPU        = 16000000
 F_USB        = $(F_CPU)
-OPTIMIZATION = s
+OPTIMIZATION = 3
 TARGET       = AVRISP-MKII
 SRC          = $(TARGET).c AVRISPDescriptors.c Lib/V2Protocol.c Lib/V2ProtocolParams.c Lib/ISP/ISPProtocol.c Lib/ISP/ISPTarget.c Lib/XPROG/XPROGProtocol.c \
-               Lib/XPROG/XPROGTarget.c Lib/XPROG/XMEGANVM.c Lib/XPROG/TINYNVM.c Lib/spi25.c $(LUFA_SRC_USB)
+               Lib/XPROG/XPROGTarget.c Lib/XPROG/XMEGANVM.c Lib/XPROG/TINYNVM.c Lib/spi25.c Lib/i2c.c $(LUFA_SRC_USB)
 LUFA_PATH    = ../../LUFA
 CC_FLAGS     = -DUSE_LUFA_CONFIG_HEADER -IConfig/
 LD_FLAGS     =

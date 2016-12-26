@@ -101,7 +101,7 @@ void V2Protocol_ProcessCommand(void)
 		case CMD_RESET_PROTECTION:
 			V2Protocol_ResetProtection();
 			break;
-		//	
+		//SPI	
 		case CMD_ENTER_PROGMODE_SPI25:
 			SPI_Enter25Mode();
 			break;
@@ -114,6 +114,16 @@ void V2Protocol_ProcessCommand(void)
 		case CMD_SPI25_WRITE:
 			SPI_25Write();
 			break;			
+		//I2C	
+		case CMD_I2C_ACK:
+			i2c_ack();
+			break;
+		case CMD_I2C_READ:
+			i2c_read();
+			break;
+		case CMD_I2C_WRITE:
+			i2c_write();
+			break;	
 		case CMD_FIRMWARE_VER:
 			give_firmware_ver();
 			break;

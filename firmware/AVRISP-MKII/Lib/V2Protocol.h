@@ -50,6 +50,7 @@
 		#include "XPROG/XPROGProtocol.h"
 		#include "Config/AppConfig.h"
 		#include "spi25.h"
+		#include "i2c.h"
 
 	/* Preprocessor Checks: */
 		#if ((BOARD == BOARD_XPLAIN) || (BOARD == BOARD_XPLAIN_REV1))
