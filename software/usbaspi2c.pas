@@ -5,7 +5,7 @@ unit usbaspi2c;
 interface
 
 uses
-  Classes, SysUtils, libusb, usbhid, utilfunc, CH341DLL;
+  Classes, SysUtils, libusb, usbhid, utilfunc, CH341DLL, avrispmk2;
 
 const
   USBASP_FUNC_I2C_INIT		 = 70;
@@ -41,6 +41,7 @@ procedure EnterProgModeI2C(devHandle: Pusb_dev_handle);
 var
   dummy: byte;
 begin
+  if AVRISP then exit;
   USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_I2C_INIT, 0, 0, 0, dummy);
   sleep(50);
 end;
@@ -89,6 +90,11 @@ begin
     exit;
   end;
 
+  if AVRISP then
+  begin
+    result := not avrisp_i2c_ack(Address);
+    exit;
+  end;
 
   USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_I2C_ACK, Address, 0, 1, Status);
   Result := not Boolean(Status);

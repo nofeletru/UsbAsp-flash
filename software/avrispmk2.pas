@@ -21,11 +21,14 @@ const
 
   CMD_ENTER_PROGMODE_SPI25      = $30;
   CMD_LEAVE_PROGMODE_SPI25      = $31;
-
   CMD_SPI25_READ		= $32;
   CMD_SPI25_WRITE		= $33;
 
   CMD_FIRMWARE_VER              = $34;
+  //I2C
+  CMD_I2C_READ	                = $35;
+  CMD_I2C_WRITE	                = $36;
+  CMD_I2C_ACK                   = $37;
 
   CMD_SET_PARAMETER             = $02;
   CMD_GET_PARAMETER             = $03;
@@ -44,6 +47,10 @@ function arvisp_spi_write(cs: byte; var buffer: array of byte; bufflen: word): i
 function avrisp_set_ckl(value: byte): boolean;
 function avrisp_enter_progmode(): boolean;
 function avrisp_leave_progmode(): boolean;
+
+function avrisp_i2c_read(DevAddr, MemAddrLen: byte; Address: word; var buffer: array of byte; bufflen: word): integer;
+function avrisp_i2c_write(DevAddr, MemAddrLen: byte; Address: word; var buffer: array of byte; bufflen: word): integer;
+function avrisp_i2c_ack(DevAddr: byte): boolean;
 
 implementation
 
@@ -130,6 +137,58 @@ begin
  if usb_bulk_write(hUSBDev, OUT_EP, buffer, 1, STREAM_TIMEOUT_MS) <> 1 then result := false;
  if usb_bulk_read(hUSBDev, IN_EP, buffer, 2, STREAM_TIMEOUT_MS) <> 2 then result := false;
  if buffer[1] <> 0 then result := false;
+end;
+
+
+function avrisp_i2c_read(DevAddr, MemAddrLen: byte; Address: word; var buffer: array of byte; bufflen: word): integer;
+var
+  buff: array[0..6] of byte;
+begin
+  buff[0] := CMD_I2C_READ;
+  buff[1] := lo(bufflen);
+  buff[2] := hi(bufflen);
+  buff[3] := DevAddr;
+  buff[4] := MemAddrLen;
+  buff[5] := lo(Address);
+  buff[6] := hi(Address);
+
+  usb_bulk_write(hUSBDev, OUT_EP, buff, 7, STREAM_TIMEOUT_MS);
+  result := usb_bulk_read(hUSBDev, IN_EP, buffer, bufflen, STREAM_TIMEOUT_MS);
+end;
+
+
+function avrisp_i2c_write(DevAddr, MemAddrLen: byte; Address: word; var buffer: array of byte; bufflen: word): integer;
+const
+  HEADER_LEN = 7;
+var
+  buff: array of byte;
+begin
+  SetLength(buff, bufflen+HEADER_LEN);
+
+  buff[0] := CMD_I2C_WRITE;
+  buff[1] := lo(bufflen);
+  buff[2] := hi(bufflen);
+  buff[3] := DevAddr;
+  buff[4] := MemAddrLen;
+  buff[5] := lo(Address);
+  buff[6] := hi(Address);
+
+  Move(buffer, buff[HEADER_LEN], bufflen);
+
+  result := usb_bulk_write(hUSBDev, OUT_EP, buff[0], bufflen+HEADER_LEN, STREAM_TIMEOUT_MS) - HEADER_LEN;
+end;
+
+function avrisp_i2c_ack(DevAddr: byte): boolean;
+var
+  buff: array[0..1] of byte;
+  status: byte = 1;
+begin
+  buff[0] := CMD_I2C_ACK;
+  buff[1] := DevAddr;
+
+  usb_bulk_write(hUSBDev, OUT_EP, buff, 2, STREAM_TIMEOUT_MS);
+  usb_bulk_read(hUSBDev, IN_EP, status, 1, STREAM_TIMEOUT_MS);
+  Result := Boolean(Status);
 end;
 
 end.

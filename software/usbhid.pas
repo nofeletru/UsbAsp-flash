@@ -218,6 +218,12 @@ begin
     if request = USBASP_FUNC_25_WRITE then
       Result := arvisp_spi_write(value, buffer, bufflen);
 
+    if request = USBASP_FUNC_I2C_INIT then exit;
+    if request = USBASP_FUNC_I2C_READ then
+      result := avrisp_i2c_read(value, hi(word(value)), index, buffer, bufflen);
+    if request = USBASP_FUNC_I2C_WRITE then
+      result := avrisp_i2c_write(value, hi(word(value)), index, buffer, bufflen);
+
     if result < 0 then
         if result = -116 then Main.LogPrint(STR_USB_TIMEOUT, clRed)
       else

@@ -23,7 +23,6 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
-    Button1: TButton;
     CheckBox_I2C_A2: TCheckBox;
     CheckBox_I2C_A1: TCheckBox;
     CheckBox_I2C_A0: TCheckBox;
@@ -114,7 +113,6 @@ type
     ButtonCancel: TToolButton;
     ToolButton4: TToolButton;
     ToolButton5: TToolButton;
-    procedure Button1Click(Sender: TObject);
     procedure ButtonEraseClick(Sender: TObject);
     procedure ButtonReadClick(Sender: TObject);
     procedure ClearLogMenuItemClick(Sender: TObject);
@@ -2187,6 +2185,8 @@ try
 
     WriteFlashI2C(RomF, 0, KHexEditor.Data.Size, StrToInt(ComboPageSize.Text), I2C_DevAddr);
 
+    LogPrint(STR_TIME + TimeToStr(Time() - TimeCounter));
+
     if MenuAutoCheck.Checked then
     begin
       if UsbAspI2C_BUSY(hUSBdev, I2C_DevAddr) then
@@ -2891,36 +2891,6 @@ finally
 end;
 end;
 
-procedure TMainForm.Button1Click(Sender: TObject);
-const
-     CMD_ENTER_PROGMODE_ISP  =    $10;
-     CMD_LEAVE_PROGMODE_ISP  =    $11;
-var
-  buf: array[0..255] of byte;
-  b: array[0..255] of char;
-  i: integer;
-begin
-  OpenDevice();
-  Main.LogPrint(AnsiToUtf8(usb_strerror), ClRed);
-  // EnterProgMode25(hUSBdev);
- avrisp_enter_progmode() ;
- //  logPrint('no prog');
-
-{ buf[0]:=3;
- buf[1]:=$9E;
- buf[2]:=$FF;
- i := usb_bulk_write(hUSBDev, $02, buf, 2, 1000);
- Main.LogPrint(AnsiToUtf8(usb_strerror), ClRed);
-
- i := usb_bulk_read(hUSBDev, $83, buf, 3, 1000);
- Main.LogPrint(IntToStr(buf[2])); }
-
- USB_Dev_Close(hUSBDev);
- Main.LogPrint(AnsiToUtf8(usb_strerror), ClRed);
-
- //for i:= 0 to 15 do
- //  MainForm.Log.Lines.Append(IntToHex(byte(b[i]), 2));
-end;
 
 procedure SaveOptions(XMLfile: TXMLDocument);
 var
