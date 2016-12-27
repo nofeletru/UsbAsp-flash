@@ -124,7 +124,7 @@ begin
 
   if AVRISP then
   begin
-    avrisp_leave_progmode();
+    if devHandle <> nil then avrisp_leave_progmode();
     exit;
   end;
 

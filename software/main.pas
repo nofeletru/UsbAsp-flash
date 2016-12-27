@@ -1821,7 +1821,7 @@ begin
   else
     cycles := 32;
 
-  LogPrint('Benchmark read 2048 bytes * '+ IntToStr(cycles) +' cycles');
+  LogPrint('Benchmark read '+ IntToStr(SizeOf(buffer))+' bytes * '+ IntToStr(cycles) +' cycles');
   Application.ProcessMessages();
   TimeCounter := Time();
 
@@ -1845,7 +1845,7 @@ begin
   LogPrint(STR_TIME + TimeToStr(t)+' '+
     IntToStr( Trunc(((cycles*sizeof(buffer)) / timeval) * 1000)) +' bytes/s');
 
-  LogPrint('Benchmark write 2048 bytes * '+ IntToStr(cycles) +' cycles');
+  LogPrint('Benchmark write '+ IntToStr(SizeOf(buffer))+' bytes * '+ IntToStr(cycles) +' cycles');
   Application.ProcessMessages();
   TimeCounter := Time();
 
