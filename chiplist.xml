@@ -235,7 +235,7 @@
       <GD25Q64B id="C84017" page="256" size="8388608"/>
       <GD25Q128B id="C84018" page="256" size="16777216"/>
       <GD25Q128C id="C84018" page="256" size="16777216"/>
-	  <GD25LQ128C id="C86018" page="256" size="16777216"/>
+	  <GD25LQ128C_1.8V id="C86018" page="256" size="16777216"/>
 	  <GD25LQ256C_1.8V id="C86019" page="256" size="33554432"/>
       <MD25T80 id="C83114" page="256" size="1048576"/>
       <MD25D20 id="514012" page="256" size="262144"/>
@@ -470,7 +470,13 @@
     <MICRON>
       <N25Q032A id="20BA16" page="256" size="4194304"/>
       <N25Q064A id="20BA17" page="256" size="8388608"/>
+	  <N25Q256A13 id="20BA19" page="256" size="33554432"/>
 	  <N25Q512A83 id="20BA20" page="256" size="67108864"/>
+	  <N25W256A11 id="2CCB19" page="256" size="33554432"/>
+	  <MT25QL128AB id="20BA18" page="256" size="16777216"/>
+      <MT25QL256A id="20BA19" page="256" size="33554432"/>
+      <MT25QL512A id="20BA20" page="256" size="67108864"/>
+      <MT25QL02GC id="20BA22" page="256" size="268435456"/>
 	  <N25Q00AA13G id="20BA21" page="256" size="134217728"/>
     </MICRON>
     <MSHINE>
@@ -807,6 +813,7 @@
       <W25X80BV id="EF3014" page="256" size="1048576"/>
       <W25X80L id="EF3014" page="256" size="1048576"/>
       <W25X80V id="EF3014" page="256" size="1048576"/>
+	  <W25M512JV id="EF7119" page="256" size="67108864"/>
     </WINBOND>
     <XICOR>
       <X25010 page="4" size="128" spicmd="95"/>
@@ -834,8 +841,10 @@
       <BG25Q40A id="E04013" page="256" size="524288"/>
       <BG25Q80A id="E04014" page="256" size="1048576"/>
       <BG25Q16A id="E04015" page="256" size="2097152"/>
+	  <BG25Q32A id="E04016" page="256" size="4194304"/>
     </Berg_Micro>
     <ATMEL>
+	  <AT45DB021D id="1F2300" page="264" size="270336" spicmd="45"/>
       <AT45DB041D id="1F2400" page="264" size="540672" spicmd="45"/>
       <AT25010 page="8" size="128" spicmd="95"/>
       <AT25010A page="8" size="128" spicmd="95"/>
@@ -889,6 +898,27 @@
       <AT26DF321A id="1F4700" page="256" size="4194304"/>
       <AT26F004 id="1F0400" page="256" size="524288"/>
     </ATMEL>
+	<ACE>
+      <ACE25A128G_1.8V id="E06018" page="256" size="16777216"/>
+    </ACE>
+    <ATO>
+      <ATO25Q32 id="9B3216" page="256" size="4194304"/>
+    </ATO>
+	<DOUQI>
+      <DQ25Q64A id="544017" page="256" size="8388608"/>
+    </DOUQI>
+    <Fremont>
+      <FT25H16 id="0E4015" page="256" size="2097152"/>
+    </Fremont>
+    <Fudan>
+      <FM25Q32 id="A14016" page="256" size="4194304"/>
+    </Fudan>
+    <Genitop>
+      <GT25Q80A id="E04014" page="256" size="1048576"/>
+    </Genitop>
+    <Paragon>
+      <PN25F04A id="E04013" page="256" size="524288"/>
+    </Paragon>
   </SPI>
   <I2C>
     <_24Cxxx>
