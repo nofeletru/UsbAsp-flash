@@ -29,6 +29,10 @@ const
   CMD_I2C_READ	                = $35;
   CMD_I2C_WRITE	                = $36;
   CMD_I2C_ACK                   = $37;
+  //MW
+  CMD_MW_READ		        = $38;
+  CMD_MW_WRITE	                = $39;
+  CMD_MW_BUSY		        = $40;
 
   CMD_SET_PARAMETER             = $02;
   CMD_GET_PARAMETER             = $03;
@@ -51,6 +55,10 @@ function avrisp_leave_progmode(): boolean;
 function avrisp_i2c_read(DevAddr, MemAddrLen: byte; Address: word; var buffer: array of byte; bufflen: word): integer;
 function avrisp_i2c_write(DevAddr, MemAddrLen: byte; Address: word; var buffer: array of byte; bufflen: word): integer;
 function avrisp_i2c_ack(DevAddr: byte): boolean;
+
+function avrisp_mw_read(AddrBitLen: byte; Addr: word; var buffer: array of byte; bufflen: word): integer;
+function avrisp_mw_write(AddrBitLen: byte; Addr: word; var buffer: array of byte; bufflen: word): integer;
+function avrisp_mw_busy(): boolean;
 
 implementation
 
@@ -189,6 +197,56 @@ begin
   usb_bulk_write(hUSBDev, OUT_EP, buff, 2, STREAM_TIMEOUT_MS);
   usb_bulk_read(hUSBDev, IN_EP, status, 1, STREAM_TIMEOUT_MS);
   Result := Boolean(Status);
+end;
+
+function avrisp_mw_read(AddrBitLen: byte; Addr: word; var buffer: array of byte; bufflen: word): integer;
+var
+  buff: array[0..5] of byte;
+begin
+  buff[0] := CMD_MW_READ;
+  buff[1] := lo(bufflen);
+  buff[2] := hi(bufflen);
+  buff[3] := lo(Addr);
+  buff[4] := hi(Addr);
+  buff[5] := AddrBitLen;
+
+  result := 0;
+  usb_bulk_write(hUSBDev, OUT_EP, buff, 6, STREAM_TIMEOUT_MS);
+  if bufflen = 0 then bufflen := 1; //костыль
+    result := usb_bulk_read(hUSBDev, IN_EP, buffer, bufflen, STREAM_TIMEOUT_MS);
+end;
+
+function avrisp_mw_write(AddrBitLen: byte; Addr: word; var buffer: array of byte; bufflen: word): integer;
+const
+  HEADER_SIZE = 6;
+var
+  buff: array of byte;
+begin
+  SetLength(buff, bufflen+HEADER_SIZE);
+
+  buff[0] := CMD_MW_WRITE;
+  buff[1] := lo(bufflen);
+  buff[2] := hi(bufflen);
+  buff[3] := lo(Addr);
+  buff[4] := hi(Addr);
+  buff[5] := AddrBitLen;
+
+  Move(buffer, buff[HEADER_SIZE], bufflen);
+
+  result := usb_bulk_write(hUSBDev, OUT_EP, buff[0], bufflen+HEADER_SIZE, STREAM_TIMEOUT_MS)-HEADER_SIZE;
+end;
+
+function avrisp_mw_busy(): boolean;
+var
+  buf: byte;
+begin
+  buf := CMD_MW_BUSY;
+  result := False;
+
+  usb_bulk_write(hUSBDev, OUT_EP, buf, 1, STREAM_TIMEOUT_MS);
+  usb_bulk_read(hUSBDev, IN_EP, buf, 1, STREAM_TIMEOUT_MS);
+
+  if buf = 1 then result := True;
 end;
 
 end.

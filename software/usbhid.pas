@@ -3,8 +3,7 @@ unit usbhid;
 interface
 
 uses
-  Classes, SysUtils, libusb, Graphics, msgstr, CH341DLL, ch341mw, utilfunc,
-    avrispmk2;
+  Classes, SysUtils, libusb, Graphics, msgstr, CH341DLL, ch341mw, avrispmk2;
 
 type
  TPString = array [0..255] of Char;
@@ -223,6 +222,12 @@ begin
       result := avrisp_i2c_read(value, hi(word(value)), index, buffer, bufflen);
     if request = USBASP_FUNC_I2C_WRITE then
       result := avrisp_i2c_write(value, hi(word(value)), index, buffer, bufflen);
+
+    if request = USBASP_FUNC_MW_READ then
+      result := avrisp_mw_read(index, value, buffer, bufflen);
+    if request = USBASP_FUNC_MW_WRITE then
+      //                                     opcode                                 addr
+      result := avrisp_mw_write(Byte(index), Hi(Word(Index)) shl (Byte(index)-2) or Word(Value), buffer, bufflen);
 
     if result < 0 then
         if result = -116 then Main.LogPrint(STR_USB_TIMEOUT, clRed)

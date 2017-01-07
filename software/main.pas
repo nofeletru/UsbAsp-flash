@@ -15,7 +15,7 @@ uses
   ExtCtrls, ComCtrls, Menus, ActnList, Buttons, RichMemo, KHexEditor,
   KEditCommon, StrUtils, usbasp25, usbasp45, usbasp95, usbaspi2c, usbaspmw,
   usbaspmulti, usbhid, libusb, dos, XMLRead, XMLWrite, DOM, KControls, msgstr,
-  Translations, LCLProc, LCLTranslator, LResources, ValEdit, search, sregedit,
+  Translations, LCLProc, LCLTranslator, LResources, search, sregedit,
   utilfunc, CH341DLL, ch341mw, findchip, avrispmk2, DateUtils;
 
 type
@@ -394,31 +394,30 @@ var
   error: integer;
   Speed: byte;
 begin
-  if MainForm.RadioSPI.Checked then
+
+  if AVRISP then
   begin
-    if AVRISP then
-    begin
-      if MainForm.MenuAVRISP8Mhz.Checked then Speed := MainForm.MenuAVRISP8Mhz.Tag;
-      if MainForm.MenuAVRISP4Mhz.Checked then Speed := MainForm.MenuAVRISP4Mhz.Tag;
-      if MainForm.MenuAVRISP2Mhz.Checked then Speed := MainForm.MenuAVRISP2Mhz.Tag;
-      if MainForm.MenuAVRISP1Mhz.Checked then Speed := MainForm.MenuAVRISP1Mhz.Tag;
-      if MainForm.MenuAVRISP500Khz.Checked then Speed := MainForm.MenuAVRISP500Khz.Tag;
-      if MainForm.MenuAVRISP250Khz.Checked then Speed := MainForm.MenuAVRISP250Khz.Tag;
-      if MainForm.MenuAVRISP125Khz.Checked then Speed := MainForm.MenuAVRISP125Khz.Tag;
-    end
-    else
-    begin
-      if MainForm.Menu3Mhz.Checked then Speed := MainForm.Menu3Mhz.Tag;
-      if MainForm.Menu1_5Mhz.Checked then Speed := MainForm.Menu1_5Mhz.Tag;
-      if MainForm.Menu750Khz.Checked then Speed := MainForm.Menu750Khz.Tag;
-      if MainForm.Menu375Khz.Checked then Speed := MainForm.Menu375Khz.Tag;
-      if MainForm.Menu187_5Khz.Checked then Speed := MainForm.Menu187_5Khz.Tag;
-      if MainForm.Menu93_75Khz.Checked then Speed := MainForm.Menu93_75Khz.Tag;
-      if MainForm.Menu32Khz.Checked then Speed := MainForm.Menu32Khz.Tag;
-    end;
+    if MainForm.MenuAVRISP8Mhz.Checked then Speed := MainForm.MenuAVRISP8Mhz.Tag;
+    if MainForm.MenuAVRISP4Mhz.Checked then Speed := MainForm.MenuAVRISP4Mhz.Tag;
+    if MainForm.MenuAVRISP2Mhz.Checked then Speed := MainForm.MenuAVRISP2Mhz.Tag;
+    if MainForm.MenuAVRISP1Mhz.Checked then Speed := MainForm.MenuAVRISP1Mhz.Tag;
+    if MainForm.MenuAVRISP500Khz.Checked then Speed := MainForm.MenuAVRISP500Khz.Tag;
+    if MainForm.MenuAVRISP250Khz.Checked then Speed := MainForm.MenuAVRISP250Khz.Tag;
+    if MainForm.MenuAVRISP125Khz.Checked then Speed := MainForm.MenuAVRISP125Khz.Tag;
   end;
 
-  if MainForm.RadioMw.Checked then
+  if (MainForm.RadioSPI.Checked) and (not AVRISP) then
+  begin
+    if MainForm.Menu3Mhz.Checked then Speed := MainForm.Menu3Mhz.Tag;
+    if MainForm.Menu1_5Mhz.Checked then Speed := MainForm.Menu1_5Mhz.Tag;
+    if MainForm.Menu750Khz.Checked then Speed := MainForm.Menu750Khz.Tag;
+    if MainForm.Menu375Khz.Checked then Speed := MainForm.Menu375Khz.Tag;
+    if MainForm.Menu187_5Khz.Checked then Speed := MainForm.Menu187_5Khz.Tag;
+    if MainForm.Menu93_75Khz.Checked then Speed := MainForm.Menu93_75Khz.Tag;
+    if MainForm.Menu32Khz.Checked then Speed := MainForm.Menu32Khz.Tag;
+  end;
+
+  if (MainForm.RadioMw.Checked) and (not AVRISP) then
   begin
     if MainForm.MenuMW32Khz.Checked then Speed := MainForm.MenuMW32Khz.Tag;
     if MainForm.MenuMW16Khz.Checked then Speed := MainForm.MenuMW16Khz.Tag;
@@ -504,7 +503,7 @@ begin
   Address := StartAddress;
   MainForm.ProgressBar.Max := ChipSize;
 
-  if CH341 then
+  if CH341 or AVRISP then
     ChunkSize := 2
   else
     ChunkSize := 64;
@@ -523,6 +522,12 @@ begin
 
       if CH341 then
         while ch341mw_busy do
+        begin
+          Application.ProcessMessages;
+        end;
+
+      if AVRISP then
+        while avrisp_mw_busy do
         begin
           Application.ProcessMessages;
         end;
@@ -2185,8 +2190,6 @@ try
 
     WriteFlashI2C(RomF, 0, KHexEditor.Data.Size, StrToInt(ComboPageSize.Text), I2C_DevAddr);
 
-    LogPrint(STR_TIME + TimeToStr(Time() - TimeCounter));
-
     if MenuAutoCheck.Checked then
     begin
       if UsbAspI2C_BUSY(hUSBdev, I2C_DevAddr) then
@@ -2194,6 +2197,8 @@ try
         LogPrint(STR_I2C_NO_ANSWER, clRed);
         exit;
       end;
+      LogPrint(STR_TIME + TimeToStr(Time() - TimeCounter));
+
       TimeCounter := Time();
 
       RomF.Position :=0;
@@ -2220,7 +2225,7 @@ try
     KHexEditor.SaveToStream(RomF);
     RomF.Position := 0;
 
-    WriteFlashMW(RomF, StrToInt(ComboMWBitLen.Text), 0, StrToInt(ComboChipSize.Text));
+    WriteFlashMW(RomF, StrToInt(ComboMWBitLen.Text), 0, KHexEditor.Data.Size);
 
     if MenuAutoCheck.Checked then
     begin
@@ -2873,8 +2878,12 @@ try
 
     if CH341 then
       while ch341mw_busy do
-         Application.ProcessMessages
-    else
+         Application.ProcessMessages;
+    if AVRISP then
+      while avrisp_mw_busy do
+         Application.ProcessMessages;
+
+    if (not (AVRISP or CH341)) then
       while (UsbAspMW_Busy(hUSBdev)) do
          Application.ProcessMessages;
 
