@@ -122,8 +122,18 @@ void V2Protocol_ProcessCommand(void)
 			i2c_read();
 			break;
 		case CMD_I2C_WRITE:
-			i2c_write();
-			break;	
+			i2c_write();	
+			break;
+		//MicroWire	
+		case CMD_MW_READ:
+			mw_read();
+			break;
+		case CMD_MW_WRITE:
+			mw_write();
+			break;
+		case CMD_MW_BUSY:
+			mw_busy();
+			break;			
 		case CMD_FIRMWARE_VER:
 			give_firmware_ver();
 			break;
