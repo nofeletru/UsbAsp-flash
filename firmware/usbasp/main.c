@@ -1,4 +1,4 @@
-/*
+ï»¿/*
  * USBasp - USB in-circuit programmer for Atmel AVR controllers
  *
  * Thomas Fischl <tfischl@gmx.de>
@@ -41,9 +41,7 @@ static uchar prog_pagecounter;
 
 static uchar spi_cs_hi = 1;
 
-static uchar mw_opcode = 0;
 static unsigned int mw_addr = 0;
-static uchar mw_send_bits = 0;
 
 usbMsgLen_t usbFunctionSetup(uchar data[8]) {
 
@@ -80,14 +78,14 @@ usbMsgLen_t usbFunctionSetup(uchar data[8]) {
 	} else if (data[1] == USBASP_FUNC_SPI_READ) {
 		CS_LOW();
 		spi_cs_hi = data[2]; //
-		prog_nbytes = (data[7] << 8) | data[6]; //Äëèííà áóôåðà äàííûõ
+		prog_nbytes = (data[7] << 8) | data[6]; //Ð”Ð»Ð¸Ð½Ð½Ð° Ð±ÑƒÑ„ÐµÑ€Ð° Ð´Ð°Ð½Ð½Ñ‹Ñ…
 		prog_state = PROG_STATE_SPI_READ;
 		len = USB_NO_MSG;
 		
 	} else if (data[1] == USBASP_FUNC_SPI_WRITE) {
 		CS_LOW();
 		spi_cs_hi = data[2]; //
-		prog_nbytes = (data[7] << 8) | data[6]; //Äëèííà áóôåðà äàííûõ
+		prog_nbytes = (data[7] << 8) | data[6]; //Ð”Ð»Ð¸Ð½Ð½Ð° Ð±ÑƒÑ„ÐµÑ€Ð° Ð´Ð°Ð½Ð½Ñ‹Ñ…
 		prog_state = PROG_STATE_SPI_WRITE;
 		len = USB_NO_MSG;
 
@@ -108,42 +106,45 @@ usbMsgLen_t usbFunctionSetup(uchar data[8]) {
 			
 	} else if (data[1] == USBASP_FUNC_I2C_READ) {
 		i2c_start();
-		i2c_address(data[2], I2C_WRITE); //Àäðåñ óñòðîéñòâà/ïàìÿòè
-		if (data[3] == 2) {i2c_send_byte(data[5]);}; //1 áàéò àäðåñà (hi)
+		i2c_address(data[2], I2C_WRITE); //ÐÐ´Ñ€ÐµÑ ÑƒÑÑ‚Ñ€Ð¾Ð¹ÑÑ‚Ð²Ð°/Ð¿Ð°Ð¼ÑÑ‚Ð¸
+		if (data[3] == 2) {i2c_send_byte(data[5]);}; //1 Ð±Ð°Ð¹Ñ‚ Ð°Ð´Ñ€ÐµÑÐ° (hi)
 		if (data[3] > 0) {i2c_send_byte(data[4]);}; //2 (lo)
 		i2c_start_rep();
 		i2c_address(data[2], I2C_READ);
-		prog_nbytes = (data[7] << 8) | data[6]; //Ðàçìåð êóñêà äàííûõ
+		prog_nbytes = (data[7] << 8) | data[6]; //Ð Ð°Ð·Ð¼ÐµÑ€ ÐºÑƒÑÐºÐ° Ð´Ð°Ð½Ð½Ñ‹Ñ…
 		prog_state = PROG_STATE_I2C_READ;
 		len = USB_NO_MSG;
 
 
 	} else if (data[1] == USBASP_FUNC_I2C_WRITE) {
 		i2c_start();
-		i2c_address(data[2], I2C_WRITE); //Àäðåñ óñòðîéñòâà/ïàìÿòè
-		if (data[3] == 2) {i2c_send_byte(data[5]);}; //1 áàéò àäðåñà (hi)
+		i2c_address(data[2], I2C_WRITE); //ÐÐ´Ñ€ÐµÑ ÑƒÑÑ‚Ñ€Ð¾Ð¹ÑÑ‚Ð²Ð°/Ð¿Ð°Ð¼ÑÑ‚Ð¸
+		if (data[3] == 2) {i2c_send_byte(data[5]);}; //1 Ð±Ð°Ð¹Ñ‚ Ð°Ð´Ñ€ÐµÑÐ° (hi)
 		if (data[3] > 0) {i2c_send_byte(data[4]);}; //2 (lo)
-		prog_nbytes = (data[7] << 8) | data[6]; //Ðàçìåð ñòðàíèöû
+		prog_nbytes = (data[7] << 8) | data[6]; //Ð Ð°Ð·Ð¼ÐµÑ€ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ñ‹
 		prog_state = PROG_STATE_I2C_WRITE;
 		len = USB_NO_MSG;
 		
 //microwire 93xx ---------------------------------------------------------		
 
 	} else if (data[1] == USBASP_FUNC_MW_WRITE) {
-		mw_addr = (data[3] << 8) | data[2]; //àäðåñ (value)
-		mw_send_bits = data[4];  //lo(index)= ñêîëüêî áèò ïåðåäàâàòü
-		mw_opcode = data[5]; //îïêîä hi(index)
+		mwStart();
+		
+		mw_addr = (data[3] << 8) | data[2]; //Ð°Ð´Ñ€ÐµÑ (value)
+		//data[4] lo(index)= ÑÐºÐ¾Ð»ÑŒÐºÐ¾ Ð±Ð¸Ñ‚ Ð¿ÐµÑ€ÐµÐ´Ð°Ð²Ð°Ñ‚ÑŒ
+		//data[5] //Ð¾Ð¿ÐºÐ¾Ð´ hi(index)
+		
+		mwSendData((data[5] << (data[4]-2)) | mw_addr, data[4]);
 	
-		prog_nbytes = (data[7] << 8) | data[6]; //Ðàçìåð êóñêà äàííûõ
+		prog_nbytes = (data[7] << 8) | data[6]; //Ð Ð°Ð·Ð¼ÐµÑ€ ÐºÑƒÑÐºÐ° Ð´Ð°Ð½Ð½Ñ‹Ñ…
 		prog_state = PROG_STATE_MW_WRITE;
 		len = USB_NO_MSG;
 		
 	} else if (data[1] == USBASP_FUNC_MW_READ) {
 		mwStart();
 		
-		mwSendData((data[3] << 8) | data[2], data[4]); //ïàêåò 16-áèò(value) lo(index)=ñêîëüêî áèò ïåðåäàâàòü
-		prog_nbytes = (data[7] << 8) | data[6]; //Ðàçìåð êóñêà äàííûõ
-		if (prog_nbytes == 0) {mwEnd();};
+		mwSendData((data[3] << 8) | data[2], data[4]); //Ð¿Ð°ÐºÐµÑ‚ 16-Ð±Ð¸Ñ‚(value) lo(index)=ÑÐºÐ¾Ð»ÑŒÐºÐ¾ Ð±Ð¸Ñ‚ Ð¿ÐµÑ€ÐµÐ´Ð°Ð²Ð°Ñ‚ÑŒ
+		prog_nbytes = (data[7] << 8) | data[6]; //Ð Ð°Ð·Ð¼ÐµÑ€ ÐºÑƒÑÐºÐ° Ð´Ð°Ð½Ð½Ñ‹Ñ…
 		prog_state = PROG_STATE_MW_READ;
 		len = USB_NO_MSG;
 	
@@ -151,7 +152,7 @@ usbMsgLen_t usbFunctionSetup(uchar data[8]) {
 	} else if (data[1] == USBASP_FUNC_MW_BUSY) {
 		if (mwBusy() == 1) 
 		{
-			replyBuffer[0] = 1; //Ëèíèÿ çàíÿòà
+			replyBuffer[0] = 1; //Ð›Ð¸Ð½Ð¸Ñ Ð·Ð°Ð½ÑÑ‚Ð°
 		}
 		else
 		{
@@ -468,21 +469,15 @@ uchar usbFunctionWrite(uchar *data, uchar len) {
 		if(len > prog_nbytes)
 		    len = prog_nbytes;
 
-		for (i = 0; i < len; i=i+2)
+		for (i = 0; i < len; i++)
 		{
-			mwStart();
-			mwSendData((mw_opcode << (mw_send_bits-2)) | mw_addr, mw_send_bits);
-			mwSendData((data[i] << 8) | data[i+1], 16);
-			mwEnd();
-			//Ïîòóïèì
-			while (mwBusy() == 1);
-				
-			mw_addr++;
-			prog_nbytes -= 2;
+			mwSendData(data[i], 8);
+			prog_nbytes -= 1;
 		}
 			
 		if(prog_nbytes <= 0)
 		{
+			mwEnd();
 			prog_state = PROG_STATE_IDLE;
 			return 1;
 		}
