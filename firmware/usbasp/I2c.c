@@ -1,5 +1,6 @@
 
 #include <avr/io.h>
+#include "clock.h"
 #include <util/delay.h>
 #include "stdio.h"
 #include "stdlib.h"

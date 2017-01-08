@@ -149,7 +149,7 @@ PROGMEM const char usbDescriptorConfiguration[] = {    /* USB configuration desc
 #if USB_CFG_IS_SELF_POWERED
     (1 << 7) | USBATTR_SELFPOWER,       /* attributes */
 #else
-    (1 << 7),                           /* attributes */
+    (1 << 7) | USBATTR_REMOTEWAKE,      /* attributes */
 #endif
     USB_CFG_MAX_BUS_POWER/2,            /* max USB current in 2mA units */
 /* interface descriptor follows inline: */
@@ -219,7 +219,7 @@ static inline void  usbResetStall(void)
 static void usbGenericSetInterrupt(uchar *data, uchar len, usbTxStatus_t *txStatus)
 {
 uchar   *p;
-char    i;
+schar   i;
 
 #if USB_CFG_IMPLEMENT_HALT
     if(usbTxLen1 == USBPID_STALL)

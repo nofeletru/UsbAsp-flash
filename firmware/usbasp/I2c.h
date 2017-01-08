@@ -1,5 +1,5 @@
 
-#define I2C_DELAY 50
+#define I2C_DELAY 5
 
 #define I2C_READ 1
 #define I2C_WRITE 0
