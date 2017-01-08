@@ -174,12 +174,14 @@ const
 
   ChipListFileName       = 'chiplist.xml';
 
+type
+  TCurrent_HW = (CH341, AVRISP, USBASP);
+
 var
   MainForm: TMainForm;
   ChipListFile: TXMLDocument;
   hUSBDev: pusb_dev_handle; //Хендл usbasp
-  CH341: boolean = false;
-  AVRISP: boolean = false;
+  Current_HW: TCurrent_HW = USBASP;
 
 implementation
 
@@ -271,7 +273,7 @@ var
   err: integer;
 begin
 
-  if CH341 then
+  if Current_HW = CH341 then
   begin
     err := CH341OpenDevice(0);
     if err < 0 then
@@ -286,7 +288,7 @@ begin
     end;
   end;
 
-  if AVRISP then
+  if Current_HW = AVRISP then
   begin
     err := USBOpenDevice(hUSBDev, avrisp_DeviceDescription);
     if err <> 0 then
@@ -395,7 +397,7 @@ var
   Speed: byte;
 begin
 
-  if AVRISP then
+  if Current_HW = AVRISP then
   begin
     if MainForm.MenuAVRISP8Mhz.Checked then Speed := MainForm.MenuAVRISP8Mhz.Tag;
     if MainForm.MenuAVRISP4Mhz.Checked then Speed := MainForm.MenuAVRISP4Mhz.Tag;
@@ -406,7 +408,7 @@ begin
     if MainForm.MenuAVRISP125Khz.Checked then Speed := MainForm.MenuAVRISP125Khz.Tag;
   end;
 
-  if (MainForm.RadioSPI.Checked) and (not AVRISP) then
+  if (MainForm.RadioSPI.Checked) and (Current_HW = USBASP) then
   begin
     if MainForm.Menu3Mhz.Checked then Speed := MainForm.Menu3Mhz.Tag;
     if MainForm.Menu1_5Mhz.Checked then Speed := MainForm.Menu1_5Mhz.Tag;
@@ -417,7 +419,7 @@ begin
     if MainForm.Menu32Khz.Checked then Speed := MainForm.Menu32Khz.Tag;
   end;
 
-  if (MainForm.RadioMw.Checked) and (not AVRISP) then
+  if (MainForm.RadioMw.Checked) and (Current_HW = USBASP) then
   begin
     if MainForm.MenuMW32Khz.Checked then Speed := MainForm.MenuMW32Khz.Tag;
     if MainForm.MenuMW16Khz.Checked then Speed := MainForm.MenuMW16Khz.Tag;
@@ -517,19 +519,19 @@ begin
       BytesWrite := BytesWrite + UsbAspMW_Write(hUSBDev, AddrBitLen, Address, datachunk, ChunkSize);
       Inc(Address, ChunkSize div 2);
 
-      if CH341 then
+      if Current_HW = CH341 then
         while ch341mw_busy do
         begin
           Application.ProcessMessages;
         end;
 
-      if AVRISP then
+      if Current_HW = AVRISP then
         while avrisp_mw_busy do
         begin
           Application.ProcessMessages;
         end;
 
-      if not (AVRISP or CH341) then
+      if Current_HW = USBASP then
         while UsbAspMW_Busy(hUSBDev) do
         begin
           Application.ProcessMessages;
@@ -1588,8 +1590,7 @@ begin
     MainForm.MenuSPIClock.Visible:= true;
     MainForm.MenuAVRISPSPIClock.Visible:= false;
     MainForm.MenuMicrowire.Enabled:= true;
-    CH341 := false;
-    AVRISP := false;
+    Current_HW := USBASP;
   end;
 
   if programmer = HW_CH341A then
@@ -1597,8 +1598,7 @@ begin
     MainForm.MenuSPIClock.Visible:= false;
     MainForm.MenuAVRISPSPIClock.Visible:= false;
     MainForm.MenuMicrowire.Enabled:= false;
-    CH341 := true;
-    AVRISP := false;
+    Current_HW := CH341;
   end;
 
   if programmer = HW_AVRISPMK2 then
@@ -1606,8 +1606,7 @@ begin
     MainForm.MenuSPIClock.Visible:= false;
     MainForm.MenuAVRISPSPIClock.Visible:= true;
     MainForm.MenuMicrowire.Enabled:= false;
-    CH341 := false;
-    AVRISP := true;
+    Current_HW := AVRISP;
   end;
 
 end;
@@ -1824,7 +1823,7 @@ begin
   EnterProgMode25(hUSBdev);
   LockControl();
 
-  if CH341 or AVRISP then
+  if (Current_HW = CH341) or (Current_HW = AVRISP) then
     cycles := 256
   else
     cycles := 32;
@@ -2879,14 +2878,15 @@ try
     UsbAspMW_Ewen(hUSBdev, StrToInt(ComboMWBitLen.Text));
     UsbAspMW_ChipErase(hUSBdev, StrToInt(ComboMWBitLen.Text));
 
-    if CH341 then
+    if Current_HW = CH341 then
       while ch341mw_busy do
          Application.ProcessMessages;
-    if AVRISP then
+
+    if Current_HW = AVRISP then
       while avrisp_mw_busy do
          Application.ProcessMessages;
 
-    if (not (AVRISP or CH341)) then
+    if Current_HW = USBASP then
       while (UsbAspMW_Busy(hUSBdev)) do
          Application.ProcessMessages;
 

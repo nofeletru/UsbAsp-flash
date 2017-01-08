@@ -149,7 +149,7 @@ var
   full_buffer: array of byte;
   address_size: byte;
 begin
-  if CH341 then
+  if Current_HW = CH341 then
   begin
 
     if request = USBASP_FUNC_MW_READ then
@@ -210,7 +210,7 @@ begin
     exit;
   end;
 
-  if AVRISP then
+  if Current_HW = AVRISP then
   begin
     if request = USBASP_FUNC_25_READ then
       Result := arvisp_spi_read(value, buffer, bufflen);
@@ -248,7 +248,7 @@ end;
 function USB_Dev_Close(dev: pusb_dev_handle): longword;
 begin
 
-  if CH341 then
+  if Current_HW = CH341 then
   begin
     CH341CloseDevice(0);
     Exit;
@@ -256,7 +256,7 @@ begin
 
   if dev <> nil then
   begin
-    if AVRISP then
+    if Current_HW = AVRISP then
       usb_release_interface(dev, 0);
 
     result := USB_Close(dev);

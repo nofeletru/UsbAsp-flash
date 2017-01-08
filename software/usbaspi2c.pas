@@ -41,7 +41,7 @@ procedure EnterProgModeI2C(devHandle: Pusb_dev_handle);
 var
   dummy: byte;
 begin
-  if AVRISP then exit;
+  if Current_HW = AVRISP then exit;
   USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_I2C_INIT, 0, 0, 0, dummy);
   sleep(50);
 end;
@@ -68,7 +68,7 @@ var
   pins, i: cardinal;
 
 begin
-  if CH341 then
+  if Current_HW = CH341 then
   begin
     CH341SetOutput(0, $10, 0, $40000); //sda low(start)
 
@@ -90,7 +90,7 @@ begin
     exit;
   end;
 
-  if AVRISP then
+  if Current_HW = AVRISP then
   begin
     result := not avrisp_i2c_ack(Address);
     exit;

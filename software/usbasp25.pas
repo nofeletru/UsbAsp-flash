@@ -94,14 +94,14 @@ procedure EnterProgMode25(devHandle: Pusb_dev_handle);
 var
   dummy: byte;
 begin
-  if CH341 then
+  if Current_HW = CH341 then
   begin
     //CH341SetTimeout(0, 1000,1000);
      CH341SetStream(0, %10000001);
      exit;
   end;
 
-  if AVRISP then
+  if Current_HW = AVRISP then
   begin
     avrisp_enter_progmode();
     exit;
@@ -116,13 +116,13 @@ procedure ExitProgMode25(devHandle: Pusb_dev_handle);
 var
   dummy: byte;
 begin
-  if CH341 then
+  if Current_HW = CH341 then
   begin
      CH341Set_D5_D0(0, 0, 0);
      exit;
   end;
 
-  if AVRISP then
+  if Current_HW = AVRISP then
   begin
     if devHandle <> nil then avrisp_leave_progmode();
     exit;
@@ -180,13 +180,13 @@ var
   buff: byte;
 begin
 
-  if CH341 then
+  if Current_HW = CH341 then
   begin
     result := 0;
     exit;
   end;
 
-  if AVRISP then
+  if Current_HW = AVRISP then
   begin
     if avrisp_set_ckl(speed) then result := 0 else result := -1;
     exit;
