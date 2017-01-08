@@ -503,10 +503,7 @@ begin
   Address := StartAddress;
   MainForm.ProgressBar.Max := ChipSize;
 
-  if CH341 or AVRISP then
-    ChunkSize := 2
-  else
-    ChunkSize := 64;
+  ChunkSize := 2;
 
   if ChunkSize > ChipSize then ChunkSize := ChipSize;
 
@@ -528,6 +525,12 @@ begin
 
       if AVRISP then
         while avrisp_mw_busy do
+        begin
+          Application.ProcessMessages;
+        end;
+
+      if not (AVRISP or CH341) then
+        while UsbAspMW_Busy(hUSBDev) do
         begin
           Application.ProcessMessages;
         end;
