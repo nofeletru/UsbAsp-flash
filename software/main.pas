@@ -252,18 +252,16 @@ end;
 procedure LogPrint(text: string; AColor: TColor = clDefault);
 var
     fp: TFontParams;
-    AFont: TFont;
-    selstart, SelLength: Integer;
+    SelStart, SelLength: Integer;
 begin
+  SelLength := UTF8Length(text);
+  SelStart := UTF8Length(MainForm.Log.Text);
 
-  SelLength := Length(MainForm.Log.Text);
-  SelStart := Length(MainForm.Log.Text);
+  MainForm.Log.Lines.Add(text);
 
   MainForm.Log.GetTextAttributes(SelStart, fp);
   fp.Color := AColor;
   MainForm.Log.SetTextAttributes(SelStart, SelLength, fp);
-
-  MainForm.Log.Lines.Add(Text);
 
 end;
 
