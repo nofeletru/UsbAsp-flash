@@ -86,7 +86,7 @@ begin
   buff[2] := hi(bufflen);
   buff[3] := cs;
 
-  usb_bulk_write(hUSBDev, OUT_EP, buff, SizeOf(buffer), STREAM_TIMEOUT_MS);
+  usb_bulk_write(hUSBDev, OUT_EP, buff, SizeOf(buff), STREAM_TIMEOUT_MS);
 
   result := usb_bulk_read(hUSBDev, IN_EP, buffer, bufflen, STREAM_TIMEOUT_MS);
 end;
