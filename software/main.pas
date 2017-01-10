@@ -363,12 +363,12 @@ begin
   if MainForm.ComboSPICMD.ItemIndex = SPI_CMD_25 then
   begin
     UsbAsp25_ReadSR(hUSBDev, sreg);
-    if (sreg and 4 <> 0) or
-       (sreg and 8 <> 0) or
-       (sreg and 16 <> 0) or
-       (sreg and 32 <> 0) or
-       (sreg and 64 <> 0) or
-       (sreg and 128 <> 0)
+    if IsBitSet(sreg, 2) or
+       IsBitSet(sreg, 3) or
+       IsBitSet(sreg, 4) or
+       IsBitSet(sreg, 5) or
+       IsBitSet(sreg, 6) or
+       IsBitSet(sreg, 7)
     then
     begin
       LogPrint(STR_BLOCK_EN, ClRed);
@@ -459,30 +459,31 @@ begin
   Address := StartAddress;
   MainForm.ProgressBar.Max := ChipSize div ChunkSize;
 
-  try
-    RomStream.Clear;
+  RomStream.Clear;
 
-    while Address < ChipSize div 2 do
+  while Address < ChipSize div 2 do
+  begin
+    //if ChunkSize > ((ChipSize div 2) - Address) then ChunkSize := (ChipSize div 2) - Address;
+
+    BytesRead := BytesRead + UsbAspMW_Read(hUSBDev, AddrBitLen, Address, datachunk, ChunkSize);
+    RomStream.WriteBuffer(datachunk, ChunkSize);
+    Inc(Address, ChunkSize div 2);
+
+    MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 2;
+    Application.ProcessMessages;
+
+    if MainForm.ButtonCancel.Tag <> 0 then
     begin
-
-      //if ChunkSize > ((ChipSize div 2) - Address) then ChunkSize := (ChipSize div 2) - Address;
-
-      BytesRead := BytesRead + UsbAspMW_Read(hUSBDev, AddrBitLen, Address, datachunk, ChunkSize);
-      RomStream.WriteBuffer(datachunk, ChunkSize);
-      Inc(Address, ChunkSize div 2);
-
-      MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 2;
-      Application.ProcessMessages;
+      LogPrint(STR_USER_CANCEL, clRed);
+      Break;
     end;
-
-  finally
-
   end;
 
   if BytesRead <> ChipSize then
     LogPrint(STR_WRONG_BYTES_READ, ClRed)
   else
     LogPrint(STR_DONE);
+
   MainForm.ProgressBar.Position := 0;
 end;
 
@@ -507,50 +508,42 @@ begin
 
   if ChunkSize > ChipSize then ChunkSize := ChipSize;
 
-  try
-    UsbAspMW_EWEN(hUSBDev, AddrBitLen);
+  UsbAspMW_EWEN(hUSBDev, AddrBitLen);
 
-    while Address < ChipSize div 2 do
-    begin
-      RomStream.ReadBuffer(DataChunk, ChunkSize);
+  while Address < ChipSize div 2 do
+  begin
+    RomStream.ReadBuffer(DataChunk, ChunkSize);
 
-      BytesWrite := BytesWrite + UsbAspMW_Write(hUSBDev, AddrBitLen, Address, datachunk, ChunkSize);
-      Inc(Address, ChunkSize div 2);
+    BytesWrite := BytesWrite + UsbAspMW_Write(hUSBDev, AddrBitLen, Address, datachunk, ChunkSize);
+    Inc(Address, ChunkSize div 2);
 
-      if Current_HW = CH341 then
-        while ch341mw_busy do
-        begin
-          Application.ProcessMessages;
-        end;
+    if Current_HW = CH341 then
+      while ch341mw_busy do
+        Application.ProcessMessages;
 
-      if Current_HW = AVRISP then
-        while avrisp_mw_busy do
-        begin
-          Application.ProcessMessages;
-        end;
+    if Current_HW = AVRISP then
+      while avrisp_mw_busy do
+        Application.ProcessMessages;
 
-      if Current_HW = USBASP then
-        while UsbAspMW_Busy(hUSBDev) do
-        begin
-          Application.ProcessMessages;
-        end;
+    if Current_HW = USBASP then
+      while UsbAspMW_Busy(hUSBDev) do
+        Application.ProcessMessages;
 
-      MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + ChunkSize;
-      Application.ProcessMessages;
-    end;
-
-  finally
-
+    MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + ChunkSize;
+    Application.ProcessMessages;
   end;
 
   if BytesWrite <> ChipSize then
     LogPrint(STR_WRONG_BYTES_WRITE, ClRed)
   else
     LogPrint(STR_DONE);
+
   MainForm.ProgressBar.Position := 0;
 end;
 
 procedure WriteFlash25(var RomStream: TMemoryStream; StartAddress, WriteSize: cardinal; PageSize: word; WriteType: integer);
+const
+  FLASH_SIZE_128MBIT = 16777216;
 var
   DataChunk: array[0..2047] of byte;
   DataChunk2: array[0..2047] of byte;
@@ -573,109 +566,99 @@ begin
   Address := StartAddress;
   MainForm.ProgressBar.Max := WriteSize div PageSize;
 
-  try
-
-    //Проверяем тип адресации 256+Mbit
-    if WriteSize > 16777216 then
-    begin
-      UsbAsp25_ReadSR(hUSBDev, sreg, $15);
-      if isBitSet(sreg, 0) then addr32bit4byte := true;
-      //Сбрасываем регистр адреса
-      sreg := 0;
-      UsbAsp25_WriteSR(hUSBDev, sreg, $c5);
-    end;
+  //Проверяем тип адресации 256+Mbit
+  if WriteSize > FLASH_SIZE_128MBIT then
+  begin
+    UsbAsp25_ReadSR(hUSBDev, sreg, $15);
+    if isBitSet(sreg, 0) then addr32bit4byte := true;
+    //Сбрасываем регистр адреса
+    sreg := 0;
+    UsbAsp25_WriteSR(hUSBDev, sreg, $c5);
+  end;
 
 
-    while Address < WriteSize do
-    begin
-      //Только вначале aai
-      if (((WriteType = WT_SSTB) or (WriteType = WT_SSTW)) and (Address = StartAddress))
-        or
-      //Вначале страницы
-      (WriteType = WT_PAGE) then UsbAsp25_WREN(hUSBDev);
+  while Address < WriteSize do
+  begin
+    //Только вначале aai
+    if (((WriteType = WT_SSTB) or (WriteType = WT_SSTW)) and (Address = StartAddress)) or
+    //Вначале страницы
+    (WriteType = WT_PAGE) then UsbAsp25_WREN(hUSBDev);
 
-      if (WriteSize - Address) < PageSize then PageSize := (WriteSize - Address);
-      RomStream.ReadBuffer(DataChunk, PageSize);
+    if (WriteSize - Address) < PageSize then PageSize := (WriteSize - Address);
+    RomStream.ReadBuffer(DataChunk, PageSize);
 
-      if (WriteType = WT_SSTB) then
+    if (WriteType = WT_SSTB) then
       if (Address = StartAddress) then //Пишем первый байт с адресом
         BytesWrite := BytesWrite + UsbAsp25_Write(hUSBDev, $AF, Address, datachunk, PageSize)
         else
         //Пишем остальные(без адреса)
         BytesWrite := BytesWrite + UsbAsp25_WriteSSTB(hUSBDev, $AF, datachunk[0]);
 
-      if (WriteType = WT_SSTW) then
+    if (WriteType = WT_SSTW) then
       if (Address = StartAddress) then //Пишем первые два байта с адресом
         BytesWrite := BytesWrite + UsbAsp25_Write(hUSBDev, $AD, Address, datachunk, PageSize)
         else
         //Пишем остальные(без адреса)
         BytesWrite := BytesWrite + UsbAsp25_WriteSSTW(hUSBDev, $AD, datachunk[0], datachunk[1]);
 
-      if WriteType = WT_PAGE then
+    if WriteType = WT_PAGE then
+    begin
+      if WriteSize > FLASH_SIZE_128MBIT then //Память больше 128Мбит
       begin
-
-        if WriteSize > 16777216 then //Память больше 128Мбит
+        if addr32bit4byte then //4 байтная адресация включена
+          BytesWrite := BytesWrite + UsbAsp25_Write32bitAddr(hUSBDev, $02, Address, datachunk, PageSize)
+        else  //3 байтовая адресация включена
         begin
-          if addr32bit4byte then //4 байтная адресация включена
-            BytesWrite := BytesWrite + UsbAsp25_Write32bitAddr(hUSBDev, $02, Address, datachunk, PageSize)
-          else
+          //старший байт адреса
+          if Address > FLASH_SIZE_128MBIT then
           begin
-            //3 байтовая адресация включена
-
-            //старший байт адреса
-            if Address > 16777216 then
-            begin
-              UsbAsp25_WriteSR(hUSBDev, hi(hi(Address)), $c5);
-              UsbAsp25_WREN(hUSBDev);
-            end;
-
-            BytesWrite := BytesWrite + UsbAsp25_Write(hUSBDev, $02, Address, datachunk, PageSize);
+            UsbAsp25_WriteSR(hUSBDev, hi(hi(Address)), $c5);
+            UsbAsp25_WREN(hUSBDev);
           end;
-        end
-        else
-          //Память в пределах 128Мбит
+
           BytesWrite := BytesWrite + UsbAsp25_Write(hUSBDev, $02, Address, datachunk, PageSize);
+        end;
+      end
+      else //Память в пределах 128Мбит
+        BytesWrite := BytesWrite + UsbAsp25_Write(hUSBDev, $02, Address, datachunk, PageSize);
+    end;
 
-      end;
-
-      if not MainForm.MenuIgnoreBusyBit.Checked then  //Игнорировать проверку
+    if not MainForm.MenuIgnoreBusyBit.Checked then  //Игнорировать проверку
       if UsbAsp25_Busy(hUSBDev) then
       begin
         LogPrint(STR_USER_CANCEL , clRed);
         Break;
       end;
 
-      if (MainForm.MenuAutoCheck.Checked) and (WriteType = WT_PAGE) then
-      begin
+    if (MainForm.MenuAutoCheck.Checked) and (WriteType = WT_PAGE) then
+    begin
 	  
-        if WriteSize > 16777216 then
-          UsbAsp25_Read32bitAddr(hUSBDev, $13, Address, datachunk2, PageSize)
-        else
-          UsbAsp25_Read(hUSBDev, $03, Address, datachunk2, PageSize);
+      if WriteSize > FLASH_SIZE_128MBIT then
+        UsbAsp25_Read32bitAddr(hUSBDev, $13, Address, datachunk2, PageSize)
+      else
+        UsbAsp25_Read(hUSBDev, $03, Address, datachunk2, PageSize);
 		  
-        for i:=0 to PageSize-1 do
-          if DataChunk2[i] <> DataChunk[i] then
-          begin
-            LogPrint(STR_VERIFY_ERROR+IntToHex(Address+i, 8), clRed);
-            MainForm.ProgressBar.Position := 0;
-            Exit;
-          end;
-      end;
-
-      Inc(Address, PageSize);
-      MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
-      Application.ProcessMessages;
+      for i:=0 to PageSize-1 do
+        if DataChunk2[i] <> DataChunk[i] then
+        begin
+          LogPrint(STR_VERIFY_ERROR+IntToHex(Address+i, 8), clRed);
+          MainForm.ProgressBar.Position := 0;
+          Exit;
+        end;
     end;
 
-    UsbAsp25_Wrdi(hUSBDev); //Для sst
-
-  finally
+    Inc(Address, PageSize);
+    MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
+    Application.ProcessMessages;
   end;
+
+  UsbAsp25_Wrdi(hUSBDev); //Для sst
 
   if BytesWrite <> WriteSize then
     LogPrint(STR_WRONG_BYTES_WRITE, clRed)
   else
     LogPrint(STR_DONE);
+
   MainForm.ProgressBar.Position := 0;
 end;
 
@@ -700,50 +683,44 @@ begin
   Address := StartAddress;
   MainForm.ProgressBar.Max := WriteSize div PageSize;
 
-  try
+  while Address < WriteSize do
+  begin
+    UsbAsp95_WREN(hUSBDev);
 
-    while Address < WriteSize do
-    begin
+    if (WriteSize - Address) < PageSize then PageSize := (WriteSize - Address);
+    RomStream.ReadBuffer(DataChunk, PageSize);
 
-      UsbAsp95_WREN(hUSBDev);
+    BytesWrite := BytesWrite + UsbAsp95_Write(hUSBDev, ChipSize, Address, datachunk, PageSize);
 
-      if (WriteSize - Address) < PageSize then PageSize := (WriteSize - Address);
-      RomStream.ReadBuffer(DataChunk, PageSize);
-
-      BytesWrite := BytesWrite + UsbAsp95_Write(hUSBDev, ChipSize, Address, datachunk, PageSize);
-
-
-      if not MainForm.MenuIgnoreBusyBit.Checked then  //Игнорировать проверку
+    if not MainForm.MenuIgnoreBusyBit.Checked then  //Игнорировать проверку
       if UsbAsp25_Busy(hUSBDev) then
       begin
         LogPrint(STR_USER_CANCEL , clRed);
         Break;
       end;
 
-      if MainForm.MenuAutoCheck.Checked then
-      begin
-        UsbAsp95_Read(hUSBDev, ChipSize, Address, datachunk2, PageSize);
-        for i:=0 to PageSize-1 do
-          if DataChunk2[i] <> DataChunk[i] then
-          begin
-            LogPrint(STR_VERIFY_ERROR+IntToHex(Address+i, 8), clRed);
-            MainForm.ProgressBar.Position := 0;
-            Exit;
-          end;
-      end;
-
-      Inc(Address, PageSize);
-      MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
-      Application.ProcessMessages;
+    if MainForm.MenuAutoCheck.Checked then
+    begin
+      UsbAsp95_Read(hUSBDev, ChipSize, Address, datachunk2, PageSize);
+      for i:=0 to PageSize-1 do
+        if DataChunk2[i] <> DataChunk[i] then
+        begin
+          LogPrint(STR_VERIFY_ERROR+IntToHex(Address+i, 8), clRed);
+          MainForm.ProgressBar.Position := 0;
+          Exit;
+        end;
     end;
 
-  finally
+    Inc(Address, PageSize);
+    MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
+    Application.ProcessMessages;
   end;
 
   if BytesWrite <> WriteSize then
     LogPrint(STR_WRONG_BYTES_WRITE, clRed)
   else
     LogPrint(STR_DONE);
+
   MainForm.ProgressBar.Position := 0;
 end;
 
@@ -773,18 +750,15 @@ begin
   UsbAspMulti_WriteReg(hUSBdev, $FEAD, $08); //en flash
   UsbAspMulti_WriteReg(hUSBdev, $FEA7, $A4); //en write
 
-  try
-
-    while Address < WriteSize do
-    begin
+  while Address < WriteSize do
+  begin
 
 
-      //if (WriteSize - Address) < PageSize then PageSize := (WriteSize - Address);
-      RomStream.ReadBuffer(DataChunk, PageSize);
+    //if (WriteSize - Address) < PageSize then PageSize := (WriteSize - Address);
+    RomStream.ReadBuffer(DataChunk, PageSize);
 
-
-      UsbAspMulti_WritePage(hUSBDev, Address, datachunk);
-      BytesWrite := BytesWrite + 1;
+    UsbAspMulti_WritePage(hUSBDev, Address, datachunk);
+    BytesWrite := BytesWrite + 1;
 
      { if (MainForm.MenuAutoCheck.Checked) then
       begin
@@ -798,22 +772,20 @@ begin
           end;
       end; }
 
-      Inc(Address, 1);
-      MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
-      if MainForm.ButtonCancel.Tag <> 0 then
-      begin
-        Exit;
-      end;
-      Application.ProcessMessages;
+    Inc(Address, 1);
+    MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
+    if MainForm.ButtonCancel.Tag <> 0 then
+    begin
+      Exit;
     end;
-
-  finally
+    Application.ProcessMessages;
   end;
 
   if BytesWrite <> WriteSize then
     LogPrint(STR_WRONG_BYTES_WRITE, clRed)
   else
     LogPrint(STR_DONE);
+
   MainForm.ProgressBar.Position := 0;
 end;
 
@@ -838,50 +810,47 @@ begin
   PageAddress := StartAddress;
   MainForm.ProgressBar.Max := ChipSize div PageSize;
 
-  try
+  while PageAddress < ChipSize div PageSize do
+  begin
+    //UsbAsp45_WREN(hUSBDev);
+    RomStream.ReadBuffer(DataChunk, PageSize);
 
-    while PageAddress < ChipSize div PageSize do
+    if WriteType = WT_PAGE then
+      BytesWrite := BytesWrite + UsbAsp45_Write(hUSBDev, PageAddress, datachunk, PageSize);
+
+    if UsbAsp45_Busy(hUSBDev) then
     begin
-      //UsbAsp45_WREN(hUSBDev);
-      RomStream.ReadBuffer(DataChunk, PageSize);
-
-      if WriteType = WT_PAGE then
-        BytesWrite := BytesWrite + UsbAsp45_Write(hUSBDev, PageAddress, datachunk, PageSize);
-
-      if UsbAsp45_Busy(hUSBDev) then
-      begin
-        LogPrint(STR_USER_CANCEL, clRed);
-        Break;
-      end;
-
-      if MainForm.MenuAutoCheck.Checked then
-      begin
-        UsbAsp45_Read(hUSBDev, PageAddress, datachunk2, PageSize);
-        for i:=0 to PageSize-1 do
-          if DataChunk2[i] <> DataChunk[i] then
-          begin
-            LogPrint(STR_VERIFY_ERROR+IntToHex((PageAddress*PageSize )+i, 8), clRed);
-            Exit;
-          end;
-      end;
-
-      Inc(PageAddress, 1);
-      MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
-      Application.ProcessMessages;
+      LogPrint(STR_USER_CANCEL, clRed);
+      Break;
     end;
 
+    if MainForm.MenuAutoCheck.Checked then
+    begin
+      UsbAsp45_Read(hUSBDev, PageAddress, datachunk2, PageSize);
+      for i:=0 to PageSize-1 do
+        if DataChunk2[i] <> DataChunk[i] then
+        begin
+          LogPrint(STR_VERIFY_ERROR+IntToHex((PageAddress*PageSize )+i, 8), clRed);
+          Exit;
+        end;
+    end;
 
-  finally
+    Inc(PageAddress, 1);
+    MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
+    Application.ProcessMessages;
   end;
 
   if BytesWrite <> ChipSize then
     LogPrint(STR_WRONG_BYTES_WRITE, clRed)
   else
     LogPrint(STR_DONE);
+
   MainForm.ProgressBar.Position := 0;
 end;
 
 procedure ReadFlash25(var RomStream: TMemoryStream; StartAddress, ChipSize: cardinal);
+const
+  FLASH_SIZE_128MBIT = 16777216;
 var
   ChunkSize: Word;
   BytesRead: integer;
@@ -902,37 +871,35 @@ begin
   Address := StartAddress;
   MainForm.ProgressBar.Max := ChipSize div ChunkSize;
 
-  try
-    RomStream.Clear;
+  RomStream.Clear;
 
-    while Address < ChipSize do
+  while Address < ChipSize do
+  begin
+    if ChunkSize > (ChipSize - Address) then ChunkSize := ChipSize - Address;
+
+    if ChipSize > FLASH_SIZE_128MBIT then
+      BytesRead := BytesRead + UsbAsp25_Read32bitAddr(hUSBDev, $13, Address, datachunk, ChunkSize)
+    else
+      BytesRead := BytesRead + UsbAsp25_Read(hUSBDev, $03, Address, datachunk, ChunkSize);
+
+    RomStream.WriteBuffer(datachunk, chunksize);
+    Inc(Address, ChunkSize);
+
+    MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
+    Application.ProcessMessages;
+
+    if MainForm.ButtonCancel.Tag <> 0 then
     begin
-      if ChunkSize > (ChipSize - Address) then ChunkSize := ChipSize - Address;
-
-      if ChipSize > 16777216 then
-        BytesRead := BytesRead + UsbAsp25_Read32bitAddr(hUSBDev, $13, Address, datachunk, ChunkSize)
-      else
-        BytesRead := BytesRead + UsbAsp25_Read(hUSBDev, $03, Address, datachunk, ChunkSize);
-
-      RomStream.WriteBuffer(datachunk, chunksize);
-      Inc(Address, ChunkSize);
-
-      MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
-      Application.ProcessMessages;
-      if MainForm.ButtonCancel.Tag <> 0 then
-      begin
-        LogPrint(STR_USER_CANCEL, clRed);
-        Break;
-      end;
+      LogPrint(STR_USER_CANCEL, clRed);
+      Break;
     end;
-
-  finally
   end;
 
   if BytesRead <> ChipSize then
     LogPrint(STR_WRONG_BYTES_READ, clRed)
   else
     LogPrint(STR_DONE);
+
   MainForm.ProgressBar.Position := 0;
 end;
 
@@ -957,33 +924,31 @@ begin
   Address := StartAddress;
   MainForm.ProgressBar.Max := ChipSize div ChunkSize;
 
-  try
-    RomStream.Clear;
+  RomStream.Clear;
 
-    while Address < ChipSize do
+  while Address < ChipSize do
+  begin
+    if ChunkSize > (ChipSize - Address) then ChunkSize := ChipSize - Address;
+
+    BytesRead := BytesRead + UsbAsp95_Read(hUSBDev, ChipSize, Address, datachunk, ChunkSize);
+    RomStream.WriteBuffer(datachunk, chunksize);
+    Inc(Address, ChunkSize);
+
+    MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
+    Application.ProcessMessages;
+
+    if MainForm.ButtonCancel.Tag <> 0 then
     begin
-      if ChunkSize > (ChipSize - Address) then ChunkSize := ChipSize - Address;
-
-      BytesRead := BytesRead + UsbAsp95_Read(hUSBDev, ChipSize, Address, datachunk, ChunkSize);
-      RomStream.WriteBuffer(datachunk, chunksize);
-      Inc(Address, ChunkSize);
-
-      MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
-      Application.ProcessMessages;
-      if MainForm.ButtonCancel.Tag <> 0 then
-      begin
-        LogPrint(STR_USER_CANCEL, clRed);
-        Break;
-      end;
+      LogPrint(STR_USER_CANCEL, clRed);
+      Break;
     end;
-
-  finally
   end;
 
   if BytesRead <> ChipSize then
     LogPrint(STR_WRONG_BYTES_READ, clRed)
   else
     LogPrint(STR_DONE);
+
   MainForm.ProgressBar.Position := 0;
 end;
 
@@ -1008,33 +973,31 @@ begin
   Address := StartAddress;
   MainForm.ProgressBar.Max := ChipSize div ChunkSize;
 
-  try
-    RomStream.Clear;
+  RomStream.Clear;
 
-    while Address < ChipSize div ChunkSize do
+  while Address < ChipSize div ChunkSize do
+  begin
+    //if ChunkSize > (ChipSize - Address) then ChunkSize := ChipSize - Address;
+
+    BytesRead := BytesRead + UsbAsp45_Read(hUSBDev, Address, datachunk, ChunkSize);
+    RomStream.WriteBuffer(datachunk, chunksize);
+    Inc(Address, 1);
+
+    MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
+    Application.ProcessMessages;
+
+    if MainForm.ButtonCancel.Tag <> 0 then
     begin
-      //if ChunkSize > (ChipSize - Address) then ChunkSize := ChipSize - Address;
-
-      BytesRead := BytesRead + UsbAsp45_Read(hUSBDev, Address, datachunk, ChunkSize);
-      RomStream.WriteBuffer(datachunk, chunksize);
-      Inc(Address, 1);
-
-      MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
-      Application.ProcessMessages;
-      if MainForm.ButtonCancel.Tag <> 0 then
-      begin
-        LogPrint(STR_USER_CANCEL, clRed);
-        Break;
-      end;
+      LogPrint(STR_USER_CANCEL, clRed);
+      Break;
     end;
-
-  finally
   end;
 
   if BytesRead <> ChipSize then
     LogPrint(STR_WRONG_BYTES_READ, clRed)
   else
     LogPrint(STR_DONE);
+
   MainForm.ProgressBar.Position := 0;
 end;
 
@@ -1062,38 +1025,38 @@ begin
   UsbAspMulti_EnableEDI(hUSBdev);
   UsbAspMulti_WriteReg(hUSBdev, $FEAD, $08); //en flash
 
-  try
-    RomStream.Clear;
+  RomStream.Clear;
 
-    while Address < ChipSize do
+  while Address < ChipSize do
+  begin
+    if ChunkSize > (ChipSize - Address) then ChunkSize := ChipSize - Address;
+
+    BytesRead := BytesRead + UsbAspMulti_Read(hUSBDev, Address, datachunk);
+    RomStream.WriteBuffer(datachunk, chunksize);
+    Inc(Address, ChunkSize);
+
+    MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
+    Application.ProcessMessages;
+
+    if MainForm.ButtonCancel.Tag <> 0 then
     begin
-      if ChunkSize > (ChipSize - Address) then ChunkSize := ChipSize - Address;
-
-      BytesRead := BytesRead + UsbAspMulti_Read(hUSBDev, Address, datachunk);
-      RomStream.WriteBuffer(datachunk, chunksize);
-      Inc(Address, ChunkSize);
-
-      MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
-      Application.ProcessMessages;
-      if MainForm.ButtonCancel.Tag <> 0 then
-      begin
-        LogPrint(STR_USER_CANCEL, clRed);
-        Break;
-      end;
+      LogPrint(STR_USER_CANCEL, clRed);
+      Break;
     end;
-
-  finally
   end;
 
   if BytesRead <> ChipSize then
     LogPrint(STR_WRONG_BYTES_READ, clRed)
   else
     LogPrint(STR_DONE);
+
   MainForm.ProgressBar.Position := 0;
 end;
 
 
 procedure VerifyFlash25(var RomStream: TMemoryStream; StartAddress, DataSize: cardinal);
+const
+  FLASH_SIZE_128MBIT = 16777216;
 var
   ChunkSize: Word;
   BytesRead, i: integer;
@@ -1115,13 +1078,11 @@ begin
   Address := StartAddress;
   MainForm.ProgressBar.Max := DataSize div ChunkSize;
 
-  try
-
   while Address < DataSize do
   begin
     if ChunkSize > (DataSize - Address) then ChunkSize := DataSize - Address;
 
-    if DataSize > 16777216 then
+    if DataSize > FLASH_SIZE_128MBIT then
         BytesRead := BytesRead + UsbAsp25_Read32bitAddr(hUSBDev, $13, Address, datachunk, ChunkSize)
       else
         BytesRead := BytesRead + UsbAsp25_Read(hUSBDev, $03, Address, datachunk, ChunkSize);
@@ -1140,6 +1101,7 @@ begin
 
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
+
     if MainForm.ButtonCancel.Tag <> 0 then
     begin
       LogPrint(STR_USER_CANCEL, clRed);
@@ -1147,13 +1109,11 @@ begin
     end;
   end;
 
-  finally
-  end;
-
   if (BytesRead <> DataSize) then
     LogPrint(STR_WRONG_BYTES_READ, clRed)
   else
     LogPrint(STR_DONE);
+
   MainForm.ProgressBar.Position := 0;
 end;
 
@@ -1179,8 +1139,6 @@ begin
   Address := StartAddress;
   MainForm.ProgressBar.Max := DataSize div ChunkSize;
 
-  try
-
   while Address < DataSize do
   begin
     if ChunkSize > (DataSize - Address) then ChunkSize := DataSize - Address;
@@ -1200,6 +1158,7 @@ begin
 
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
+
     if MainForm.ButtonCancel.Tag <> 0 then
     begin
       LogPrint(STR_USER_CANCEL, clRed);
@@ -1207,13 +1166,11 @@ begin
     end;
   end;
 
-  finally
-  end;
-
   if (BytesRead <> DataSize) then
     LogPrint(STR_WRONG_BYTES_READ, clRed)
   else
     LogPrint(STR_DONE);
+
   MainForm.ProgressBar.Position := 0;
 end;
 
@@ -1239,8 +1196,6 @@ begin
   PageAddress := StartAddress;
   MainForm.ProgressBar.Max := ChipSize div ChunkSize;
 
-  try
-
   while PageAddress < ChipSize div ChunkSize do
   begin
     //if ChunkSize > (ChipSize - Address) then ChunkSize := ChipSize - Address;
@@ -1260,6 +1215,7 @@ begin
 
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
+
     if MainForm.ButtonCancel.Tag <> 0 then
     begin
       LogPrint(STR_USER_CANCEL, clRed);
@@ -1267,13 +1223,11 @@ begin
     end;
   end;
 
-  finally
-  end;
-
   if (BytesRead <> ChipSize) then
     LogPrint(STR_WRONG_BYTES_READ, clRed)
   else
     LogPrint(STR_DONE);
+
   MainForm.ProgressBar.Position := 0;
 end;
 
@@ -1299,8 +1253,6 @@ begin
   Address := StartAddress;
   MainForm.ProgressBar.Max := ChipSize div ChunkSize;
 
-  try
-
   while Address < ChipSize div 2 do
   begin
     BytesRead := BytesRead + UsbAspMW_Read(hUSBDev, AddrBitLen, Address, datachunk, ChunkSize);
@@ -1320,14 +1272,11 @@ begin
     Application.ProcessMessages;
   end;
 
-  finally
-
-  end;
-
   if (BytesRead <> ChipSize) then
     LogPrint(STR_WRONG_BYTES_READ, clRed)
   else
     LogPrint(STR_DONE);
+
   MainForm.ProgressBar.Position := 0;
 end;
 
@@ -1356,41 +1305,39 @@ begin
   UsbAspMulti_EnableEDI(hUSBdev);
   UsbAspMulti_WriteReg(hUSBdev, $FEAD, $08); //en flash
 
-  try
-    RomStream.Clear;
+  RomStream.Clear;
 
-    while Address < ChipSize do
+  while Address < ChipSize do
+  begin
+    if ChunkSize > (ChipSize - Address) then ChunkSize := ChipSize - Address;
+
+    BytesRead := BytesRead + UsbAspMulti_Read(hUSBDev, Address, datachunk);
+    RomStream.ReadBuffer(DataChunkFile, ChunkSize);
+
+    if DataChunk <> DataChunkFile then
     begin
-      if ChunkSize > (ChipSize - Address) then ChunkSize := ChipSize - Address;
-
-      BytesRead := BytesRead + UsbAspMulti_Read(hUSBDev, Address, datachunk);
-      RomStream.ReadBuffer(DataChunkFile, ChunkSize);
-
-      if DataChunk <> DataChunkFile then
-      begin
-        LogPrint(STR_VERIFY_ERROR+IntToHex(Address, 8), clRed);
-        MainForm.ProgressBar.Position := 0;
-        Exit;
-      end;
-
-      Inc(Address, ChunkSize);
-
-      MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
-      Application.ProcessMessages;
-      if MainForm.ButtonCancel.Tag <> 0 then
-      begin
-        LogPrint(STR_USER_CANCEL, clRed);
-        Break;
-      end;
+      LogPrint(STR_VERIFY_ERROR+IntToHex(Address, 8), clRed);
+      MainForm.ProgressBar.Position := 0;
+      Exit;
     end;
 
-  finally
+    Inc(Address, ChunkSize);
+
+    MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
+    Application.ProcessMessages;
+
+    if MainForm.ButtonCancel.Tag <> 0 then
+    begin
+      LogPrint(STR_USER_CANCEL, clRed);
+      Break;
+    end;
   end;
 
   if BytesRead <> ChipSize then
     LogPrint(STR_WRONG_BYTES_READ, clRed)
   else
     LogPrint(STR_DONE);
+
   MainForm.ProgressBar.Position := 0;
 end;
 
@@ -1415,28 +1362,25 @@ begin
   Address := 0;
   MainForm.ProgressBar.Max := ChipSize div ChunkSize;
 
-  try
   RomStream.Clear;
 
-    while Address < ChipSize do
-    begin
-      if ChunkSize > (ChipSize - Address) then ChunkSize := ChipSize - Address;
+  while Address < ChipSize do
+  begin
+    if ChunkSize > (ChipSize - Address) then ChunkSize := ChipSize - Address;
 
-      BytesRead := BytesRead + UsbAspI2C_Read(hUSBDev, DevAddr, MainForm.ComboAddrType.ItemIndex, Address, datachunk, ChunkSize);
-      RomStream.WriteBuffer(DataChunk, ChunkSize);
-      Inc(Address, ChunkSize);
+    BytesRead := BytesRead + UsbAspI2C_Read(hUSBDev, DevAddr, MainForm.ComboAddrType.ItemIndex, Address, datachunk, ChunkSize);
+    RomStream.WriteBuffer(DataChunk, ChunkSize);
+    Inc(Address, ChunkSize);
 
-      MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
-      Application.ProcessMessages;
-    end;
-
-  finally
+    MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
+    Application.ProcessMessages;
   end;
 
   if BytesRead <> ChipSize then
     LogPrint(STR_WRONG_BYTES_READ, clRed)
   else
     LogPrint(STR_DONE);
+
   MainForm.ProgressBar.Position := 0;
 end;
 
@@ -1455,31 +1399,26 @@ begin
   BytesWrite := 0;
   Address := StartAddress;
   MainForm.ProgressBar.Max := WriteSize div PageSize;
-  try
 
-    while Address < WriteSize do
-    begin
-      if (WriteSize - Address) < PageSize then PageSize := (WriteSize - Address);
-      RomStream.ReadBuffer(DataChunk, PageSize);
-      BytesWrite := BytesWrite + UsbAspI2C_Write(hUSBDev, DevAddr, MainForm.ComboAddrType.ItemIndex, Address, datachunk, PageSize);
-      Inc(Address, PageSize);
+  while Address < WriteSize do
+  begin
+    if (WriteSize - Address) < PageSize then PageSize := (WriteSize - Address);
+    RomStream.ReadBuffer(DataChunk, PageSize);
+    BytesWrite := BytesWrite + UsbAspI2C_Write(hUSBDev, DevAddr, MainForm.ComboAddrType.ItemIndex, Address, datachunk, PageSize);
+    Inc(Address, PageSize);
 
-      while UsbAspI2C_BUSY(hUSBdev, DevAddr) do
-      begin
-        Application.ProcessMessages;
-      end;
-
-      MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
+    while UsbAspI2C_BUSY(hUSBdev, DevAddr) do
       Application.ProcessMessages;
-    end;
 
-  finally
+    MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
+    Application.ProcessMessages;
   end;
 
   if BytesWrite <> WriteSize then
     LogPrint(STR_WRONG_BYTES_WRITE, clRed)
   else
     LogPrint(STR_DONE);
+
   MainForm.ProgressBar.Position := 0;
 end;
 
@@ -1498,31 +1437,26 @@ begin
   BytesWrite := 0;
   Address := StartAddress;
   MainForm.ProgressBar.Max := WriteSize div PageSize;
-  try
 
-    while Address < WriteSize do
-    begin
-      if (WriteSize - Address) < PageSize then PageSize := (WriteSize - Address);
-      FillByte(DataChunk, PageSize, $FF);
-      BytesWrite := BytesWrite + UsbAspI2C_Write(hUSBDev, DevAddr, MainForm.ComboAddrType.ItemIndex, Address, datachunk, PageSize);
-      Inc(Address, PageSize);
+  while Address < WriteSize do
+  begin
+    if (WriteSize - Address) < PageSize then PageSize := (WriteSize - Address);
+    FillByte(DataChunk, PageSize, $FF);
+    BytesWrite := BytesWrite + UsbAspI2C_Write(hUSBDev, DevAddr, MainForm.ComboAddrType.ItemIndex, Address, datachunk, PageSize);
+    Inc(Address, PageSize);
 
-      while UsbAspI2C_BUSY(hUSBdev, DevAddr) do
-      begin
-        Application.ProcessMessages;
-      end;
-
-      MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
+    while UsbAspI2C_BUSY(hUSBdev, DevAddr) do
       Application.ProcessMessages;
-    end;
 
-  finally
+    MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
+    Application.ProcessMessages;
   end;
 
   if BytesWrite <> WriteSize then
     LogPrint(STR_WRONG_BYTES_WRITE, clRed)
   else
     LogPrint(STR_DONE);
+
   MainForm.ProgressBar.Position := 0;
 end;
 
@@ -1548,8 +1482,6 @@ begin
   Address := 0;
   MainForm.ProgressBar.Max := DataSize div ChunkSize;
 
-  try
-
   while Address < DataSize do
   begin
     if ChunkSize > (DataSize - Address) then ChunkSize := DataSize - Address;
@@ -1571,13 +1503,11 @@ begin
     Application.ProcessMessages;
   end;
 
-  finally
-  end;
-
   if (BytesRead <> DataSize) then
     LogPrint(STR_WRONG_BYTES_READ, clRed)
   else
     LogPrint(STR_DONE);
+
   MainForm.ProgressBar.Position := 0;
 end;
 
@@ -1611,7 +1541,6 @@ end;
 
 procedure LockControl;
 begin
-  //MainForm.ToolBar.Enabled := false;
   MainForm.ButtonRead.Enabled := False;
   MainForm.ButtonWrite.Enabled := False;
   MainForm.ButtonVerify.Enabled := False;
@@ -1627,7 +1556,6 @@ end;
 procedure UnlockControl;
 begin
   MainForm.GroupChipSettings.Enabled := true;
-  //MainForm.ToolBar.Enabled := True;
   MainForm.ButtonRead.Enabled := True;
   MainForm.ButtonWrite.Enabled := True;
   MainForm.ButtonVerify.Enabled := True;
@@ -1834,6 +1762,7 @@ begin
   begin
     UsbAsp25_Read(hUSBdev, 0, 0, buffer, sizeof(buffer));
     Application.ProcessMessages;
+
     if MainForm.ButtonCancel.Tag <> 0 then
       begin
         LogPrint(STR_USER_CANCEL, clRed);
@@ -1858,6 +1787,7 @@ begin
   begin
     UsbAsp25_Write(hUSBdev, 0, 0, buffer, sizeof(buffer));
     Application.ProcessMessages;
+
     if MainForm.ButtonCancel.Tag <> 0 then
       begin
         LogPrint(STR_USER_CANCEL, clRed);
@@ -1912,6 +1842,7 @@ begin
       LogPrint(STR_USER_CANCEL, clRed);
       Exit;
     end;
+
     LogPrint(STR_NEW_SREG+IntToBin(sreg, 8));
   end;
 
