@@ -86,26 +86,28 @@ begin
   buff[2] := hi(bufflen);
   buff[3] := cs;
 
-  usb_bulk_write(hUSBDev, OUT_EP, buff, 4, STREAM_TIMEOUT_MS);
+  usb_bulk_write(hUSBDev, OUT_EP, buff, SizeOf(buffer), STREAM_TIMEOUT_MS);
 
   result := usb_bulk_read(hUSBDev, IN_EP, buffer, bufflen, STREAM_TIMEOUT_MS);
 end;
 
 function arvisp_spi_write(cs: byte; var buffer: array of byte; bufflen: word): integer;
+const
+  HEADER_SIZE = 4;
 var
   full_buffer: array of byte;
 begin
 
-  SetLength(full_buffer, bufflen+4);
+  SetLength(full_buffer, bufflen+HEADER_SIZE);
 
   full_buffer[0] := CMD_SPI25_WRITE;
   full_buffer[1] := lo(bufflen);
   full_buffer[2] := hi(bufflen);
   full_buffer[3] := cs;
 
-  Move(buffer, full_buffer[4], bufflen);
+  Move(buffer, full_buffer[HEADER_SIZE], bufflen);
 
-  result := usb_bulk_write(hUSBDev, OUT_EP, full_buffer[0], bufflen+4, STREAM_TIMEOUT_MS) - 4;
+  result := usb_bulk_write(hUSBDev, OUT_EP, full_buffer[0], bufflen+HEADER_SIZE, STREAM_TIMEOUT_MS) - HEADER_SIZE;
 
 end;
 
@@ -118,7 +120,8 @@ begin
  buffer[0]:= CMD_SET_PARAMETER;
  buffer[1]:= PARAM_SCK_DURATION;
  buffer[2]:= value;
- if usb_bulk_write(hUSBDev, OUT_EP, buffer, 3, STREAM_TIMEOUT_MS) <> 3 then result := false;
+
+ if usb_bulk_write(hUSBDev, OUT_EP, buffer, SizeOf(buffer), STREAM_TIMEOUT_MS) <> SizeOf(buffer) then result := false;
  if usb_bulk_read(hUSBDev, IN_EP, buffer, 2, STREAM_TIMEOUT_MS) <> 2 then result := false;
  if buffer[1] <> 0 then result := false;
 end;
@@ -160,7 +163,7 @@ begin
   buff[5] := lo(Address);
   buff[6] := hi(Address);
 
-  usb_bulk_write(hUSBDev, OUT_EP, buff, 7, STREAM_TIMEOUT_MS);
+  usb_bulk_write(hUSBDev, OUT_EP, buff, SizeOf(buff), STREAM_TIMEOUT_MS);
   result := usb_bulk_read(hUSBDev, IN_EP, buffer, bufflen, STREAM_TIMEOUT_MS);
 end;
 
@@ -194,7 +197,7 @@ begin
   buff[0] := CMD_I2C_ACK;
   buff[1] := DevAddr;
 
-  usb_bulk_write(hUSBDev, OUT_EP, buff, 2, STREAM_TIMEOUT_MS);
+  usb_bulk_write(hUSBDev, OUT_EP, buff, SizeOf(buff), STREAM_TIMEOUT_MS);
   usb_bulk_read(hUSBDev, IN_EP, status, 1, STREAM_TIMEOUT_MS);
   Result := Boolean(Status);
 end;
@@ -211,7 +214,7 @@ begin
   buff[5] := AddrBitLen;
 
   result := 0;
-  usb_bulk_write(hUSBDev, OUT_EP, buff, 6, STREAM_TIMEOUT_MS);
+  usb_bulk_write(hUSBDev, OUT_EP, buff, SizeOf(buff), STREAM_TIMEOUT_MS);
   if bufflen = 0 then bufflen := 1; //костыль
     result := usb_bulk_read(hUSBDev, IN_EP, buffer, bufflen, STREAM_TIMEOUT_MS);
 end;
