@@ -624,10 +624,14 @@ begin
     end;
 
     if not MainForm.MenuIgnoreBusyBit.Checked then  //Игнорировать проверку
-      if UsbAsp25_Busy(hUSBDev) then
+      while UsbAsp25_Busy(hUSBDev) do
       begin
-        LogPrint(STR_USER_CANCEL , clRed);
-        Break;
+        Application.ProcessMessages;
+        if MainForm.ButtonCancel.Tag <> 0 then
+        begin
+          LogPrint(STR_USER_CANCEL, clRed);
+          Exit;
+        end;
       end;
 
     if (MainForm.MenuAutoCheck.Checked) and (WriteType = WT_PAGE) then
@@ -776,6 +780,7 @@ begin
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     if MainForm.ButtonCancel.Tag <> 0 then
     begin
+      LogPrint(STR_USER_CANCEL , clRed);
       Exit;
     end;
     Application.ProcessMessages;
@@ -818,10 +823,14 @@ begin
     if WriteType = WT_PAGE then
       BytesWrite := BytesWrite + UsbAsp45_Write(hUSBDev, PageAddress, datachunk, PageSize);
 
-    if UsbAsp45_Busy(hUSBDev) then
+    while UsbAsp45_Busy(hUSBDev) do
     begin
-      LogPrint(STR_USER_CANCEL, clRed);
-      Break;
+      Application.ProcessMessages;
+      if MainForm.ButtonCancel.Tag <> 0 then
+      begin
+        LogPrint(STR_USER_CANCEL, clRed);
+        Exit;
+      end;
     end;
 
     if MainForm.MenuAutoCheck.Checked then
@@ -2396,7 +2405,6 @@ var
   IDstr: string[6];
   IDstr90H: string[4];
   IDstrABH: string[6];
-  ChipName: string;
 begin
   try
     if not OpenDevice() then exit;
@@ -2739,11 +2747,14 @@ try
       UsbAsp25_WREN(hUSBDev);
       UsbAsp25_ChipErase(hUSBdev);
 
-
-      if UsbAsp25_Busy(hUSBDev) then
+      while UsbAsp25_Busy(hUSBDev) do
       begin
-        LogPrint(STR_USER_CANCEL, clRed);
-        Exit;
+        Application.ProcessMessages;
+        if MainForm.ButtonCancel.Tag <> 0 then
+        begin
+          LogPrint(STR_USER_CANCEL, clRed);
+          Exit;
+        end;
       end;
     end;
 
@@ -2751,10 +2762,14 @@ try
     begin
       UsbAsp45_ChipErase(hUSBdev);
 
-      if UsbAsp45_Busy(hUSBDev) then
+      while UsbAsp45_Busy(hUSBDev) do
       begin
-        LogPrint(STR_USER_CANCEL, clRed);
-        Exit;
+        Application.ProcessMessages;
+        if MainForm.ButtonCancel.Tag <> 0 then
+        begin
+          LogPrint(STR_USER_CANCEL, clRed);
+          Exit;
+        end;
       end;
     end;
 

@@ -66,17 +66,10 @@ function UsbAsp45_Busy(devHandle: Pusb_dev_handle): boolean;
 var
   sreg: byte;
 begin
-  Result := False;
+  Result := True;
   sreg := 0;
-  repeat
-    UsbAsp45_ReadSR(devHandle, sreg);
-    Application.ProcessMessages;
-    if MainForm.ButtonCancel.Tag <> 0 then
-    begin
-      Result := True;
-      Exit;
-    end;
-  until((sreg shr 7) and 1 = 1);
+  UsbAsp45_ReadSR(devHandle, sreg);
+  if IsBitSet(Sreg, 7) then Result := False;
 end;
 
 function UsbAsp45_isPagePowerOfTwo(devHandle: Pusb_dev_handle): boolean;

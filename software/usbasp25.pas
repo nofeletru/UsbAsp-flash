@@ -5,7 +5,7 @@ unit usbasp25;
 interface
 
 uses
-  Classes, Forms, SysUtils, libusb, usbhid, CH341DLL;
+  Classes, Forms, SysUtils, libusb, usbhid, CH341DLL, utilfunc;
 
 const
   // ISP SCK speed identifiers
@@ -74,19 +74,11 @@ function UsbAsp25_Busy(devHandle: Pusb_dev_handle): boolean;
 var
   sreg: byte;
 begin
-  Result := False;
+  Result := True;
   sreg := $FF;
 
-  repeat
-    UsbAsp25_ReadSR(devHandle, sreg);
-
-    Application.ProcessMessages;
-    if MainForm.ButtonCancel.Tag <> 0 then
-    begin
-      Result := True;
-      Exit;
-    end;
-  until((sreg and 1 = 0));
+  UsbAsp25_ReadSR(devHandle, sreg);
+  if not IsBitSet(sreg, 0) then Result := False;
 end;
 
 //Вход в режим программирования
