@@ -572,6 +572,7 @@ begin
     UsbAsp25_ReadSR(hUSBDev, sreg, $15);
     if isBitSet(sreg, 0) then addr32bit4byte := true;
     //Сбрасываем регистр адреса
+    UsbAsp25_WREN(hUSBDev);
     sreg := 0;
     UsbAsp25_WriteSR(hUSBDev, sreg, $c5);
   end;
@@ -1884,7 +1885,7 @@ end;
 
 procedure TMainForm.MenuItemReadSregClick(Sender: TObject);
 var
-  sreg, sreg2: byte;
+  sreg, sreg2, sreg3: byte;
 begin
   try
   ButtonCancel.Tag := 0;
@@ -1898,8 +1899,10 @@ begin
   begin
     UsbAsp25_ReadSR(hUSBDev, sreg); //Читаем регистр
     UsbAsp25_ReadSR(hUSBDev, sreg2, $35); //Второй байт
+    UsbAsp25_ReadSR(hUSBDev, sreg3, $15); //Третий байт
     LogPrint('Sreg: '+IntToBin(sreg, 8)+'(0x'+(IntToHex(sreg, 2)+'), ')
-                                         +IntToBin(sreg2, 8)+'(0x'+(IntToHex(sreg2, 2)+')'));
+                                         +IntToBin(sreg2, 8)+'(0x'+(IntToHex(sreg2, 2)+'), ')
+                                         +IntToBin(sreg3, 8)+'(0x'+(IntToHex(sreg3, 2)+')'));
   end;
 
   if ComboSPICMD.ItemIndex = SPI_CMD_95 then

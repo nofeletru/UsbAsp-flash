@@ -14,6 +14,14 @@ type
   TsregeditForm = class(TForm)
     ButtonReadSreg: TButton;
     ButtonWriteSreg: TButton;
+    CheckBoxSB23: TCheckBox;
+    CheckBoxSB22: TCheckBox;
+    CheckBoxSB21: TCheckBox;
+    CheckBoxSB20: TCheckBox;
+    CheckBoxSB19: TCheckBox;
+    CheckBoxSB18: TCheckBox;
+    CheckBoxSB17: TCheckBox;
+    CheckBoxSB16: TCheckBox;
     CheckBoxSB7: TCheckBox;
     CheckBoxSB14: TCheckBox;
     CheckBoxSB13: TCheckBox;
@@ -32,15 +40,19 @@ type
     CheckBoxSB15: TCheckBox;
     EditSreg1: TEdit;
     EditSreg2: TEdit;
+    EditSreg3: TEdit;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
     procedure ButtonReadSregClick(Sender: TObject);
     procedure ButtonWriteSregClick(Sender: TObject);
     procedure EditSreg1Change(Sender: TObject);
     procedure EditSreg2Change(Sender: TObject);
     procedure CheckBoxChange(Sender: TObject);
+    procedure EditSreg3Change(Sender: TObject);
   private
     { private declarations }
   public
@@ -120,8 +132,39 @@ begin
   end;
 end;
 
+procedure SetSreg3CheckBox(sreg3: byte);
+begin
+  with sregeditForm do
+  begin
+    if IsBitSet(sreg3, 0) then CheckBoxSB16.Checked:= true else CheckBoxSB16.Checked:= false;
+    if IsBitSet(sreg3, 1) then CheckBoxSB17.Checked:= true else CheckBoxSB17.Checked:= false;
+    if IsBitSet(sreg3, 2) then CheckBoxSB18.Checked:= true else CheckBoxSB18.Checked:= false;
+    if IsBitSet(sreg3, 3) then CheckBoxSB19.Checked:= true else CheckBoxSB19.Checked:= false;
+    if IsBitSet(sreg3, 4) then CheckBoxSB20.Checked:= true else CheckBoxSB20.Checked:= false;
+    if IsBitSet(sreg3, 5) then CheckBoxSB21.Checked:= true else CheckBoxSB21.Checked:= false;
+    if IsBitSet(sreg3, 6) then CheckBoxSB22.Checked:= true else CheckBoxSB22.Checked:= false;
+    if IsBitSet(sreg3, 7) then CheckBoxSB23.Checked:= true else CheckBoxSB23.Checked:= false;
+  end;
+end;
+
+function GetSreg3CheckBox(): byte;
+begin
+  with sregeditForm do
+  begin
+    result := 0;
+    if CheckBoxSB16.Checked then result := SetBit(result, 0);
+    if CheckBoxSB17.Checked then result := SetBit(result, 1);
+    if CheckBoxSB18.Checked then result := SetBit(result, 2);
+    if CheckBoxSB19.Checked then result := SetBit(result, 3);
+    if CheckBoxSB20.Checked then result := SetBit(result, 4);
+    if CheckBoxSB21.Checked then result := SetBit(result, 5);
+    if CheckBoxSB22.Checked then result := SetBit(result, 6);
+    if CheckBoxSB23.Checked then result := SetBit(result, 7);
+  end;
+end;
+
 procedure TsregeditForm.ButtonReadSregClick(Sender: TObject);
-var sreg1, sreg2: byte;
+var sreg1, sreg2, sreg3: byte;
 begin
   if MainForm.ComboSPICMD.ItemIndex = SPI_CMD_25 then
   begin
@@ -132,12 +175,15 @@ begin
 
     UsbAsp25_ReadSR(hUSBDev, sreg1);
     UsbAsp25_ReadSR(hUSBDev, sreg2, $35);
+    UsbAsp25_ReadSR(hUSBDev, sreg3, $15);
 
     SetSreg1CheckBox(sreg1);
     SetSreg2CheckBox(sreg2);
+    SetSreg3CheckBox(sreg3);
 
     Editsreg1.Text:= IntToHex(sreg1, 2);
     Editsreg2.Text:= IntToHex(sreg2, 2);
+    Editsreg3.Text:= IntToHex(sreg3, 2);
 
   finally
     ExitProgMode25(hUSBdev);
@@ -158,19 +204,40 @@ begin
     UsbAsp25_WREN(hUSBDev);
     UsbAsp25_WriteSR(hUSBDev, GetSreg1CheckBox());
 
-    if UsbAsp25_Busy(hUSBDev) then
+    while UsbAsp25_Busy(hUSBDev) do
     begin
-      LogPrint(STR_USER_CANCEL, clRed);
-      Exit;
+      Application.ProcessMessages;
+      if MainForm.ButtonCancel.Tag <> 0 then
+      begin
+        LogPrint(STR_USER_CANCEL, clRed);
+        Exit;
+      end;
     end;
 
     UsbAsp25_WREN(hUSBDev);
     UsbAsp25_WriteSR_2byte(hUSBDev, GetSreg1CheckBox(), GetSreg2CheckBox());
 
-    if UsbAsp25_Busy(hUSBDev) then
+    while UsbAsp25_Busy(hUSBDev) do
     begin
-      LogPrint(STR_USER_CANCEL, clRed);
-      Exit;
+      Application.ProcessMessages;
+      if MainForm.ButtonCancel.Tag <> 0 then
+      begin
+        LogPrint(STR_USER_CANCEL, clRed);
+        Exit;
+      end;
+    end;
+
+    UsbAsp25_WREN(hUSBDev);
+    UsbAsp25_WriteSR(hUSBDev, GetSreg3CheckBox(), $11);
+
+    while UsbAsp25_Busy(hUSBDev) do
+    begin
+      Application.ProcessMessages;
+      if MainForm.ButtonCancel.Tag <> 0 then
+      begin
+        LogPrint(STR_USER_CANCEL, clRed);
+        Exit;
+      end;
     end;
 
   finally
@@ -192,11 +259,19 @@ begin
     SetSreg2CheckBox(StrToInt('$'+EditSreg2.Text));
 end;
 
+procedure TsregeditForm.EditSreg3Change(Sender: TObject);
+begin
+  if IsNumber('$'+EditSreg3.Text) then
+    SetSreg3CheckBox(StrToInt('$'+EditSreg3.Text));
+end;
+
 procedure TsregeditForm.CheckBoxChange(Sender: TObject);
 begin
   EditSreg1.Text := IntToHex(GetSreg1CheckBox(), 2);
   EditSreg2.Text := IntToHex(GetSreg2CheckBox(), 2);
+  EditSreg3.Text := IntToHex(GetSreg3CheckBox(), 2);
 end;
+
 
 end.
 

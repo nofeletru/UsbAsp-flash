@@ -1,82 +1,82 @@
 object sregeditForm: TsregeditForm
-  Left = 673
-  Height = 172
+  Left = 669
+  Height = 155
   Top = 379
   Width = 200
   Align = alCustom
   BorderStyle = bsToolWindow
   Caption = 'SREG'
-  ClientHeight = 172
+  ClientHeight = 155
   ClientWidth = 200
   FormStyle = fsStayOnTop
   Position = poOwnerFormCenter
   LCLVersion = '1.4.4.0'
   object CheckBoxSB7: TCheckBox
-    Left = 16
+    Left = 22
     Height = 19
-    Top = 29
+    Top = 28
     Width = 20
     OnChange = CheckBoxChange
     TabOrder = 0
   end
   object CheckBoxSB6: TCheckBox
-    Left = 32
+    Left = 38
     Height = 19
-    Top = 29
+    Top = 28
     Width = 20
     OnChange = CheckBoxChange
     TabOrder = 1
   end
   object CheckBoxSB5: TCheckBox
-    Left = 48
+    Left = 54
     Height = 19
-    Top = 29
+    Top = 28
     Width = 20
     OnChange = CheckBoxChange
     TabOrder = 2
   end
   object CheckBoxSB4: TCheckBox
-    Left = 64
+    Left = 70
     Height = 19
-    Top = 29
+    Top = 28
     Width = 20
     OnChange = CheckBoxChange
     TabOrder = 3
   end
   object CheckBoxSB3: TCheckBox
-    Left = 80
+    Left = 86
     Height = 19
-    Top = 29
+    Top = 28
     Width = 20
     OnChange = CheckBoxChange
     TabOrder = 4
   end
   object CheckBoxSB2: TCheckBox
-    Left = 96
+    Left = 102
     Height = 19
-    Top = 29
+    Top = 28
     Width = 20
     OnChange = CheckBoxChange
     TabOrder = 5
   end
   object CheckBoxSB1: TCheckBox
-    Left = 112
+    Left = 118
     Height = 19
-    Top = 29
+    Top = 28
     Width = 20
     OnChange = CheckBoxChange
     TabOrder = 6
   end
   object CheckBoxSB0: TCheckBox
-    Left = 128
+    Left = 134
     Height = 19
-    Top = 29
+    Top = 28
     Width = 20
     OnChange = CheckBoxChange
     TabOrder = 7
   end
   object CheckBoxSB15: TCheckBox
-    Left = 16
+    Left = 22
     Height = 19
     Top = 56
     Width = 20
@@ -84,7 +84,7 @@ object sregeditForm: TsregeditForm
     TabOrder = 8
   end
   object CheckBoxSB14: TCheckBox
-    Left = 32
+    Left = 38
     Height = 19
     Top = 56
     Width = 20
@@ -92,7 +92,7 @@ object sregeditForm: TsregeditForm
     TabOrder = 9
   end
   object CheckBoxSB13: TCheckBox
-    Left = 48
+    Left = 54
     Height = 19
     Top = 56
     Width = 20
@@ -100,7 +100,7 @@ object sregeditForm: TsregeditForm
     TabOrder = 10
   end
   object CheckBoxSB12: TCheckBox
-    Left = 64
+    Left = 70
     Height = 19
     Top = 56
     Width = 20
@@ -108,7 +108,7 @@ object sregeditForm: TsregeditForm
     TabOrder = 11
   end
   object CheckBoxSB11: TCheckBox
-    Left = 80
+    Left = 86
     Height = 19
     Top = 56
     Width = 20
@@ -116,7 +116,7 @@ object sregeditForm: TsregeditForm
     TabOrder = 12
   end
   object CheckBoxSB10: TCheckBox
-    Left = 96
+    Left = 102
     Height = 19
     Top = 56
     Width = 20
@@ -124,7 +124,7 @@ object sregeditForm: TsregeditForm
     TabOrder = 13
   end
   object CheckBoxSB9: TCheckBox
-    Left = 112
+    Left = 118
     Height = 19
     Top = 56
     Width = 20
@@ -132,7 +132,7 @@ object sregeditForm: TsregeditForm
     TabOrder = 14
   end
   object CheckBoxSB8: TCheckBox
-    Left = 128
+    Left = 134
     Height = 19
     Top = 56
     Width = 20
@@ -142,7 +142,7 @@ object sregeditForm: TsregeditForm
   object ButtonReadSreg: TButton
     Left = 16
     Height = 25
-    Top = 128
+    Top = 120
     Width = 75
     Caption = 'Прочитать'
     OnClick = ButtonReadSregClick
@@ -151,16 +151,16 @@ object sregeditForm: TsregeditForm
   object ButtonWriteSreg: TButton
     Left = 104
     Height = 25
-    Top = 128
+    Top = 120
     Width = 75
     Caption = 'Записать'
     OnClick = ButtonWriteSregClick
     TabOrder = 17
   end
   object EditSreg1: TEdit
-    Left = 160
+    Left = 166
     Height = 23
-    Top = 25
+    Top = 24
     Width = 24
     MaxLength = 2
     OnChange = EditSreg1Change
@@ -168,7 +168,7 @@ object sregeditForm: TsregeditForm
     Text = '00'
   end
   object EditSreg2: TEdit
-    Left = 160
+    Left = 166
     Height = 23
     Top = 52
     Width = 24
@@ -178,35 +178,125 @@ object sregeditForm: TsregeditForm
     Text = '00'
   end
   object Label1: TLabel
-    Left = 16
+    Left = 14
     Height = 15
-    Top = 12
+    Top = 28
     Width = 6
     Caption = '7'
     ParentColor = False
   end
   object Label2: TLabel
-    Left = 136
+    Left = 150
     Height = 15
-    Top = 12
+    Top = 28
     Width = 6
     Caption = '0'
     ParentColor = False
   end
   object Label3: TLabel
-    Left = 16
+    Left = 8
     Height = 15
-    Top = 80
+    Top = 56
     Width = 12
     Caption = '15'
     ParentColor = False
   end
   object Label4: TLabel
-    Left = 136
+    Left = 150
     Height = 15
-    Top = 80
+    Top = 56
     Width = 6
     Caption = '8'
     ParentColor = False
+  end
+  object CheckBoxSB23: TCheckBox
+    Left = 22
+    Height = 19
+    Top = 84
+    Width = 20
+    OnChange = CheckBoxChange
+    TabOrder = 20
+  end
+  object CheckBoxSB22: TCheckBox
+    Left = 38
+    Height = 19
+    Top = 84
+    Width = 20
+    OnChange = CheckBoxChange
+    TabOrder = 21
+  end
+  object CheckBoxSB21: TCheckBox
+    Left = 54
+    Height = 19
+    Top = 84
+    Width = 20
+    OnChange = CheckBoxChange
+    TabOrder = 22
+  end
+  object CheckBoxSB20: TCheckBox
+    Left = 70
+    Height = 19
+    Top = 84
+    Width = 20
+    OnChange = CheckBoxChange
+    TabOrder = 23
+  end
+  object CheckBoxSB19: TCheckBox
+    Left = 86
+    Height = 19
+    Top = 84
+    Width = 20
+    OnChange = CheckBoxChange
+    TabOrder = 24
+  end
+  object CheckBoxSB18: TCheckBox
+    Left = 102
+    Height = 19
+    Top = 84
+    Width = 20
+    OnChange = CheckBoxChange
+    TabOrder = 25
+  end
+  object CheckBoxSB17: TCheckBox
+    Left = 118
+    Height = 19
+    Top = 84
+    Width = 20
+    OnChange = CheckBoxChange
+    TabOrder = 26
+  end
+  object CheckBoxSB16: TCheckBox
+    Left = 136
+    Height = 19
+    Top = 84
+    Width = 20
+    OnChange = CheckBoxChange
+    TabOrder = 27
+  end
+  object Label5: TLabel
+    Left = 8
+    Height = 15
+    Top = 84
+    Width = 12
+    Caption = '23'
+    ParentColor = False
+  end
+  object Label6: TLabel
+    Left = 150
+    Height = 15
+    Top = 84
+    Width = 12
+    Caption = '16'
+    ParentColor = False
+  end
+  object EditSreg3: TEdit
+    Left = 166
+    Height = 23
+    Top = 80
+    Width = 24
+    MaxLength = 2
+    OnChange = EditSreg3Change
+    TabOrder = 28
+    Text = '00'
   end
 end
