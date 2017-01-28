@@ -1,7 +1,5 @@
 unit main;
 
-//TODO: Облагородить лог
-
 //TODO: at45 установка размера странцы
 //TODO: at45 Проверка размера страницы перед операциями
 
@@ -2318,7 +2316,7 @@ try
 
   if ComboSPICMD.ItemIndex = SPI_CMD_25 then
   begin
-UsbAsp25_ReadSR(hUSBDev, sreg); //Читаем регистр
+    UsbAsp25_ReadSR(hUSBDev, sreg); //Читаем регистр
     UsbAsp25_ReadSR(hUSBDev, sreg2, $35);
     LogPrint(STR_OLD_SREG+IntToBin(sreg, 8)+'(0x'+(IntToHex(sreg, 2)+'), ')
                                          +IntToBin(sreg2, 8)+'(0x'+(IntToHex(sreg2, 2)+')'));
@@ -2329,20 +2327,28 @@ UsbAsp25_ReadSR(hUSBDev, sreg); //Читаем регистр
     UsbAsp25_WriteSR(hUSBDev, sreg); //Сбрасываем регистр
 
     //Пока отлипнет ромка
-    if UsbAsp25_Busy(hUSBDev) then
+    while UsbAsp25_Busy(hUSBDev) do
     begin
-      LogPrint(STR_USER_CANCEL, clRed);
-      Exit;
+      Application.ProcessMessages;
+      if MainForm.ButtonCancel.Tag <> 0 then
+      begin
+        LogPrint(STR_USER_CANCEL, clRed);
+        Exit;
+      end;
     end;
 
     UsbAsp25_WREN(hUSBDev);
     UsbAsp25_WriteSR_2byte(hUSBDev, sreg, sreg2);
 
     //Пока отлипнет ромка
-    if UsbAsp25_Busy(hUSBDev) then
+    while UsbAsp25_Busy(hUSBDev) do
     begin
-      LogPrint(STR_USER_CANCEL, clRed);
-      Exit;
+      Application.ProcessMessages;
+      if MainForm.ButtonCancel.Tag <> 0 then
+      begin
+        LogPrint(STR_USER_CANCEL, clRed);
+        Exit;
+      end;
     end;
 
     UsbAsp25_ReadSR(hUSBDev, sreg); //Читаем регистр
@@ -2361,10 +2367,14 @@ UsbAsp25_ReadSR(hUSBDev, sreg); //Читаем регистр
     UsbAsp95_WriteSR(hUSBDev, sreg); //Сбрасываем регистр
 
     //Пока отлипнет ромка
-    if UsbAsp25_Busy(hUSBDev) then
+    while UsbAsp25_Busy(hUSBDev) do
     begin
-      LogPrint(STR_USER_CANCEL, clRed);
-      Exit;
+      Application.ProcessMessages;
+      if MainForm.ButtonCancel.Tag <> 0 then
+      begin
+        LogPrint(STR_USER_CANCEL, clRed);
+        Exit;
+      end;
     end;
 
     UsbAsp95_ReadSR(hUSBDev, sreg); //Читаем регистр
