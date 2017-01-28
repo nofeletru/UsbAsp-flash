@@ -696,10 +696,14 @@ begin
     BytesWrite := BytesWrite + UsbAsp95_Write(hUSBDev, ChipSize, Address, datachunk, PageSize);
 
     if not MainForm.MenuIgnoreBusyBit.Checked then  //Игнорировать проверку
-      if UsbAsp25_Busy(hUSBDev) then
+      while UsbAsp25_Busy(hUSBDev) do
       begin
-        LogPrint(STR_USER_CANCEL , clRed);
-        Break;
+        Application.ProcessMessages;
+        if MainForm.ButtonCancel.Tag <> 0 then
+        begin
+          LogPrint(STR_USER_CANCEL, clRed);
+          Exit;
+        end;
       end;
 
     if MainForm.MenuAutoCheck.Checked then
@@ -1845,10 +1849,14 @@ begin
     UsbAsp25_WriteSR(hUSBDev, sreg); //Устанавливаем регистр
 
     //Пока отлипнет ромка
-    if UsbAsp25_Busy(hUSBDev) then
+    while UsbAsp25_Busy(hUSBDev) do
     begin
-      LogPrint(STR_USER_CANCEL, clRed);
-      Exit;
+      Application.ProcessMessages;
+      if MainForm.ButtonCancel.Tag <> 0 then
+      begin
+        LogPrint(STR_USER_CANCEL, clRed);
+        Exit;
+      end;
     end;
 
     LogPrint(STR_NEW_SREG+IntToBin(sreg, 8));
@@ -1864,11 +1872,16 @@ begin
     UsbAsp95_WriteSR(hUSBDev, sreg); //Устанавливаем регистр
 
     //Пока отлипнет ромка
-    if UsbAsp25_Busy(hUSBDev) then
+    while UsbAsp25_Busy(hUSBDev) do
     begin
-      LogPrint(STR_USER_CANCEL, clRed);
-      Exit;
+      Application.ProcessMessages;
+      if MainForm.ButtonCancel.Tag <> 0 then
+      begin
+        LogPrint(STR_USER_CANCEL, clRed);
+        Exit;
+      end;
     end;
+
     LogPrint(STR_NEW_SREG+IntToBin(sreg, 8));
   end;
 
