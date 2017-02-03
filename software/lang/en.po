@@ -61,6 +61,11 @@ msgstr "This firmware do not support I2C and MW!"
 msgid "Стало Sreg: "
 msgstr "New SREG"
 
+#: msgstr.str_curr_hw
+msgid "Используется программатор: "
+msgstr "Current programmer: "
+
+
 #: msgstr.str_not_found_hex
 msgid "Значение не найдено"
 msgstr "Value not found"
@@ -242,6 +247,11 @@ msgstr "Address lenght"
 msgctxt "tmainform.labelchipname.caption"
 msgid "Микросхема"
 msgstr "IC"
+
+#: tmainform.label3.caption
+msgctxt "tmainform.label3.caption"
+msgid "Микросхема:"
+msgstr "IC:"
 
 #: tmainform.labelspicmd.caption
 msgid "Команды SPI"
