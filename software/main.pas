@@ -609,7 +609,7 @@ begin
         else  //3 байтовая адресация включена
         begin
           //старший байт адреса
-          if Address > FLASH_SIZE_128MBIT then
+          if Address > FLASH_SIZE_128MBIT-1 then
           begin
             UsbAsp25_WriteSR(hUSBDev, hi(hi(Address)), $c5);
             UsbAsp25_WREN(hUSBDev);
