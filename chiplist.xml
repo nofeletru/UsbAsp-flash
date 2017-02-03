@@ -874,6 +874,7 @@
       <AT25DF021 id="1F4300" page="256" size="262144"/>
       <AT25DF041 id="1F4400" page="256" size="524288"/>
       <AT25DF041A id="1F4400" page="256" size="524288"/>
+	  <AT25SF041 id="1F8400" page="256" size="524288"/>
       <AT25DF081 id="1F4500" page="256" size="1048576"/>
       <AT25DF081A id="1F4500" page="256" size="1048576"/>
       <AT25DF161 id="1F4600" page="256" size="2097152"/>
