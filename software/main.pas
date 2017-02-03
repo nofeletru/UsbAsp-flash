@@ -279,6 +279,7 @@ begin
       Exit;
     end else
     begin
+       LogPrint(STR_CURR_HW+'CH341');
        result := true;
        Exit;
     end;
@@ -304,7 +305,12 @@ begin
         LogPrint(STR_NO_EEPROM_SUPPORT, clRed);
         result := false
     end
-       else result := true;
+       else
+    begin
+       result := true;
+       LogPrint(STR_CURR_HW+'AVRISP');
+    end;
+
     exit;
   end;
 
@@ -336,6 +342,7 @@ begin
     end;
   end;
 
+  LogPrint(STR_CURR_HW+'USBASP');
   result := true
 end;
 

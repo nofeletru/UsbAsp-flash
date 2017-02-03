@@ -41,6 +41,7 @@ resourcestring
   STR_USB_TIMEOUT        = 'USB_control_msg отвалился по таймауту!';
   STR_SIZE               = 'Размер: ';
   STR_CHANGED            = 'Изменен';
+  STR_CURR_HW            = 'Используется программатор: ';
 
 implementation
 
