@@ -1,7 +1,7 @@
 kb9012 -> UsbAsp
 
-59  EDI_CS -> CS
-60  EDI_CLK -> CLK
+59  EDI_CS -> CS(RST)
+60  EDI_CLK -> SCK
 61  EDI_DIN -> MOSI
 62  EDI_DO -> MISO
 
