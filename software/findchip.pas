@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, dom, utilfunc;
+  ExtCtrls, dom, utilfunc, lazUTF8;
 
 type
 
@@ -67,16 +67,16 @@ begin
              if (ChipNode.HasAttributes) then
                if  ChipNode.Attributes.GetNamedItem('id') <> nil then
                begin
-                 cs := ChipNode.Attributes.GetNamedItem('id').NodeValue; //id
+                 cs := UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('id').NodeValue); //id
                  if Upcase(cs) = Upcase(chipid) then
-                   ChipSearchForm.ListBoxChips.Items.Append(ChipNode.NodeName+' ('+ Item[j].NodeName +')');
+                   ChipSearchForm.ListBoxChips.Items.Append(UTF16ToUTF8(ChipNode.NodeName)+' ('+ UTF16ToUTF8(Item[j].NodeName) +')');
                end;
            end
            else
            begin
-             cs := ChipNode.NodeName; //Чип
+             cs := UTF16ToUTF8(ChipNode.NodeName); //Чип
              if pos(Upcase(chipname), Upcase(cs)) > 0 then
-               ChipSearchForm.ListBoxChips.Items.Append(cs+' ('+ Item[j].NodeName +')');
+               ChipSearchForm.ListBoxChips.Items.Append(cs+' ('+ UTF16ToUTF8(Item[j].NodeName) +')');
            end;
 
          end;
@@ -112,11 +112,11 @@ begin
 
          for i := 0 to (Item[j].ChildNodes.Count - 1) do
          begin
-           cs := Item[j].ChildNodes.Item[i].NodeName; //Чип
+           cs := UTF16ToUTF8(Item[j].ChildNodes.Item[i].NodeName); //Чип
            if Upcase(chipname) = Upcase(cs) then
            begin
              ChipNode := Item[j].ChildNodes.Item[i];
-             MainForm.LabelChipName.Caption := ChipNode.NodeName;
+             MainForm.LabelChipName.Caption := UTF16ToUTF8(ChipNode.NodeName);
              if (ChipNode.HasAttributes) then
              begin
 
@@ -143,25 +143,25 @@ begin
                if ChipNode.Attributes.GetNamedItem('addrbitlen') <> nil then
                begin
                  MainForm.RadioMw.Checked:= true;
-                 MainForm.ComboMWBitLen.Text := ChipNode.Attributes.GetNamedItem('addrbitlen').NodeValue
+                 MainForm.ComboMWBitLen.Text := UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('addrbitlen').NodeValue)
                end
                else
                  MainForm.ComboMWBitLen.Text := 'MW addr len';
 
                if ChipNode.Attributes.GetNamedItem('addrtype') <> nil then
-                 if IsNumber(ChipNode.Attributes.GetNamedItem('addrtype').NodeValue) then
+                 if IsNumber(UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('addrtype').NodeValue)) then
                  begin
                    MainForm.RadioI2C.Checked:= true;
-                   MainForm.ComboAddrType.ItemIndex := StrToInt(ChipNode.Attributes.GetNamedItem('addrtype').NodeValue);
+                   MainForm.ComboAddrType.ItemIndex := StrToInt(UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('addrtype').NodeValue));
                  end;
 
                if  ChipNode.Attributes.GetNamedItem('page') <> nil then
-                 MainForm.ComboPageSize.Text := ChipNode.Attributes.GetNamedItem('page').NodeValue
+                 MainForm.ComboPageSize.Text := UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('page').NodeValue)
                else
                  MainForm.ComboPageSize.Text := 'Page size';
 
                if ChipNode.Attributes.GetNamedItem('size') <> nil then
-                 MainForm.ComboChipSize.Text := ChipNode.Attributes.GetNamedItem('size').NodeValue
+                 MainForm.ComboChipSize.Text := UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('size').NodeValue)
                else
                  MainForm.ComboChipSize.Text := 'Chip size';
 

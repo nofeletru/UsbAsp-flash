@@ -9,12 +9,12 @@ unit main;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, SysUtils, LazFileUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ComCtrls, Menus, ActnList, Buttons, RichMemo, KHexEditor,
   KEditCommon, StrUtils, usbasp25, usbasp45, usbasp95, usbaspi2c, usbaspmw,
   usbaspmulti, usbhid, libusb, dos, XMLRead, XMLWrite, DOM, KControls, msgstr,
   Translations, LCLProc, LCLTranslator, LResources, search, sregedit,
-  utilfunc, CH341DLL, ch341mw, findchip, avrispmk2, DateUtils;
+  utilfunc, CH341DLL, ch341mw, findchip, avrispmk2, DateUtils, lazUTF8;
 
 type
 
@@ -215,7 +215,7 @@ var
    Node: TDOMNode;
 begin
 
-  PODirectory:= SysToUTF8(GetCurrentDir + '/lang/');
+  PODirectory:= GetCurrentDir + '/lang/';
   Lang:='';
 
   if XMLfile <> nil then
@@ -228,7 +228,7 @@ begin
       begin
 
         if  Node.Attributes.GetNamedItem('lang') <> nil then
-          Lang := Node.Attributes.GetNamedItem('lang').NodeValue;
+          Lang := UTF16ToUTF8(Node.Attributes.GetNamedItem('lang').NodeValue);
 
       end;
   end;
@@ -241,8 +241,8 @@ begin
 
   if FileExistsUTF8(PODirectory + Lang + '.po') then
   begin
-    LRSTranslator:= TPOTranslator.Create(PODirectory + SysToUTF8(Lang + '.po'));
-    Translations.TranslateResourceStrings(PODirectory + SysToUTF8(Lang + '.po'));
+    LRSTranslator:= TPOTranslator.Create(PODirectory + Lang + '.po');
+    Translations.TranslateResourceStrings(PODirectory + Lang + '.po');
   end;
 
 end;               
@@ -1607,18 +1607,18 @@ begin
 
   if Sender is TMenuItem then
   begin
-    Node := XMLfile.DocumentElement.FindNode(TMenuItem(Sender).Parent.Parent.Caption);
+    Node := XMLfile.DocumentElement.FindNode(UTF8ToUTF16(TMenuItem(Sender).Parent.Parent.Caption));
 
     if UpperCase(Node.NodeName) = 'SPI' then RadioSPI.Checked := True;
     if UpperCase(Node.NodeName) = 'I2C' then RadioI2C.Checked := True;
     if UpperCase(Node.NodeName) = 'MICROWIRE' then RadioMW.Checked := True;
 
     Node := XMLfile.DocumentElement.
-      FindNode(TMenuItem(Sender).Parent.Parent.Caption).
-        FindNode(TMenuItem(Sender).Parent.Caption).
-          FindNode(TMenuItem(Sender).Caption);
+      FindNode(UTF8ToUTF16(TMenuItem(Sender).Parent.Parent.Caption)).
+        FindNode(UTF8ToUTF16(TMenuItem(Sender).Parent.Caption)).
+          FindNode(UTF8ToUTF16(TMenuItem(Sender).Caption));
 
-    LabelChipName.Caption := Node.NodeName;
+    LabelChipName.Caption := UTF16ToUTF8(Node.NodeName);
 
     if (Node.HasAttributes) then
     begin
@@ -1640,23 +1640,23 @@ begin
       if RadioSPI.Checked then RadioSPI.OnChange(Sender);
 
       if  Node.Attributes.GetNamedItem('page') <> nil then
-        ComboPageSize.Text := Node.Attributes.GetNamedItem('page').NodeValue
+        ComboPageSize.Text := UTF16ToUTF8(Node.Attributes.GetNamedItem('page').NodeValue)
       else
         ComboPageSize.Text := 'Page size';
 
       if Node.Attributes.GetNamedItem('size') <> nil then
-        ComboChipSize.Text := Node.Attributes.GetNamedItem('size').NodeValue
+        ComboChipSize.Text := UTF16ToUTF8(Node.Attributes.GetNamedItem('size').NodeValue)
       else
         ComboChipSize.Text := 'Chip size';
 
       if Node.Attributes.GetNamedItem('addrbitlen') <> nil then
-        ComboMWBitLen.Text := Node.Attributes.GetNamedItem('addrbitlen').NodeValue
+        ComboMWBitLen.Text := UTF16ToUTF8(Node.Attributes.GetNamedItem('addrbitlen').NodeValue)
       else
         ComboMWBitLen.Text := 'MW addr len';
 
       if Node.Attributes.GetNamedItem('addrtype') <> nil then
-        if IsNumber(Node.Attributes.GetNamedItem('addrtype').NodeValue) then
-          ComboAddrType.ItemIndex := StrToInt(Node.Attributes.GetNamedItem('addrtype').NodeValue);
+        if IsNumber(UTF16ToUTF8(Node.Attributes.GetNamedItem('addrtype').NodeValue)) then
+          ComboAddrType.ItemIndex := StrToInt(UTF16ToUTF8(Node.Attributes.GetNamedItem('addrtype').NodeValue));
 
     end;
 
@@ -2505,7 +2505,7 @@ procedure TMainForm.ButtonOpenHexClick(Sender: TObject);
 begin
   if OpenDialog.Execute then
   begin
-   KHexEditor.LoadFromFile(UTF8ToSys(OpenDialog.FileName));
+   KHexEditor.LoadFromFile(OpenDialog.FileName);
    StatusBar.Panels.Items[2].Text := OpenDialog.FileName;
   end;
 end;
@@ -2514,7 +2514,7 @@ procedure TMainForm.ButtonSaveHexClick(Sender: TObject);
 begin
   if SaveDialog.Execute then
   begin
-    KHexEditor.SaveToFile(UTF8ToSys(SaveDialog.FileName));
+    KHexEditor.SaveToFile(SaveDialog.FileName);
     StatusBar.Panels.Items[2].Text := SaveDialog.FileName;
   end;
 end;
@@ -2543,19 +2543,19 @@ begin
        continue;
      end;
 
-     MainForm.MenuChip.Add(NewItem(Node.NodeName, 0, False, True, nil, 0, '')); //Раздел(SPI, I2C...)
+     MainForm.MenuChip.Add(NewItem(UTF16ToUTF8(Node.NodeName), 0, False, True, nil, 0, '')); //Раздел(SPI, I2C...)
 
      // Используем свойство ChildNodes
      with Node.ChildNodes do
      try
        for j := 0 to (Count - 1) do
        begin
-         MainForm.MenuChip.Find(Node.NodeName).Add(NewItem(Item[j].NodeName ,0, False, True, nil, 0, '')); //Раздел Фирма
+         MainForm.MenuChip.Find(UTF16ToUTF8(Node.NodeName)).Add(NewItem(UTF16ToUTF8(Item[j].NodeName) ,0, False, True, nil, 0, '')); //Раздел Фирма
 
          for i := 0 to (Item[j].ChildNodes.Count - 1) do
-           MainForm.MenuChip.Find(Node.NodeName).
-             Find(Item[j].NodeName).
-               Add(NewItem(Item[j].ChildNodes.Item[i].NodeName, 0, False, True, @MainForm.ChipClick, 0, '' )); //Чип
+           MainForm.MenuChip.Find(UTF16ToUTF8(Node.NodeName)).
+             Find(UTF16ToUTF8(Item[j].NodeName)).
+               Add(NewItem(UTF16ToUTF8(Item[j].ChildNodes.Item[i].NodeName), 0, False, True, @MainForm.ChipClick, 0, '' )); //Чип
        end;
      finally
        Free;
@@ -2567,23 +2567,6 @@ begin
 end;
 
 { TMainForm }
-
-//Если хотим видить кириллицу в редакторе
-//Еще нужно изменить в KHexEditor.pas строку
-//TextOut(R.Left, R.Top + VTextIndent, Char(FCharMapping[FBuffer[Index]]));
-//на
-//TextOut(R.Left, R.Top + VTextIndent, SysToUTF8(Char(FCharMapping[FBuffer[Index]])));
-function EditorCharMapping: TKEditCharMapping;
-var
-  I: Integer;
-begin
-  SetLength(Result, cCharMappingSize);
-  for I := 0 to cCharMappingSize - 1 do
-    if (I < $20) then
-      Result[I] := '.'
-    else
-      Result[I] := AnsiChar(I);
-end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
@@ -2597,7 +2580,6 @@ begin
   LoadChipList(ChipListFile);
   RomF := TMemoryStream.Create;
 
-  KHexEditor.SetCharMapping(EditorCharMapping());
   KHexEditor.ExecuteCommand(ecOverwriteMode);
   LoadOptions(ChipListFile);
 end;
@@ -2880,7 +2862,6 @@ finally
 end;
 end;
 
-
 procedure SaveOptions(XMLfile: TXMLDocument);
 var
   Node, ParentNode: TDOMNode;
@@ -2955,7 +2936,7 @@ begin
 
       if  Node.Attributes.GetNamedItem('spi_speed') <> nil then
       begin
-        OptVal := Node.Attributes.GetNamedItem('spi_speed').NodeValue;
+        OptVal := UTF16ToUTF8(Node.Attributes.GetNamedItem('spi_speed').NodeValue);
 
         if OptVal = '3Mhz' then MainForm.Menu3Mhz.Checked := true;
         if OptVal = '1_5Mhz' then MainForm.Menu1_5Mhz.Checked := true;
@@ -2969,7 +2950,7 @@ begin
 
       if  Node.Attributes.GetNamedItem('mw_speed') <> nil then
       begin
-        OptVal := Node.Attributes.GetNamedItem('mw_speed').NodeValue;
+        OptVal := UTF16ToUTF8(Node.Attributes.GetNamedItem('mw_speed').NodeValue);
 
         if OptVal = '32Khz' then MainForm.MenuMW32Khz.Checked := true;
         if OptVal = '16Khz' then MainForm.MenuMW16Khz.Checked := true;
@@ -2978,7 +2959,7 @@ begin
 
       if  Node.Attributes.GetNamedItem('hw') <> nil then
       begin
-        OptVal := Node.Attributes.GetNamedItem('hw').NodeValue;
+        OptVal := UTF16ToUTF8(Node.Attributes.GetNamedItem('hw').NodeValue);
 
         if OptVal = 'usbasp' then
         begin
