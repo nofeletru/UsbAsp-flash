@@ -350,7 +350,7 @@ object sregeditForm: TsregeditForm
     Width = 126
     Alignment = taCenter
     AutoSize = False
-    Caption = 'SREG2'
+    Caption = 'SREG3'
     ParentColor = False
   end
 end
