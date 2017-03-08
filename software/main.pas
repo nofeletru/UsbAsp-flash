@@ -171,6 +171,7 @@ const
   HW_AVRISPMK2           = 2;
 
   ChipListFileName       = 'chiplist.xml';
+  SettingsFileName       = 'settings.xml';
 
 type
   TCurrent_HW = (CH341, AVRISP, USBASP);
@@ -178,6 +179,7 @@ type
 var
   MainForm: TMainForm;
   ChipListFile: TXMLDocument;
+  SettingsFile: TXMLDocument;
   hUSBDev: pusb_dev_handle; //Хендл usbasp
   Current_HW: TCurrent_HW = USBASP;
 
@@ -193,8 +195,11 @@ var
 {$R *.lfm}
 
 procedure LoadXML;
+var
+  RootNode: TDOMNode;
 begin
   ChipListFile := nil;
+  SettingsFile := nil;
   if FileExists(ChipListFileName) then
   begin
     try
@@ -207,6 +212,26 @@ begin
       end;
     end;
   end;
+
+  if FileExists(SettingsFileName) then
+  begin
+    try
+      ReadXMLFile(SettingsFile, SettingsFileName);
+    except
+      on E: EXMLReadError do
+      begin
+        ShowMessage(E.Message);
+        SettingsFile := nil;
+      end;
+    end;
+  end else
+  begin
+    SettingsFile := TXMLDocument.Create;
+    // Create a root node
+    RootNode := SettingsFile.CreateElement('settings');
+    SettingsFile.Appendchild(RootNode);
+  end;
+
 end;
 
 procedure Translate(XMLfile: TXMLDocument);
@@ -2581,15 +2606,16 @@ begin
   RomF := TMemoryStream.Create;
 
   KHexEditor.ExecuteCommand(ecOverwriteMode);
-  LoadOptions(ChipListFile);
+  LoadOptions(SettingsFile);
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   MainForm.KHexEditor.Free;
   RomF.Free;
-  SaveOptions(ChipListFile);
+  SaveOptions(SettingsFile);
   ChipListFile.Free;
+  SettingsFile.Free;
 end;
 
 procedure TMainForm.ButtonReadClick(Sender: TObject);
@@ -2910,7 +2936,7 @@ begin
 
     Node.Appendchild(parentNode);
 
-    WriteXMLFile(XMLfile, 'chiplist.xml');
+    WriteXMLFile(XMLfile, SettingsFileName);
   end;
 
 end;

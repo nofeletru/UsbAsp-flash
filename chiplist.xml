@@ -3,8 +3,7 @@
   size - размер данных микросхемы памяти в байтах(DEC)
   page - размер страницы микросхемы памяти в байтах(DEC). Для SST AAI Word programm - SSTW. Для SST AAI Byte programm - SSTB. 
   id - индефикатор микросхемы памяти(HEX). Поддерживаются опкоды 9F, 90, AB
-  spicmd - команды для серий микросхем памяти 25, 45, 95(EEPROM)
-  <locale lang="ru"/> -  выбор файла локализации. 
+  spicmd - команды для серий микросхем памяти 25, 45, 95(EEPROM) 
  -->
 <chiplist>
   <SPI>
@@ -947,6 +946,4 @@
       <M93C06 size="16" addrbitlen="6"/>
     </Microchip>
   </Microwire>
-  <locale lang="ru"/>
-  <options hw="usbasp" verify="0" mw_speed="32Khz" spi_speed="1_5Mhz"/>
 </chiplist>
