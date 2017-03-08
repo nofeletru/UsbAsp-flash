@@ -47,6 +47,9 @@ type
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
     procedure ButtonReadSregClick(Sender: TObject);
     procedure ButtonWriteSregClick(Sender: TObject);
     procedure EditSreg1Change(Sender: TObject);
