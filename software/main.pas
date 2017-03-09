@@ -66,6 +66,7 @@ type
     MenuAVRISP500KHz: TMenuItem;
     MenuAVRISP250KHz: TMenuItem;
     MenuAVRISP125KHz: TMenuItem;
+    LangMenuItem: TMenuItem;
     MenuItemHardware: TMenuItem;
     MenuItemBenchmark: TMenuItem;
     MenuItemEditSreg: TMenuItem;
@@ -119,6 +120,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ChipClick(Sender: TObject);
+    procedure ChangeLang(Sender: TObject);
     procedure KHexEditorChange(Sender: TObject);
     procedure ComboItem1Click(Sender: TObject);
     procedure KHexEditorKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
@@ -191,6 +193,7 @@ var
   avrisp_DeviceDescription: TDeviceDescription;
   RomF: TMemoryStream;
   TimeCounter: TDateTime;
+  CurrentLang: string = 'ru';
 
 {$R *.lfm}
 
@@ -234,14 +237,56 @@ begin
 
 end;
 
+procedure TMainForm.ChangeLang(Sender: TObject);
+begin
+  CurrentLang := TMenuItem(Sender).Hint;
+
+  Translations.TranslateResourceStrings(GetCurrentDir + '/lang/' + CurrentLang + '.po');
+  LRSTranslator.Free;
+  LRSTranslator:= TPOTranslator.Create(GetCurrentDir + '/lang/' + CurrentLang + '.po');
+  TPOTranslator(LRSTranslator).UpdateTranslation(MainForm);
+end;
+
+procedure LoadLangList();
+var
+  LangDir: string;
+  LangName: string;
+  LangFile: Text;
+  SearchRec : TSearchRec;
+  MenuItem: TMenuItem;
+begin
+  LangDir := GetCurrentDir + '/lang/';
+
+  If FindFirstUTF8(LangDir+'*.po', faAnyFile, SearchRec) = 0 then
+  begin
+    Repeat
+      AssignFile(LangFile, LangDir+SearchRec.Name);
+      Reset(LangFile);
+      ReadLn(LangFile, LangName);
+      CloseFile(LangFile);
+      Delete(LangName, 1, 1);
+
+      MenuItem := NewItem(LangName, 0, False, True, @MainForm.ChangeLang, 0, '');
+      MenuItem.Hint := ExtractFileNameOnly(SearchRec.Name);
+      MenuItem.AutoCheck := true;
+      MenuItem.RadioItem := true;
+      MainForm.LangMenuItem.Add(MenuItem);
+      if MenuItem.Hint = Currentlang then MenuItem.Checked := true;
+
+    Until FindNextUTF8(SearchRec) <> 0;
+  end;
+
+  FindCloseUTF8(SearchRec);
+end;
+
 procedure Translate(XMLfile: TXMLDocument);
 var
-   PODirectory, Lang: String;
+   PODirectory: String;
    Node: TDOMNode;
 begin
 
   PODirectory:= GetCurrentDir + '/lang/';
-  Lang:='';
+  CurrentLang:='';
 
   if XMLfile <> nil then
   begin
@@ -253,21 +298,21 @@ begin
       begin
 
         if  Node.Attributes.GetNamedItem('lang') <> nil then
-          Lang := UTF16ToUTF8(Node.Attributes.GetNamedItem('lang').NodeValue);
+          CurrentLang := UTF16ToUTF8(Node.Attributes.GetNamedItem('lang').NodeValue);
 
       end;
   end;
 
-  if Lang = '' then
+  if CurrentLang = '' then
   begin
-    lang := 'ru';
+    CurrentLang := 'ru';
     Exit;
   end;
 
-  if FileExistsUTF8(PODirectory + Lang + '.po') then
+  if FileExistsUTF8(PODirectory + CurrentLang + '.po') then
   begin
-    LRSTranslator:= TPOTranslator.Create(PODirectory + Lang + '.po');
-    Translations.TranslateResourceStrings(PODirectory + Lang + '.po');
+    LRSTranslator:= TPOTranslator.Create(PODirectory + CurrentLang + '.po');
+    Translations.TranslateResourceStrings(PODirectory + CurrentLang + '.po');
   end;
 
 end;               
@@ -2607,6 +2652,7 @@ begin
 
   KHexEditor.ExecuteCommand(ecOverwriteMode);
   LoadOptions(SettingsFile);
+  LoadLangList();
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -2894,6 +2940,15 @@ var
 begin
   if XMLfile <> nil then
   begin
+    //Удаляем старую запись
+    Node := XMLfile.DocumentElement.FindNode('locale');
+    if (Node <> nil) then XMLfile.DocumentElement.RemoveChild(Node);
+    //Создаем новую
+    Node:= XMLfile.DocumentElement;
+    ParentNode := XMLfile.CreateElement('locale');
+    TDOMElement(ParentNode).SetAttribute('lang', CurrentLang);
+    Node.Appendchild(parentNode);
+
     //Удаляем старую запись
     Node := XMLfile.DocumentElement.FindNode('options');
     if (Node <> nil) then XMLfile.DocumentElement.RemoveChild(Node);

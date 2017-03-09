@@ -14,7 +14,7 @@ uses
 
 begin
   LoadXML;
-  Translate(ChipListFile);
+  Translate(SettingsFile);
   RequireDerivedFormResource := True;
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
