@@ -845,6 +845,7 @@
     <ATMEL>
 	  <AT45DB021D id="1F2300" page="264" size="270336" spicmd="45"/>
       <AT45DB041D id="1F2400" page="264" size="540672" spicmd="45"/>
+	  <AT45DB161D id="1F2600" page="528" size="2162688" spicmd="45"/>
       <AT25010 page="8" size="128" spicmd="95"/>
       <AT25010A page="8" size="128" spicmd="95"/>
       <AT25020 page="8" size="256" spicmd="95"/>
@@ -881,7 +882,8 @@
       <AT25DF321A id="1F4700" page="256" size="4194304"/>
       <AT25DF641 id="1F4800" page="256" size="8388608"/>
       <AT25F512 id="1F6500" page="256" size="65536"/>
-      <AT25F512A id="1F6500" page="256" size="65536"/>
+      <AT25F512A id="1F6500" page="128" size="65536"/>
+	  <AT25F512B id="1F6500" page="256" size="65536"/>
       <AT25F1024 id="1F6000" page="256" size="131072"/>
       <AT25F1024A id="1F6000" page="256" size="131072"/>
       <AT25F2048 id="1F6300" page="256" size="262144"/>
