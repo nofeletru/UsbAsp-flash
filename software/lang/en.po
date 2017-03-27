@@ -3,15 +3,15 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 #: msgstr.str_45page_powerof2
-msgid "Установлен #209Ђазме#209Ђ ст#209Ђаницы к#209Ђатный двум!"
+msgid "Установлен размер страницы кратный двум!"
 msgstr "Page size is power of 2"
 
 #: msgstr.str_45page_std
-msgid "Установлен станда#209Ђтный #209Ђазме#209Ђ ст#209Ђаницы"
+msgid "Установлен стандартный размер страницы"
 msgstr "Default page size is set"
 
 #: msgstr.str_block_en
-msgid "Возможно включена защита на запись. Нажмите кнопку \"Снять защиту\" и све#209Ђьтесь с даташитом"
+msgid "Возможно включена защита на запись. Нажмите кнопку \"Снять защиту\" и сверьтесь с даташитом"
 msgstr "Possible protection is enabled. Press \"Unprotect\" and check datasheet"
 
 #: msgstr.str_changed
@@ -19,11 +19,11 @@ msgid "Изменен"
 msgstr "Modified"
 
 #: msgstr.str_check_settings
-msgid "П#209Ђове#209Ђьте наст#209Ђойки"
+msgid "Проверьте настройки"
 msgstr "Check settings"
 
 #: msgstr.str_combo_warn
-msgid "Чип будет сте#209Ђт и пе#209Ђезаписан. П#209Ђодолжить?"
+msgid "Чип будет стерт и перезаписан. Продолжить?"
 msgstr "IC will be erased and programmed. Continue?"
 
 #: msgstr.str_connection_error
@@ -43,15 +43,15 @@ msgid "Готово"
 msgstr "Done"
 
 #: msgstr.str_erasing_flash
-msgid "Сти#209Ђаю флэшку..."
+msgid "Стираю флэшку..."
 msgstr "Erasing memory..."
 
 #: msgstr.str_goto_addr
-msgid "Пе#209Ђейти по ад#209Ђесу"
+msgid "Перейти по адресу"
 msgstr "Goto address"
 
 #: msgstr.str_i2c_no_answer
-msgid "Мик#209Ђосхема не отвечает"
+msgid "Микросхема не отвечает"
 msgstr "IC not responding"
 
 #: msgstr.str_id_unknown
@@ -59,7 +59,7 @@ msgid "(Неизвестно)"
 msgstr "(Unknown)"
 
 #: msgstr.str_mini_eeprom_support
-msgid "Данная ве#209Ђсия п#209Ђошивки не подде#209Ђживает I2C и MW!"
+msgid "Данная версия прошивки не поддерживает I2C и MW!"
 msgstr "This firmware do not support I2C and MW!"
 
 #: msgstr.str_new_sreg
@@ -76,7 +76,7 @@ msgid "Значение не найдено"
 msgstr "Value not found"
 
 #: msgstr.str_no_eeprom_support
-msgid "Данная ве#209Ђсия п#209Ђошивки не подде#209Ђживается!"
+msgid "Данная версия прошивки не поддерживается!"
 msgstr "This firmware do not support memory programming"
 
 #: msgstr.str_old_sreg
@@ -92,19 +92,19 @@ msgid "Поиск HEX значения"
 msgstr "Search HEX value"
 
 #: msgstr.str_set_speed_error
-msgid "Ошибка установки ско#209Ђости SPI"
+msgid "Ошибка установки скорости SPI"
 msgstr "Error setting SPI speed"
 
 #: msgstr.str_size
-msgid "Разме#209Ђ: "
+msgid "Размер: "
 msgstr "Size: "
 
 #: msgstr.str_specify_hex
-msgid "Укажите шестнадцате#209Ђичные числа"
+msgid "Укажите шестнадцатеричные числа"
 msgstr "Use HEX numbers"
 
 #: msgstr.str_start_erase
-msgid "Точно сте#209Ђеть чип?"
+msgid "Точно стереть чип?"
 msgstr "Erase IC?"
 
 #: msgstr.str_start_write
@@ -112,7 +112,7 @@ msgid "Начать запись?"
 msgstr "Begin programming?"
 
 #: msgstr.str_time
-msgid "В#209Ђемя выполнения: "
+msgid "Время выполнения: "
 msgstr "Execution time: "
 
 #: msgstr.str_usb_timeout
@@ -120,15 +120,15 @@ msgid "USB_control_msg отвалился по таймауту!"
 msgstr "USB_control_msg timeout!"
 
 #: msgstr.str_user_cancel
-msgid "П#209Ђе#209Ђвано пользователем"
+msgid "Прервано пользователем"
 msgstr "Canceled by user"
 
 #: msgstr.str_verify
-msgid "П#209Ђове#209Ђяю флэшку..."
+msgid "Проверяю флэшку..."
 msgstr "Verify memory..."
 
 #: msgstr.str_verify_error
-msgid "Ошибка с#209Ђавнения по ад#209Ђесу: "
+msgid "Ошибка сравнения по адресу: "
 msgstr "Verification error on address: "
 
 #: msgstr.str_writing_flash
@@ -136,19 +136,19 @@ msgid "Записываю флэшку..."
 msgstr "Programming memory..."
 
 #: msgstr.str_writing_flash_wchk
-msgid "Записываю флэшку с п#209Ђове#209Ђкой..."
+msgid "Записываю флэшку с проверкой..."
 msgstr "Programming memory(verifying)..."
 
 #: msgstr.str_wrong_bytes_read
-msgid "Количество п#209Ђочитанных байт не #209Ђавно #209Ђазме#209Ђу флэшки"
+msgid "Количество прочитанных байт не равно размеру флэшки"
 msgstr "Number of bytes readed not equal IC size"
 
 #: msgstr.str_wrong_bytes_write
-msgid "Количество записанных байт не #209Ђавно #209Ђазме#209Ђу флэшки"
+msgid "Количество записанных байт не равно размеру флэшки"
 msgstr "Number of bytes written not equal IC size"
 
 #: msgstr.str_wrong_file_size
-msgid "Разме#209Ђ файла больше #209Ђазме#209Ђа чипа"
+msgid "Размер файла больше размера чипа"
 msgstr "File size larger than IC size"
 
 #: tmainform.menuitemhardware.caption
@@ -368,3 +368,6 @@ msgstr "Find IC"
 msgid "Маркировка содержит:"
 msgstr "IC мarking contain:"
 
+#: tmainform.blankcheckmenuitem.caption
+msgid "Проверка на чистоту"
+msgstr "Blank check"
