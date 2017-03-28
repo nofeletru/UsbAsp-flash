@@ -210,6 +210,9 @@ function UsbAsp25_ChipErase(devHandle: Pusb_dev_handle): integer;
 var
   buff: byte;
 begin
+  //Некоторые atmel'ы требуют 62H
+  buff:= $62;
+  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 1, buff);
   //Старые SST требуют 60H
   buff:= $60;
   USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 1, buff);

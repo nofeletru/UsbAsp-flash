@@ -640,7 +640,7 @@ object MainForm: TMainForm
       end
     end
     object LangMenuItem: TMenuItem
-      Caption = 'Languadge'
+      Caption = 'language'
     end
   end
   object ImageList: TImageList
