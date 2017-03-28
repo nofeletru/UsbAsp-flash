@@ -808,6 +808,69 @@ begin
   MainForm.ProgressBar.Position := 0;
 end;
 
+procedure EraseEEPROM25(StartAddress, WriteSize: cardinal; PageSize: word; ChipSize: integer);
+var
+  DataChunk: array[0..2047] of byte;
+  DataChunk2: array[0..2047] of byte;
+  Address, BytesWrite: cardinal;
+  i: integer;
+begin
+  if (StartAddress >= WriteSize) or (WriteSize = 0) {or (PageSize > WriteSize)} then
+  begin
+    LogPrint(STR_CHECK_SETTINGS, ClRed);
+    exit;
+  end;
+
+  BytesWrite := 0;
+  Address := StartAddress;
+  MainForm.ProgressBar.Max := WriteSize div PageSize;
+
+  while Address < WriteSize do
+  begin
+    UsbAsp95_WREN(hUSBDev);
+
+    if (WriteSize - Address) < PageSize then PageSize := (WriteSize - Address);
+
+    FillByte(DataChunk, PageSize, $FF);
+
+    BytesWrite := BytesWrite + UsbAsp95_Write(hUSBDev, ChipSize, Address, datachunk, PageSize);
+
+    if not MainForm.MenuIgnoreBusyBit.Checked then  //Игнорировать проверку
+      while UsbAsp25_Busy(hUSBDev) do
+      begin
+        Application.ProcessMessages;
+        if MainForm.ButtonCancel.Tag <> 0 then
+        begin
+          LogPrint(STR_USER_CANCEL, clRed);
+          Exit;
+        end;
+      end;
+
+    if MainForm.MenuAutoCheck.Checked then
+    begin
+      UsbAsp95_Read(hUSBDev, ChipSize, Address, datachunk2, PageSize);
+      for i:=0 to PageSize-1 do
+        if DataChunk2[i] <> DataChunk[i] then
+        begin
+          LogPrint(STR_VERIFY_ERROR+IntToHex(Address+i, 8), clRed);
+          MainForm.ProgressBar.Position := 0;
+          Exit;
+        end;
+    end;
+
+    Inc(Address, PageSize);
+    MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
+    Application.ProcessMessages;
+  end;
+
+  if BytesWrite <> WriteSize then
+    LogPrint(STR_WRONG_BYTES_WRITE, clRed)
+  else
+    LogPrint(STR_DONE);
+
+  MainForm.ProgressBar.Position := 0;
+end;
+
 //write size in pages
 procedure WriteFlashKB(var RomStream: TMemoryStream; StartAddress, WriteSize: cardinal; PageSize: word);
 var
@@ -1654,7 +1717,7 @@ begin
 
   if MainForm.RadioSPI.Checked then
   begin
-    if (MainForm.ComboSPICMD.ItemIndex <> SPI_CMD_KB) and (MainForm.ComboSPICMD.ItemIndex <> SPI_CMD_95) then
+    if (MainForm.ComboSPICMD.ItemIndex <> SPI_CMD_KB) then
     begin
       MainForm.ButtonReadID.Enabled := True;
       MainForm.ButtonBlock.Enabled := True;
@@ -2073,7 +2136,7 @@ begin
 
   ButtonErase.Enabled         := True;
 
-  if (ComboSPICMD.ItemIndex <> SPI_CMD_KB) and (ComboSPICMD.ItemIndex <> SPI_CMD_95) then
+  if (ComboSPICMD.ItemIndex <> SPI_CMD_KB) then
   begin
     ButtonReadID.Enabled        := True;
     ButtonBlock.Enabled         := True;
@@ -2843,6 +2906,17 @@ try
           Exit;
         end;
       end;
+    end;
+
+    if ComboSPICMD.ItemIndex = SPI_CMD_95 then
+      begin
+        if ( (not IsNumber(ComboChipSize.Text)) or (not IsNumber(ComboPageSize.Text))) then
+        begin
+          LogPrint(STR_CHECK_SETTINGS, clRed);
+          Exit;
+        end;
+
+      EraseEEPROM25(0, StrToInt(ComboChipSize.Text), StrToInt(ComboPageSize.Text), StrToInt(ComboChipSize.Text));
     end;
 
     if ComboSPICMD.ItemIndex = SPI_CMD_45 then
