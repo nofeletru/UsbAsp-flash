@@ -38,7 +38,14 @@ const
   WT_PAGE = 0;
   WT_SSTB = 1;
   WT_SSTW = 2;
+type
 
+  MEMORY_ID = record
+    ID9FH: array[0..2] of byte;
+    ID90H: array[0..1] of byte;
+    IDABH: byte;
+    ID15H: array[0..1] of byte;
+  end;
 
 function UsbAsp25_Busy(devHandle: Pusb_dev_handle): boolean;
 
@@ -50,7 +57,7 @@ function UsbAsp25_Read32bitAddr(devHandle: Pusb_dev_handle; Opcode: byte; Addr: 
 function UsbAsp25_Write(devHandle: Pusb_dev_handle; Opcode: byte; Addr: longword; buffer: array of byte; bufflen: integer): integer;
 function UsbAsp25_Write32bitAddr(devHandle: Pusb_dev_handle; Opcode: byte; Addr: longword; buffer: array of byte; bufflen: integer): integer;
 
-function UsbAsp25_ReadID(devHandle: Pusb_dev_handle; var ID: array of byte): integer;
+function UsbAsp25_ReadID(devHandle: Pusb_dev_handle; var ID: MEMORY_ID): integer;
 
 function UsbAsp25_Wren(devHandle: Pusb_dev_handle): integer;
 function UsbAsp25_Wrdi(devHandle: Pusb_dev_handle): integer;
@@ -124,16 +131,36 @@ begin
     USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_DISCONNECT, 0, 0, 0, dummy);
 end;
 
-//Читает 3 байта id
-function UsbAsp25_ReadID(devHandle: Pusb_dev_handle; var ID: array of byte): integer;
+//Читает id и заполняет структуру
+function UsbAsp25_ReadID(devHandle: Pusb_dev_handle; var ID: MEMORY_ID): integer;
 var
-  buffer: array[0..2] of byte;
+  buffer: array[0..3] of byte;
 begin
-  FillByte(buffer, 3, $FF);
+  //9F
   buffer[0] := $9F;
   USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 0, 0, 1, buffer);
+  FillByte(buffer, 4, $FF);
   result := USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_READ, 1, 0, 3, buffer);
-  move(buffer, ID, 3);
+  move(buffer, ID.ID9FH, 3);
+  //90
+  FillByte(buffer, 4, 0);
+  buffer[0] := $90;
+  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 0, 0, 4, buffer);
+  result := USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_READ, 1, 0, 2, buffer);
+  move(buffer, ID.ID90H, 2);
+  //AB
+  FillByte(buffer, 4, 0);
+  buffer[0] := $AB;
+  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 0, 0, 4, buffer);
+  result := USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_READ, 1, 0, 1, buffer);
+  move(buffer, ID.IDABH, 1);
+  //15
+  buffer[0] := $AB;
+  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 0, 0, 1, buffer);
+  FillByte(buffer, 4, $FF);
+  result := USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_READ, 1, 0, 2, buffer);
+  move(buffer, ID.ID15H, 2);
+
 end;
 
 //Возвращает сколько байт прочитали

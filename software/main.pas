@@ -2565,32 +2565,31 @@ end;
 procedure TMainForm.ButtonReadIDClick(Sender: TObject);
 var
   XMLfile: TXMLDocument;
-  ID: array[0..2] of byte;
-  ID90H: array[0..1] of byte;
-  IDABH: byte;
-  IDstr: string[6];
+  ID: MEMORY_ID;
+  IDstr9FH: string[6];
   IDstr90H: string[4];
   IDstrABH: string[6];
+  IDstr15H: string[4];
 begin
   try
     if not OpenDevice() then exit;
     LockControl();
-    FillByte(ID, 3, $FF);
-    FillByte(ID90H, 2, $FF);
-    FillByte(IDABH, 1, $FF);
+    FillByte(ID.ID9FH, 3, $FF);
+    FillByte(ID.ID90H, 2, $FF);
+    FillByte(ID.IDABH, 1, $FF);
+    FillByte(ID.ID15H, 2, $FF);
     if not SetSPISpeed(0) then exit;
 
     EnterProgMode25(hUSBdev);
     UsbAsp25_ReadID(hUSBDev, ID);
-    UsbAsp25_Read(hUSBDev, $90, 0, ID90H, 2);
-    UsbAsp25_Read(hUSBDev, $AB, 0, IDABH, 1);
     ExitProgMode25(hUSBdev);
 
     USB_Dev_Close(hUSBdev);
 
-    IDstr := Upcase(IntToHex(ID[0], 2)+IntToHex(ID[1], 2)+IntToHex(ID[2], 2));
-    IDstr90H := Upcase(IntToHex(ID90H[0], 2)+IntToHex(ID90H[1], 2));
-    IDstrABH := Upcase(IntToHex(IDABH, 2));
+    IDstr9FH := Upcase(IntToHex(ID.ID9FH[0], 2)+IntToHex(ID.ID9FH[1], 2)+IntToHex(ID.ID9FH[2], 2));
+    IDstr90H := Upcase(IntToHex(ID.ID90H[0], 2)+IntToHex(ID.ID90H[1], 2));
+    IDstrABH := Upcase(IntToHex(ID.IDABH, 2));
+    IDstr15H := Upcase(IntToHex(ID.ID15H[0], 2)+IntToHex(ID.ID15H[1], 2));
 
     if FileExists('chiplist.xml') then
     begin
@@ -2607,22 +2606,25 @@ begin
       ChipSearchForm.ListBoxChips.Clear;
       ChipSearchForm.EditSearch.Text:= '';
 
-      FindChip.FindChip(XMLfile, '', IDstr);
+      FindChip.FindChip(XMLfile, '', IDstr9FH);
       if ChipSearchForm.ListBoxChips.Items.Capacity = 0 then FindChip.FindChip(XMLfile, '', IDstr90H);
       if ChipSearchForm.ListBoxChips.Items.Capacity = 0 then FindChip.FindChip(XMLfile, '', IDstrABH);
+      if ChipSearchForm.ListBoxChips.Items.Capacity = 0 then FindChip.FindChip(XMLfile, '', IDstr15H);
 
       if ChipSearchForm.ListBoxChips.Items.Capacity > 0 then
       begin
         ChipSearchForm.Show;
-        LogPrint('ID(9F): '+ IDstr);
+        LogPrint('ID(9F): '+ IDstr9FH);
         LogPrint('ID(90): '+ IDstr90H);
         LogPrint('ID(AB): '+ IDstrABH);
+        LogPrint('ID(15): '+ IDstr15H);
       end
       else
       begin
-        LogPrint('ID(9F): '+ IDstr +STR_ID_UNKNOWN);
+        LogPrint('ID(9F): '+ IDstr9FH +STR_ID_UNKNOWN);
         LogPrint('ID(90): '+ IDstr90H +STR_ID_UNKNOWN);
         LogPrint('ID(AB): '+ IDstrABH +STR_ID_UNKNOWN);
+        LogPrint('ID(15): '+ IDstr15H +STR_ID_UNKNOWN);
       end;
 
       XMLfile.Free;
