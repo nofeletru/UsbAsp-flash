@@ -881,15 +881,15 @@
       <AT25DF321 id="1F4700" page="256" size="4194304"/>
       <AT25DF321A id="1F4700" page="256" size="4194304"/>
       <AT25DF641 id="1F4800" page="256" size="8388608"/>
-      <AT25F512 id="1F6500" page="256" size="65536"/>
-      <AT25F512A id="1F6500" page="128" size="65536"/>
+      <AT25F512 id="1F65" page="256" size="65536"/>
+      <AT25F512A id="1F65" page="128" size="65536"/>
 	  <AT25F512B id="1F6500" page="256" size="65536"/>
-      <AT25F1024 id="1F6000" page="256" size="131072"/>
-      <AT25F1024A id="1F6000" page="256" size="131072"/>
-      <AT25F2048 id="1F6300" page="256" size="262144"/>
-      <AT25F2048A id="1F6300" page="256" size="262144"/>
-      <AT25F4096 id="1F6400" page="256" size="524288"/>
-      <AT25F4096A id="1F6400" page="256" size="524288"/>
+      <AT25F1024 id="1F60" page="256" size="131072"/>
+      <AT25F1024A id="1F60" page="256" size="131072"/>
+      <AT25F2048 id="1F63" page="256" size="262144"/>
+      <AT25F2048A id="1F63" page="256" size="262144"/>
+      <AT25F4096 id="1F64" page="256" size="524288"/>
+      <AT25F4096A id="1F64" page="256" size="524288"/>
       <AT25HP256 page="128" size="32768" spicmd="95"/>
       <AT25HP512 page="128" size="65536" spicmd="95"/>
       <AT26DF081 id="1F4500" page="256" size="1048576"/>
