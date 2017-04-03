@@ -155,7 +155,7 @@ begin
   result := USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_READ, 1, 0, 1, buffer);
   move(buffer, ID.IDABH, 1);
   //15
-  buffer[0] := $AB;
+  buffer[0] := $15;
   USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 0, 0, 1, buffer);
   FillByte(buffer, 4, $FF);
   result := USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_READ, 1, 0, 2, buffer);
