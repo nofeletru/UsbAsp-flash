@@ -625,7 +625,6 @@ var
   Address, BytesWrite: cardinal;
   i: integer;
   sreg: byte;
-  addr32bit4byte: boolean = false;
 begin
   if (StartAddress >= WriteSize) or (WriteSize = 0) {or (PageSize > WriteSize)} then
   begin
@@ -641,17 +640,7 @@ begin
   Address := StartAddress;
   MainForm.ProgressBar.Max := WriteSize div PageSize;
 
-  //Проверяем тип адресации 256+Mbit
-  if WriteSize > FLASH_SIZE_128MBIT then
-  begin
-    UsbAsp25_ReadSR(hUSBDev, sreg, $15);
-    if isBitSet(sreg, 0) then addr32bit4byte := true;
-    //Сбрасываем регистр адреса
-    UsbAsp25_WREN(hUSBDev);
-    sreg := 0;
-    UsbAsp25_WriteSR(hUSBDev, sreg, $c5);
-  end;
-
+  if WriteSize > FLASH_SIZE_128MBIT then UsbAsp25_EN4B(hUSBDev);
 
   while Address < WriteSize do
   begin
@@ -681,19 +670,8 @@ begin
     begin
       if WriteSize > FLASH_SIZE_128MBIT then //Память больше 128Мбит
       begin
-        if addr32bit4byte then //4 байтная адресация включена
-          BytesWrite := BytesWrite + UsbAsp25_Write32bitAddr(hUSBDev, $02, Address, datachunk, PageSize)
-        else  //3 байтовая адресация включена
-        begin
-          //старший байт адреса
-          if Address > FLASH_SIZE_128MBIT-1 then
-          begin
-            UsbAsp25_WriteSR(hUSBDev, hi(hi(Address)), $c5);
-            UsbAsp25_WREN(hUSBDev);
-          end;
-
-          BytesWrite := BytesWrite + UsbAsp25_Write(hUSBDev, $02, Address, datachunk, PageSize);
-        end;
+        //4 байтная адресация
+        BytesWrite := BytesWrite + UsbAsp25_Write32bitAddr(hUSBDev, $02, Address, datachunk, PageSize)
       end
       else //Память в пределах 128Мбит
         BytesWrite := BytesWrite + UsbAsp25_Write(hUSBDev, $02, Address, datachunk, PageSize);
@@ -714,7 +692,7 @@ begin
     begin
 	  
       if WriteSize > FLASH_SIZE_128MBIT then
-        UsbAsp25_Read32bitAddr(hUSBDev, $13, Address, datachunk2, PageSize)
+        UsbAsp25_Read32bitAddr(hUSBDev, $03, Address, datachunk2, PageSize)
       else
         UsbAsp25_Read(hUSBDev, $03, Address, datachunk2, PageSize);
 		  
@@ -732,6 +710,7 @@ begin
     Application.ProcessMessages;
   end;
 
+  if WriteSize > FLASH_SIZE_128MBIT then UsbAsp25_EX4B(hUSBDev);
   UsbAsp25_Wrdi(hUSBDev); //Для sst
 
   if BytesWrite <> WriteSize then
@@ -1025,12 +1004,14 @@ begin
 
   RomStream.Clear;
 
+  if ChipSize > FLASH_SIZE_128MBIT then UsbAsp25_EN4B(hUSBDev);
+
   while Address < ChipSize do
   begin
     if ChunkSize > (ChipSize - Address) then ChunkSize := ChipSize - Address;
 
     if ChipSize > FLASH_SIZE_128MBIT then
-      BytesRead := BytesRead + UsbAsp25_Read32bitAddr(hUSBDev, $13, Address, datachunk, ChunkSize)
+      BytesRead := BytesRead + UsbAsp25_Read32bitAddr(hUSBDev, $03, Address, datachunk, ChunkSize)
     else
       BytesRead := BytesRead + UsbAsp25_Read(hUSBDev, $03, Address, datachunk, ChunkSize);
 
@@ -1046,6 +1027,8 @@ begin
       Break;
     end;
   end;
+
+  if ChipSize > FLASH_SIZE_128MBIT then UsbAsp25_EX4B(hUSBDev);
 
   if BytesRead <> ChipSize then
     LogPrint(STR_WRONG_BYTES_READ, clRed)
@@ -1230,12 +1213,14 @@ begin
   Address := StartAddress;
   MainForm.ProgressBar.Max := DataSize div ChunkSize;
 
+  if DataSize > FLASH_SIZE_128MBIT then UsbAsp25_EN4B(hUSBDev);
+
   while Address < DataSize do
   begin
     if ChunkSize > (DataSize - Address) then ChunkSize := DataSize - Address;
 
     if DataSize > FLASH_SIZE_128MBIT then
-        BytesRead := BytesRead + UsbAsp25_Read32bitAddr(hUSBDev, $13, Address, datachunk, ChunkSize)
+        BytesRead := BytesRead + UsbAsp25_Read32bitAddr(hUSBDev, $03, Address, datachunk, ChunkSize)
       else
         BytesRead := BytesRead + UsbAsp25_Read(hUSBDev, $03, Address, datachunk, ChunkSize);
 
@@ -1260,6 +1245,8 @@ begin
       Break;
     end;
   end;
+
+  if DataSize > FLASH_SIZE_128MBIT then UsbAsp25_EX4B(hUSBDev);
 
   if (BytesRead <> DataSize) then
     LogPrint(STR_WRONG_BYTES_READ, clRed)

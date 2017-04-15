@@ -72,6 +72,9 @@ function UsbAsp_SetISPSpeed(devHandle: Pusb_dev_handle; speed: byte): integer;
 function UsbAsp25_WriteSSTB(devHandle: Pusb_dev_handle; Opcode: byte; Data: byte): integer;
 function UsbAsp25_WriteSSTW(devHandle: Pusb_dev_handle; Opcode: byte; Data1, Data2: byte): integer;
 
+function UsbAsp25_EN4B(devHandle: Pusb_dev_handle): integer;
+function UsbAsp25_EX4B(devHandle: Pusb_dev_handle): integer;
+
 implementation
 
 uses Main, avrispmk2;
@@ -330,6 +333,24 @@ begin
   buff[2] := Data2;
 
   result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 3, buff)-1;
+end;
+
+//Enter 4-byte mode
+function UsbAsp25_EN4B(devHandle: Pusb_dev_handle): integer;
+var
+  buff: byte;
+begin
+  buff:= $B7;
+  result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 1, buff);
+end;
+
+//Exit 4-byte mode
+function UsbAsp25_EX4B(devHandle: Pusb_dev_handle): integer;
+var
+  buff: byte;
+begin
+  buff:= $E9;
+  result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 1, buff);
 end;
 
 end.
