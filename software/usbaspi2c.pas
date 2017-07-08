@@ -106,9 +106,7 @@ var
   value, index: Integer;
 begin
 
-  DevAddr := DevAddr or %10100000;
-
-  //TODO: 24LC1025
+   //TODO: 24LC1025
 
 
   if AddrType = I2C_ADDR_TYPE_7BIT  then
@@ -204,8 +202,6 @@ begin
 
   //TODO: 24LC1025
 
-  DevAddr := DevAddr or %10100000;
-
   if AddrType = I2C_ADDR_TYPE_7BIT then
   begin
     Value := (I2C_0BYTE_ADDR shl 8) or (Byte(Address) shl 1); //7 бит
@@ -282,7 +278,6 @@ begin
     value := (I2C_2BYTE_ADDR shl 8) or (DevAddr);
     index := Word(Address);
   end;
-
 
   result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_I2C_WRITE, value, index, bufflen, buffer);
 end;

@@ -371,3 +371,13 @@ msgstr "Маркировка содержит:"
 #: tmainform.blankcheckmenuitem.caption
 msgid "Проверка на чистоту"
 msgstr "Проверка на чистоту"
+
+#: tmainform.Label_I2C_DevAddr.caption
+msgctxt "tmainform.Label_I2C_DevAddr.caption"
+msgid "Адрес устройства"
+msgstr "Адрес устройства"
+
+#: tmainform.CheckBox_I2C_ByteRead.caption
+msgctxt "tmainform.CheckBox_I2C_ByteRead.caption"
+msgid "Побайтовое чтение"
+msgstr "Побайтовое чтение"

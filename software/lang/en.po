@@ -371,3 +371,14 @@ msgstr "IC мarking contain:"
 #: tmainform.blankcheckmenuitem.caption
 msgid "Проверка на чистоту"
 msgstr "Blank check"
+
+#: tmainform.Label_I2C_DevAddr.caption
+msgctxt "tmainform.Label_I2C_DevAddr.caption"
+msgid "Адрес устройства"
+msgstr "Device address"
+
+#: tmainform.CheckBox_I2C_ByteRead.caption
+msgctxt "tmainform.CheckBox_I2C_ByteRead.caption"
+msgid "Побайтовое чтение"
+msgstr "Byte read"
+

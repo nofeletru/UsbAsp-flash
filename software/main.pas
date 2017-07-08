@@ -21,9 +21,13 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
-    CheckBox_I2C_A2: TCheckBox;
-    CheckBox_I2C_A1: TCheckBox;
-    CheckBox_I2C_A0: TCheckBox;
+    CheckBox_I2C_A1: TToggleBox;
+    CheckBox_I2C_A0: TToggleBox;
+    CheckBox_I2C_ByteRead: TCheckBox;
+    CheckBox_I2C_DevA6: TToggleBox;
+    CheckBox_I2C_DevA5: TToggleBox;
+    CheckBox_I2C_DevA4: TToggleBox;
+    CheckBox_I2C_A2: TToggleBox;
     ComboAddrType: TComboBox;
     ComboSPICMD: TComboBox;
     KHexEditor: TKHexEditor;
@@ -37,7 +41,7 @@ type
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
-    LabelI2CAddr: TLabel;
+    Label_I2C_DevAddr: TLabel;
     LabelSPICMD: TLabel;
     LabelChipName: TLabel;
     MainMenu: TMainMenu;
@@ -90,6 +94,7 @@ type
     EditorPopupMenu: TPopupMenu;
     LogPopupMenu: TPopupMenu;
     DropdownMenuLock: TPopupMenu;
+    Panel_I2C_DevAddr: TPanel;
     ProgressBar: TProgressBar;
     RadioI2C: TRadioButton;
     RadioMw: TRadioButton;
@@ -97,6 +102,7 @@ type
     Log: TRichMemo;
     SaveDialog: TSaveDialog;
     StatusBar: TStatusBar;
+    CheckBox_I2C_DevA7: TToggleBox;
     ToolBar: TToolBar;
     ButtonRead: TToolButton;
     ButtonWrite: TToolButton;
@@ -146,6 +152,7 @@ type
     procedure ButtonOpenHexClick(Sender: TObject);
     procedure ButtonSaveHexClick(Sender: TObject);
     procedure ButtonCancelClick(Sender: TObject);
+    procedure I2C_DevAddrChange(Sender: TObject);
   private
     { private declarations }
   public
@@ -512,6 +519,22 @@ begin
   result := true;
 end;
 
+
+function SetI2CDevAddr(): byte;
+begin
+    result := 0;
+    With MainForm do
+    begin
+      if (CheckBox_I2C_A0.Checked) then result := SetBit(result, 1);
+      if (CheckBox_I2C_A1.Checked) then result := SetBit(result, 2);
+      if (CheckBox_I2C_A2.Checked) then result := SetBit(result, 3);
+
+      if (CheckBox_I2C_DevA4.Checked) then result := SetBit(result, 4);
+      if (CheckBox_I2C_DevA5.Checked) then result := SetBit(result, 5);
+      if (CheckBox_I2C_DevA6.Checked) then result := SetBit(result, 6);
+      if (CheckBox_I2C_DevA7.Checked) then result := SetBit(result, 7);
+    end;
+end;
 
 procedure ReadFlashMW(var RomStream: TMemoryStream; AddrBitLen: byte; StartAddress, ChipSize: cardinal);
 var
@@ -1480,9 +1503,8 @@ begin
   MainForm.ProgressBar.Position := 0;
 end;
 
-procedure ReadFlashI2C(var RomStream: TMemoryStream; ChipSize: cardinal; DevAddr: byte);
+procedure ReadFlashI2C(var RomStream: TMemoryStream; ChipSize: cardinal; ChunkSize: Word; DevAddr: byte);
 var
-  ChunkSize: Word;
   BytesRead: integer;
   DataChunk: array[0..2047] of byte;
   Address: cardinal;
@@ -1493,7 +1515,8 @@ begin
     exit;
   end;
 
-  ChunkSize := SizeOf(DataChunk);
+  if ChunkSize > SizeOf(DataChunk) then ChunkSize := SizeOf(DataChunk);
+  if ChunkSize < 1 then ChunkSize := 1;
   if ChunkSize > ChipSize then ChunkSize := ChipSize;
 
   LogPrint(STR_READING_FLASH);
@@ -1563,7 +1586,7 @@ end;
 
 procedure EraseFlashI2C(StartAddress, WriteSize: cardinal; PageSize: word; DevAddr: byte);
 var
-  DataChunk: array[0..2047] of byte;
+  DataChunk: byte;
   Address, BytesWrite: cardinal;
 begin
   if (StartAddress >= WriteSize) or (WriteSize = 0) then
@@ -1599,9 +1622,8 @@ begin
   MainForm.ProgressBar.Position := 0;
 end;
 
-procedure VerifyFlashI2C(var RomStream: TMemoryStream; DataSize: cardinal; DevAddr: byte);
+procedure VerifyFlashI2C(var RomStream: TMemoryStream; DataSize: cardinal; ChunkSize: Word; DevAddr: byte);
 var
-  ChunkSize: Word;
   BytesRead, i: integer;
   DataChunk: array[0..2047] of byte;
   DataChunkFile: array[0..2047] of byte;
@@ -1613,7 +1635,8 @@ begin
     exit;
   end;
 
-  ChunkSize := SizeOf(DataChunk);
+  if ChunkSize > SizeOf(DataChunk) then ChunkSize := SizeOf(DataChunk);
+  if ChunkSize < 1 then ChunkSize := 1;
   if ChunkSize > DataSize then ChunkSize := DataSize;
 
   LogPrint(STR_VERIFY);
@@ -2078,10 +2101,7 @@ begin
   ButtonErase.Enabled         := True;
   ComboMWBitLen.Visible       := False;
   ComboSPICMD.Visible         := False;
-  LabelI2CAddr.Visible        := True;
-  CheckBox_I2C_A2.Visible     := True;
-  CheckBox_I2C_A1.Visible     := True;
-  CheckBox_I2C_A0.Visible     := True;
+  Panel_I2C_DevAddr.Visible   := True;
 
   ComboMWBitLen.Text:= 'MW addr len';
   ComboAddrType.Text:= '';
@@ -2099,10 +2119,7 @@ begin
   ButtonBlock.Enabled         := False;
   Label4.Visible              := False;
   LabelSPICMD.Visible         := False;
-  LabelI2CAddr.Visible        := False;
-  CheckBox_I2C_A2.Visible     := False;
-  CheckBox_I2C_A1.Visible     := False;
-  CheckBox_I2C_A0.Visible     := False;
+  Panel_I2C_DevAddr.Visible   := False;
   Label5.Visible              := True;
   ButtonErase.Enabled         := True;
   ComboMWBitLen.Visible       := True;
@@ -2137,10 +2154,8 @@ begin
   Label4.Visible              := False;
   Label5.Visible              := False;
   ComboAddrType.Visible       := False;
-  LabelI2CAddr.Visible        := False;
-  CheckBox_I2C_A2.Visible     := False;
-  CheckBox_I2C_A1.Visible     := False;
-  CheckBox_I2C_A0.Visible     := False;
+
+  Panel_I2C_DevAddr.Visible  := False;
 
   ComboMWBitLen.Text:= 'MW addr len';
   ComboAddrType.Text:= '';
@@ -2153,6 +2168,7 @@ var
   PageSize: word;
   WriteType: byte;
   I2C_DevAddr: byte;
+  I2C_ChunkSize: Word;
 begin
 try
   ButtonCancel.Tag := 0;
@@ -2249,12 +2265,10 @@ try
 
     EnterProgModeI2C(hUSBdev);
 
-    //Адрес микросхемы
-    I2C_DevAddr := 0;
-    if (CheckBox_I2C_A0.Checked) then I2C_DevAddr := SetBit(I2C_DevAddr, 1);
-    if (CheckBox_I2C_A1.Checked) then I2C_DevAddr := SetBit(I2C_DevAddr, 2);
-    if (CheckBox_I2C_A2.Checked) then I2C_DevAddr := SetBit(I2C_DevAddr, 3);
-    I2C_DevAddr := I2C_DevAddr or %10100000;
+    //Адрес микросхемы по чекбоксам
+    I2C_DevAddr := SetI2CDevAddr();
+
+    if CheckBox_I2C_ByteRead.Checked then I2C_ChunkSize := 1;
 
     if UsbAspI2C_BUSY(hUSBdev, I2C_DevAddr) then
     begin
@@ -2285,7 +2299,7 @@ try
       RomF.Position :=0;
       KHexEditor.SaveToStream(RomF);
       RomF.Position :=0;
-      VerifyFlashI2C(RomF, KHexEditor.Data.Size, I2C_DevAddr);
+      VerifyFlashI2C(RomF, KHexEditor.Data.Size, I2C_ChunkSize, I2C_DevAddr);
     end;
 
   end;
@@ -2331,6 +2345,7 @@ end;
 procedure TMainForm.ButtonVerifyClick(Sender: TObject);
 var
   I2C_DevAddr: byte;
+  I2C_ChunkSize: Word;
 begin
 try
   ButtonCancel.Tag := 0;
@@ -2391,12 +2406,10 @@ try
 
     EnterProgModeI2C(hUSBdev);
 
-    //Адрес микросхемы
-    I2C_DevAddr := 0;
-    if (CheckBox_I2C_A0.Checked) then I2C_DevAddr := SetBit(I2C_DevAddr, 1);
-    if (CheckBox_I2C_A1.Checked) then I2C_DevAddr := SetBit(I2C_DevAddr, 2);
-    if (CheckBox_I2C_A2.Checked) then I2C_DevAddr := SetBit(I2C_DevAddr, 3);
-    I2C_DevAddr := I2C_DevAddr or %10100000;
+    //Адрес микросхемы по чекбоксам
+    I2C_DevAddr := SetI2CDevAddr();
+
+    if CheckBox_I2C_ByteRead.Checked then I2C_ChunkSize := 1;
 
     if UsbAspI2C_BUSY(hUSBdev, I2C_DevAddr) then
     begin
@@ -2408,7 +2421,7 @@ try
     RomF.Position :=0;
     KHexEditor.SaveToStream(RomF);
     RomF.Position :=0;
-    VerifyFlashI2C(RomF, KHexEditor.Data.Size, I2C_DevAddr);
+    VerifyFlashI2C(RomF, KHexEditor.Data.Size, I2C_ChunkSize, I2C_DevAddr);
   end;
 
   //Microwire
@@ -2646,6 +2659,14 @@ begin
   ButtonCancel.Tag:= 1;
 end;
 
+procedure TMainForm.I2C_DevAddrChange(Sender: TObject);
+begin
+  if TToggleBox(Sender).State = cbUnchecked then
+  TToggleBox(Sender).Caption:= '0';
+  if TToggleBox(Sender).State = cbChecked then
+  TToggleBox(Sender).Caption:= '1';
+end;
+
 procedure LoadChipList(XMLfile: TXMLDocument);
 var
   Node: TDOMNode;
@@ -2719,6 +2740,7 @@ end;
 procedure TMainForm.ButtonReadClick(Sender: TObject);
 var
   I2C_DevAddr: byte;
+  I2C_ChunkSize: word;
 begin
 try
   ButtonCancel.Tag := 0;
@@ -2774,12 +2796,10 @@ try
 
     EnterProgModeI2c(hUSBdev);
 
-    //Адрес микросхемы
-    I2C_DevAddr := 0;
-    if (CheckBox_I2C_A0.Checked) then I2C_DevAddr := SetBit(I2C_DevAddr, 1);
-    if (CheckBox_I2C_A1.Checked) then I2C_DevAddr := SetBit(I2C_DevAddr, 2);
-    if (CheckBox_I2C_A2.Checked) then I2C_DevAddr := SetBit(I2C_DevAddr, 3);
-    I2C_DevAddr := I2C_DevAddr or %10100000;
+    //Адрес микросхемы по чекбоксам
+    I2C_DevAddr := SetI2CDevAddr();
+
+    if CheckBox_I2C_ByteRead.Checked then I2C_ChunkSize := 1;
 
     if UsbAspI2C_BUSY(hUSBdev, I2C_DevAddr) then
     begin
@@ -2787,7 +2807,7 @@ try
       exit;
     end;
     TimeCounter := Time();
-    ReadFlashI2C(RomF, StrToInt(ComboChipSize.Text), I2C_DevAddr);
+    ReadFlashI2C(RomF, StrToInt(ComboChipSize.Text), I2C_ChunkSize, I2C_DevAddr);
 
     RomF.Position := 0;
     KHexEditor.LoadFromStream(RomF);
@@ -2936,12 +2956,8 @@ try
 
     EnterProgModeI2C(hUSBdev);
 
-    //Адрес микросхемы
-    I2C_DevAddr := 0;
-    if (CheckBox_I2C_A0.Checked) then I2C_DevAddr := SetBit(I2C_DevAddr, 1);
-    if (CheckBox_I2C_A1.Checked) then I2C_DevAddr := SetBit(I2C_DevAddr, 2);
-    if (CheckBox_I2C_A2.Checked) then I2C_DevAddr := SetBit(I2C_DevAddr, 3);
-    I2C_DevAddr := I2C_DevAddr or %10100000;
+    //Адрес микросхемы по чекбоксам
+    I2C_DevAddr := SetI2CDevAddr();
 
     if UsbAspI2C_BUSY(hUSBdev, I2C_DevAddr) then
     begin
