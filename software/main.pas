@@ -1586,7 +1586,7 @@ end;
 
 procedure EraseFlashI2C(StartAddress, WriteSize: cardinal; PageSize: word; DevAddr: byte);
 var
-  DataChunk: byte;
+  DataChunk: array[0..2047] of byte;
   Address, BytesWrite: cardinal;
 begin
   if (StartAddress >= WriteSize) or (WriteSize = 0) then
@@ -2168,7 +2168,7 @@ var
   PageSize: word;
   WriteType: byte;
   I2C_DevAddr: byte;
-  I2C_ChunkSize: Word;
+  I2C_ChunkSize: Word = 65535;
 begin
 try
   ButtonCancel.Tag := 0;
@@ -2345,7 +2345,7 @@ end;
 procedure TMainForm.ButtonVerifyClick(Sender: TObject);
 var
   I2C_DevAddr: byte;
-  I2C_ChunkSize: Word;
+  I2C_ChunkSize: Word = 65535;
 begin
 try
   ButtonCancel.Tag := 0;
@@ -2739,7 +2739,7 @@ end;
 
 procedure TMainForm.ButtonReadClick(Sender: TObject);
 var
-  I2C_DevAddr: byte;
+  I2C_DevAddr: byte = 65535;
   I2C_ChunkSize: word;
 begin
 try
