@@ -171,9 +171,21 @@ begin
     if request = USBASP_FUNC_I2C_READ then
     begin
       writebuff[0] := byte(value);
-      writebuff[1] := hi(word(index));
-      writebuff[2] := lo(word(index));
-      address_size := hi(word(value))+1; //байты адреса + байт адреса устройства
+
+      address_size := hi(word(value));
+
+      if  address_size = I2C_1BYTE_ADDR then
+      begin
+        writebuff[1] := lo(word(index));
+      end;
+
+      if address_size = I2C_2BYTE_ADDR then
+      begin
+        writebuff[1] := hi(word(index));
+        writebuff[2] := lo(word(index));
+      end;
+
+      address_size := address_size + 1; //байты адреса памяти + байт адреса устройства
 
       if not CH341StreamI2C(0, address_size, @writebuff, bufflen, @buffer) then result :=0 else result := bufflen;
       exit;
