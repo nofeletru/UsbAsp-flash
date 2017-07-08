@@ -71,6 +71,7 @@ type
     MenuAVRISP250KHz: TMenuItem;
     MenuAVRISP125KHz: TMenuItem;
     LangMenuItem: TMenuItem;
+    BlankCheckMenuItem: TMenuItem;
     MenuItemHardware: TMenuItem;
     MenuItemBenchmark: TMenuItem;
     MenuItemEditSreg: TMenuItem;
@@ -95,6 +96,7 @@ type
     LogPopupMenu: TPopupMenu;
     DropdownMenuLock: TPopupMenu;
     Panel_I2C_DevAddr: TPanel;
+    BlankCheckDropDownMenu: TPopupMenu;
     ProgressBar: TProgressBar;
     RadioI2C: TRadioButton;
     RadioMw: TRadioButton;
@@ -118,6 +120,7 @@ type
     ButtonCancel: TToolButton;
     ToolButton4: TToolButton;
     ToolButton5: TToolButton;
+    procedure BlankCheckMenuItemClick(Sender: TObject);
     procedure ButtonEraseClick(Sender: TObject);
     procedure ButtonReadClick(Sender: TObject);
     procedure ClearLogMenuItemClick(Sender: TObject);
@@ -153,6 +156,7 @@ type
     procedure ButtonSaveHexClick(Sender: TObject);
     procedure ButtonCancelClick(Sender: TObject);
     procedure I2C_DevAddrChange(Sender: TObject);
+    procedure VerifyFlash(BlankCheck: boolean = false);
   private
     { private declarations }
   public
@@ -2343,9 +2347,15 @@ end;
 end;
 
 procedure TMainForm.ButtonVerifyClick(Sender: TObject);
+begin
+  VerifyFlash(false);
+end;
+
+procedure TMainForm.VerifyFlash(BlankCheck: boolean = false);
 var
   I2C_DevAddr: byte;
   I2C_ChunkSize: Word = 65535;
+  i: Longword;
 begin
 try
   ButtonCancel.Tag := 0;
@@ -2357,7 +2367,7 @@ try
     LogPrint(STR_CHECK_SETTINGS, clRed);
     Exit;
   end;
-  if KHexEditor.Data.Size > StrToInt(ComboChipSize.Text) then
+  if (KHexEditor.Data.Size > StrToInt(ComboChipSize.Text)) and (not BlankCheck) then
   begin
     LogPrint(STR_WRONG_FILE_SIZE, clRed);
     Exit;
@@ -2370,18 +2380,24 @@ try
     EnterProgMode25(hUSBdev);
     TimeCounter := Time();
 
-    RomF.Position :=0;
-    KHexEditor.SaveToStream(RomF);
+    RomF.Clear;
+    if BlankCheck then
+    begin
+      for i:=1 to StrToInt(ComboChipSize.Text) do
+        RomF.WriteByte($FF);
+    end
+    else
+      KHexEditor.SaveToStream(RomF);
     RomF.Position :=0;
 
     if  ComboSPICMD.ItemIndex = SPI_CMD_KB then
-      VerifyFlashKB(RomF, 0, KHexEditor.Data.Size);
+      VerifyFlashKB(RomF, 0, RomF.Size);
 
     if ComboSPICMD.ItemIndex = SPI_CMD_25 then
-      VerifyFlash25(RomF, 0, KHexEditor.Data.Size);
+      VerifyFlash25(RomF, 0, RomF.Size);
 
     if ComboSPICMD.ItemIndex = SPI_CMD_95 then
-      VerifyFlash95(RomF, 0, KHexEditor.Data.Size, StrToInt(ComboChipSize.Text));
+      VerifyFlash95(RomF, 0, RomF.Size, StrToInt(ComboChipSize.Text));
 
     if ComboSPICMD.ItemIndex = SPI_CMD_45 then
      begin
@@ -2390,7 +2406,7 @@ try
         LogPrint(STR_CHECK_SETTINGS, clRed);
         Exit;
       end;
-      VerifyFlash45(RomF, 0, StrToInt(ComboPageSize.Text), KHexEditor.Data.Size);
+      VerifyFlash45(RomF, 0, StrToInt(ComboPageSize.Text), RomF.Size);
     end;
 
 
@@ -2418,10 +2434,17 @@ try
     end;
     TimeCounter := Time();
 
+    RomF.Clear;
+    if BlankCheck then
+    begin
+      for i:=1 to StrToInt(ComboChipSize.Text) do
+        RomF.WriteByte($FF);
+    end
+    else
+      KHexEditor.SaveToStream(RomF);
     RomF.Position :=0;
-    KHexEditor.SaveToStream(RomF);
-    RomF.Position :=0;
-    VerifyFlashI2C(RomF, KHexEditor.Data.Size, I2C_ChunkSize, I2C_DevAddr);
+
+    VerifyFlashI2C(RomF, RomF.Size, I2C_ChunkSize, I2C_DevAddr);
   end;
 
   //Microwire
@@ -2437,9 +2460,16 @@ try
     EnterProgMode25(hUSBdev);
     TimeCounter := Time();
 
+    RomF.Clear;
+    if BlankCheck then
+    begin
+      for i:=1 to StrToInt(ComboChipSize.Text) do
+        RomF.WriteByte($FF);
+    end
+    else
+      KHexEditor.SaveToStream(RomF);
     RomF.Position :=0;
-    KHexEditor.SaveToStream(RomF);
-    RomF.Position :=0;
+
     VerifyFlashMW(RomF, StrToInt(ComboMWBitLen.Text), 0, StrToInt(ComboChipSize.Text));
   end;
 
@@ -2739,8 +2769,8 @@ end;
 
 procedure TMainForm.ButtonReadClick(Sender: TObject);
 var
-  I2C_DevAddr: byte = 65535;
-  I2C_ChunkSize: word;
+  I2C_DevAddr: byte;
+  I2C_ChunkSize: word = 65535;
 begin
 try
   ButtonCancel.Tag := 0;
@@ -3011,6 +3041,11 @@ finally
   USB_Dev_Close(hUSBdev);
   UnlockControl();
 end;
+end;
+
+procedure TMainForm.BlankCheckMenuItemClick(Sender: TObject);
+begin
+  VerifyFlash(true);
 end;
 
 procedure SaveOptions(XMLfile: TXMLDocument);

@@ -66,13 +66,15 @@ object MainForm: TMainForm
       Left = 203
       Hint = 'Сравнить содержимое EEPROM'
       Top = 2
+      DropdownMenu = BlankCheckDropDownMenu
       ImageIndex = 6
       OnClick = ButtonVerifyClick
       ParentShowHint = False
       ShowHint = True
+      Style = tbsDropDown
     end
     object ToolButton1: TToolButton
-      Left = 239
+      Left = 251
       Height = 32
       Top = 2
       Width = 10
@@ -80,7 +82,7 @@ object MainForm: TMainForm
       Style = tbsSeparator
     end
     object ButtonReadID: TToolButton
-      Left = 249
+      Left = 261
       Hint = 'Прочитать индификатор EEPROM'
       Top = 2
       ImageIndex = 2
@@ -89,7 +91,7 @@ object MainForm: TMainForm
       ShowHint = True
     end
     object ButtonBlock: TToolButton
-      Left = 285
+      Left = 297
       Hint = 'Снять защиту'
       Top = 2
       DropdownMenu = DropdownMenuLock
@@ -109,7 +111,7 @@ object MainForm: TMainForm
       Style = tbsSeparator
     end
     object RadioSPI: TRadioButton
-      Left = 389
+      Left = 401
       Height = 19
       Top = 2
       Width = 36
@@ -120,7 +122,7 @@ object MainForm: TMainForm
       TabStop = True
     end
     object RadioI2C: TRadioButton
-      Left = 425
+      Left = 437
       Height = 19
       Top = 2
       Width = 37
@@ -129,7 +131,7 @@ object MainForm: TMainForm
       TabOrder = 1
     end
     object RadioMw: TRadioButton
-      Left = 462
+      Left = 474
       Height = 19
       Top = 2
       Width = 107
@@ -138,7 +140,7 @@ object MainForm: TMainForm
       TabOrder = 2
     end
     object ToolButton2: TToolButton
-      Left = 333
+      Left = 345
       Height = 32
       Top = 2
       Width = 10
@@ -166,7 +168,7 @@ object MainForm: TMainForm
       ShowHint = True
     end
     object ButtonCancel: TToolButton
-      Left = 343
+      Left = 355
       Hint = 'Прервать текущею операцию'
       Top = 2
       ImageIndex = 8
@@ -175,7 +177,7 @@ object MainForm: TMainForm
       ShowHint = True
     end
     object ToolButton5: TToolButton
-      Left = 379
+      Left = 391
       Height = 32
       Top = 2
       Width = 10
@@ -183,7 +185,7 @@ object MainForm: TMainForm
       Style = tbsSeparator
     end
     object ToolButton4: TToolButton
-      Left = 569
+      Left = 581
       Height = 32
       Top = 2
       Width = 10
@@ -373,7 +375,7 @@ object MainForm: TMainForm
     object Panel_I2C_DevAddr: TPanel
       Left = 448
       Height = 37
-      Top = -6
+      Top = 0
       Width = 336
       BevelOuter = bvNone
       ClientHeight = 37
@@ -474,6 +476,8 @@ object MainForm: TMainForm
     Top = 93
     Width = 802
     Align = alClient
+    Colors.DigitTextEven = clNavy
+    Colors.DigitTextOdd = clNavy
     DigitGrouping = 1
     Font.Height = -15
     Font.Name = 'Courier New'
@@ -1924,6 +1928,14 @@ object MainForm: TMainForm
     object MenuItemEditSreg: TMenuItem
       Caption = 'Изменить SREG'
       OnClick = MenuItemEditSregClick
+    end
+  end
+  object BlankCheckDropDownMenu: TPopupMenu
+    left = 480
+    top = 296
+    object BlankCheckMenuItem: TMenuItem
+      Caption = 'Проверка на чистоту'
+      OnClick = BlankCheckMenuItemClick
     end
   end
 end
