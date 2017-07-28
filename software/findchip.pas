@@ -26,6 +26,7 @@ type
   end;
 
   procedure FindChip(XMLfile: TXMLDocument; chipname: string; chipid: string = '');
+  procedure SelectChip(XMLfile: TXMLDocument; chipname: string);
 
 var
   ChipSearchForm: TChipSearchForm;

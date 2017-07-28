@@ -1746,70 +1746,9 @@ begin
 end;
 
 procedure TMainForm.ChipClick(Sender: TObject);
-var
-  XMLfile: TXMLDocument;
-  Node: TDOMNode;
 begin
-  ReadXMLFile(XMLfile, 'chiplist.xml');
-
   if Sender is TMenuItem then
-  begin
-    Node := XMLfile.DocumentElement.FindNode(UTF8ToUTF16(TMenuItem(Sender).Parent.Parent.Caption));
-
-    if UpperCase(Node.NodeName) = 'SPI' then RadioSPI.Checked := True;
-    if UpperCase(Node.NodeName) = 'I2C' then RadioI2C.Checked := True;
-    if UpperCase(Node.NodeName) = 'MICROWIRE' then RadioMW.Checked := True;
-
-    Node := XMLfile.DocumentElement.
-      FindNode(UTF8ToUTF16(TMenuItem(Sender).Parent.Parent.Caption)).
-        FindNode(UTF8ToUTF16(TMenuItem(Sender).Parent.Caption)).
-          FindNode(UTF8ToUTF16(TMenuItem(Sender).Caption));
-
-    LabelChipName.Caption := UTF16ToUTF8(Node.NodeName);
-
-    if (Node.HasAttributes) then
-    begin
-
-      if  Node.Attributes.GetNamedItem('spicmd') <> nil then
-      begin
-        if UpperCase(Node.Attributes.GetNamedItem('spicmd').NodeValue) = 'KB'then
-          MainForm.ComboSPICMD.ItemIndex:= SPI_CMD_KB;
-        if Node.Attributes.GetNamedItem('spicmd').NodeValue = '45' then
-          MainForm.ComboSPICMD.ItemIndex:= SPI_CMD_45;
-        if Node.Attributes.GetNamedItem('spicmd').NodeValue = '25' then
-          MainForm.ComboSPICMD.ItemIndex:= SPI_CMD_25;
-        if Node.Attributes.GetNamedItem('spicmd').NodeValue = '95' then
-          MainForm.ComboSPICMD.ItemIndex:= SPI_CMD_95;
-      end
-      else
-        ComboSPICMD.ItemIndex := 0;
-
-      if RadioSPI.Checked then RadioSPI.OnChange(Sender);
-
-      if  Node.Attributes.GetNamedItem('page') <> nil then
-        ComboPageSize.Text := UTF16ToUTF8(Node.Attributes.GetNamedItem('page').NodeValue)
-      else
-        ComboPageSize.Text := 'Page size';
-
-      if Node.Attributes.GetNamedItem('size') <> nil then
-        ComboChipSize.Text := UTF16ToUTF8(Node.Attributes.GetNamedItem('size').NodeValue)
-      else
-        ComboChipSize.Text := 'Chip size';
-
-      if Node.Attributes.GetNamedItem('addrbitlen') <> nil then
-        ComboMWBitLen.Text := UTF16ToUTF8(Node.Attributes.GetNamedItem('addrbitlen').NodeValue)
-      else
-        ComboMWBitLen.Text := 'MW addr len';
-
-      if Node.Attributes.GetNamedItem('addrtype') <> nil then
-        if IsNumber(UTF16ToUTF8(Node.Attributes.GetNamedItem('addrtype').NodeValue)) then
-          ComboAddrType.ItemIndex := StrToInt(UTF16ToUTF8(Node.Attributes.GetNamedItem('addrtype').NodeValue));
-
-    end;
-
-  end;
-
-  XMLfile.Free;
+    findchip.SelectChip(chiplistfile, TMenuItem(Sender).Caption); 
 end;
 
 procedure TMainForm.KHexEditorKeyUp(Sender: TObject; var Key: Word;
