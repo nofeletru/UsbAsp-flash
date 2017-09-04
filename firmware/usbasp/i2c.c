@@ -7,15 +7,15 @@
 #include "i2c.h"
 #include "isp.h"
 
-#define I2C_SDA_PIN           ISP_MISO                       //линия SDA
-#define I2C_SCL_PIN           ISP_MOSI                      //линия SCL
+#define I2C_SDA_PIN           ISP_MISO                       //Г«ГЁГ­ГЁГї SDA
+#define I2C_SCL_PIN           ISP_MOSI                      //Г«ГЁГ­ГЁГї SCL
 
-#define I2C_SDA_PORT_READ     ISP_IN                        //порт входа
+#define I2C_SDA_PORT_READ     ISP_IN                        //ГЇГ®Г°ГІ ГўГµГ®Г¤Г 
 
-#define I2C_SDA_PORT_DIR      ISP_DDR                       //порт направления
-#define I2C_SCL_PORT_DIR      ISP_DDR                       //порт направления
-#define I2C_SDA_PORT          ISP_OUT                       //порт выхода
-#define I2C_SCL_PORT          ISP_OUT                       //порт выхода
+#define I2C_SDA_PORT_DIR      ISP_DDR                       //ГЇГ®Г°ГІ Г­Г ГЇГ°Г ГўГ«ГҐГ­ГЁГї
+#define I2C_SCL_PORT_DIR      ISP_DDR                       //ГЇГ®Г°ГІ Г­Г ГЇГ°Г ГўГ«ГҐГ­ГЁГї
+#define I2C_SDA_PORT          ISP_OUT                       //ГЇГ®Г°ГІ ГўГ»ГµГ®Г¤Г 
+#define I2C_SCL_PORT          ISP_OUT                       //ГЇГ®Г°ГІ ГўГ»ГµГ®Г¤Г 
 
 #define SET(reg, bit) (reg |= (1 << bit))
 #define CLR(reg, bit) (reg &= ~(1 << bit))
