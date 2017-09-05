@@ -75,6 +75,9 @@ function UsbAsp25_WriteSSTW(devHandle: Pusb_dev_handle; Opcode: byte; Data1, Dat
 function UsbAsp25_EN4B(devHandle: Pusb_dev_handle): integer;
 function UsbAsp25_EX4B(devHandle: Pusb_dev_handle): integer;
 
+function SPIRead(devHandle: Pusb_dev_handle; CS: byte; BufferLen: integer; var buffer: array of byte): integer;
+function SPIWrite(devHandle: Pusb_dev_handle; CS: byte; BufferLen: integer; buffer: array of byte): integer;
+
 implementation
 
 uses Main, avrispmk2;
@@ -141,29 +144,28 @@ var
 begin
   //9F
   buffer[0] := $9F;
-  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 0, 0, 1, buffer);
+  SPIWrite(devHandle, 0, 1, buffer);
   FillByte(buffer, 4, $FF);
-  result := USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_READ, 1, 0, 3, buffer);
+  result := SPIRead(devHandle, 1, 3, buffer);
   move(buffer, ID.ID9FH, 3);
   //90
   FillByte(buffer, 4, 0);
   buffer[0] := $90;
-  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 0, 0, 4, buffer);
-  result := USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_READ, 1, 0, 2, buffer);
+  SPIWrite(devHandle, 0, 4, buffer);
+  result := SPIRead(devHandle, 1, 2, buffer);
   move(buffer, ID.ID90H, 2);
   //AB
   FillByte(buffer, 4, 0);
   buffer[0] := $AB;
-  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 0, 0, 4, buffer);
-  result := USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_READ, 1, 0, 1, buffer);
+  SPIWrite(devHandle, 0, 4, buffer);
+  result := SPIRead(devHandle, 1, 1, buffer);
   move(buffer, ID.IDABH, 1);
   //15
   buffer[0] := $15;
-  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 0, 0, 1, buffer);
+  SPIWrite(devHandle, 0, 1, buffer);
   FillByte(buffer, 4, $FF);
-  result := USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_READ, 1, 0, 2, buffer);
+  result := SPIRead(devHandle, 1, 2, buffer);
   move(buffer, ID.ID15H, 2);
-
 end;
 
 //Возвращает сколько байт прочитали
@@ -177,8 +179,8 @@ begin
   buff[2] := hi(lo(addr));
   buff[3] := lo(addr);
 
-  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 0, 0, 4, buff);
-  result := USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_READ, 1, 0, bufflen, buffer);
+  SPIWrite(devHandle, 0, 4, buff);
+  result := SPIRead(devHandle, 1, bufflen, buffer);
 end;
 
 function UsbAsp25_Read32bitAddr(devHandle: Pusb_dev_handle; Opcode: byte; Addr: longword; var buffer: array of byte; bufflen: integer): integer;
@@ -192,8 +194,8 @@ begin
   buff[3] := hi(lo(addr));
   buff[4] := lo(lo(addr));
 
-  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 0, 0, 5, buff);
-  result := USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_READ, 1, 0, bufflen, buffer);
+  SPIWrite(devHandle, 0, 5, buff);
+  result := SPIRead(devHandle, 1, bufflen, buffer);
 end;
 
 
@@ -225,7 +227,7 @@ var
   buff: byte;
 begin
   buff:= $06;
-  result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 1, buff);
+  result := SPIWrite(devHandle, 1, 1, buff);
 end;
 
 function UsbAsp25_Wrdi(devHandle: Pusb_dev_handle): integer;
@@ -233,7 +235,7 @@ var
   buff: byte;
 begin
   buff:= $04;
-  result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 1, buff);
+  result := SPIWrite(devHandle, 1, 1, buff);
 end;
 
 function UsbAsp25_ChipErase(devHandle: Pusb_dev_handle): integer;
@@ -242,12 +244,12 @@ var
 begin
   //Некоторые atmel'ы требуют 62H
   buff:= $62;
-  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 1, buff);
+  SPIWrite(devHandle, 1, 1, buff);
   //Старые SST требуют 60H
   buff:= $60;
-  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 1, buff);
+  SPIWrite(devHandle, 1, 1, buff);
   buff:= $C7;
-  result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 1, buff);
+  result := SPIWrite(devHandle, 1, 1, buff);
 end;
 
 function UsbAsp25_WriteSR(devHandle: Pusb_dev_handle; sreg: byte; opcode: byte = $01): integer;
@@ -256,11 +258,11 @@ var
 begin
   //Старые SST требуют Enable-Write-Status-Register (50H)
   Buff[0] := $50;
-  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 1, buff);
+  SPIWrite(devHandle, 1, 1, buff);
   //
   Buff[0] := opcode;
   Buff[1] := sreg;
-  result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 2, buff);
+  result := SPIWrite(devHandle, 1, 2, buff);
 end;
 
 function UsbAsp25_WriteSR_2byte(devHandle: Pusb_dev_handle; sreg1, sreg2: byte): integer;
@@ -269,19 +271,19 @@ var
 begin
   //Старые SST требуют Enable-Write-Status-Register (50H)
   Buff[0] := $50;
-  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 1, buff);
+  SPIWrite(devHandle, 1, 1, buff);
 
   //Если регистр из 2х байт
   Buff[0] := $01;
   Buff[1] := sreg1;
   Buff[2] := sreg2;
-  result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 3, buff);
+  result := SPIWrite(devHandle, 1, 3, buff);
 end;
 
 function UsbAsp25_ReadSR(devHandle: Pusb_dev_handle; var sreg: byte; opcode: byte = $05): integer;
 begin
-  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 0, 0, 1, opcode);
-  result := USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_READ, 1, 0, 1, sreg);
+  SPIWrite(devHandle, 0, 1, opcode);
+  result := SPIRead(devHandle, 1, 1, sreg);
 end;
 
 //Возвращает сколько байт записали
@@ -295,8 +297,8 @@ begin
   buff[2] := hi(lo(addr));
   buff[3] := lo(lo(addr));
 
-  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 0, 0, 4, buff);
-  result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, bufflen, buffer);
+  SPIWrite(devHandle, 0, 4, buff);
+  result := SPIWrite(devHandle, 1, bufflen, buffer);
 end;
 
 function UsbAsp25_Write32bitAddr(devHandle: Pusb_dev_handle; Opcode: byte; Addr: longword; buffer: array of byte; bufflen: integer): integer;
@@ -310,8 +312,8 @@ begin
   buff[3] := hi(lo(addr));
   buff[4] := lo(lo(addr));
 
-  USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 0, 0, 5, buff);
-  result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, bufflen, buffer);
+  SPIWrite(devHandle, 0, 5, buff);
+  result := SPIWrite(devHandle, 1, bufflen, buffer);
 end;
 
 function UsbAsp25_WriteSSTB(devHandle: Pusb_dev_handle; Opcode: byte; Data: byte): integer;
@@ -321,7 +323,7 @@ begin
   buff[0] := Opcode;
   buff[1] := Data;
 
-  result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 2, buff)-1;
+  result := SPIWrite(devHandle, 1, 2, buff)-1;
 end;
 
 function UsbAsp25_WriteSSTW(devHandle: Pusb_dev_handle; Opcode: byte; Data1, Data2: byte): integer;
@@ -332,7 +334,7 @@ begin
   buff[1] := Data1;
   buff[2] := Data2;
 
-  result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 3, buff)-1;
+  result := SPIWrite(devHandle, 1, 3, buff)-1;
 end;
 
 //Enter 4-byte mode
@@ -341,7 +343,7 @@ var
   buff: byte;
 begin
   buff:= $B7;
-  result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 1, buff);
+  result := SPIWrite(devHandle, 1, 1, buff);
 end;
 
 //Exit 4-byte mode
@@ -350,7 +352,17 @@ var
   buff: byte;
 begin
   buff:= $E9;
-  result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, 1, 0, 1, buff);
+  result := SPIWrite(devHandle, 1, 1, buff);
+end;
+
+function SPIRead(devHandle: Pusb_dev_handle; CS: byte; BufferLen: integer; var buffer: array of byte): integer;
+begin
+  result := USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_READ, CS, 0, BufferLen, buffer);
+end;
+
+function SPIWrite(devHandle: Pusb_dev_handle; CS: byte; BufferLen: integer; buffer: array of byte): integer;
+begin
+  result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_25_WRITE, CS, 0, BufferLen, buffer);
 end;
 
 end.
