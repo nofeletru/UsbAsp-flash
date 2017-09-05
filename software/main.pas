@@ -347,12 +347,18 @@ end;
 //Получаем хедл usbasp
 function OpenDevice: boolean;
 var
-  err: integer;
+  err, i: integer;
 begin
 
   if Current_HW = CH341 then
   begin
-    err := CH341OpenDevice(0);
+  
+    for i:=0 to mCH341_MAX_NUMBER-1 do
+    begin
+      err := CH341OpenDevice(i);
+      if not err < 0 then Break;
+    end;  
+	
     if err < 0 then
     begin
       LogPrint(STR_CONNECT_ERROR_CH+'('+IntToStr(err)+')', ClRed);
