@@ -1761,7 +1761,7 @@ procedure TMainForm.KHexEditorKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   //Костыль. Так как событие TKHEXEditor.OnChange вызывается до изменения содержимого =)
-  StatusBar.Panels.Items[0].Text := 'Размер: '+IntToStr(KHexEditor.Data.Size);
+  StatusBar.Panels.Items[0].Text := STR_SIZE+IntToStr(KHexEditor.Data.Size);
 end;
 
 procedure TMainForm.KHexEditorChange(Sender: TObject);
