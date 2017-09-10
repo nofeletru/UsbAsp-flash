@@ -34,7 +34,7 @@ object MainForm: TMainForm
     TabOrder = 1
     object ButtonRead: TToolButton
       Left = 83
-      Hint = 'Прочитать EEPROM'
+      Hint = 'Прочитать'
       Top = 2
       ImageIndex = 1
       OnClick = ButtonReadClick
@@ -43,7 +43,7 @@ object MainForm: TMainForm
     end
     object ButtonWrite: TToolButton
       Left = 119
-      Hint = 'Записать EEPROM'
+      Hint = 'Записать'
       Top = 2
       DropdownMenu = DropDownMenu
       ImageIndex = 0
@@ -54,7 +54,7 @@ object MainForm: TMainForm
     end
     object ButtonErase: TToolButton
       Left = 167
-      Hint = 'Стереть EEPROM'
+      Hint = 'Стереть'
       Top = 2
       ImageIndex = 5
       OnClick = ButtonEraseClick
@@ -64,7 +64,7 @@ object MainForm: TMainForm
     end
     object ButtonVerify: TToolButton
       Left = 203
-      Hint = 'Сравнить содержимое EEPROM'
+      Hint = 'Сравнить содержимое'
       Top = 2
       DropdownMenu = BlankCheckDropDownMenu
       ImageIndex = 6
@@ -83,7 +83,7 @@ object MainForm: TMainForm
     end
     object ButtonReadID: TToolButton
       Left = 261
-      Hint = 'Прочитать индификатор EEPROM'
+      Hint = 'Прочитать индификатор'
       Top = 2
       ImageIndex = 2
       OnClick = ButtonReadIDClick
@@ -706,7 +706,7 @@ object MainForm: TMainForm
       end
     end
     object ScriptsMenuItem: TMenuItem
-      Caption = 'Scripts'
+      Caption = 'Скрипты'
       OnClick = ScriptsMenuItemClick
     end
     object LangMenuItem: TMenuItem

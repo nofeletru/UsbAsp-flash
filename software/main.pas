@@ -291,6 +291,10 @@ begin
   LRSTranslator.Free;
   LRSTranslator:= TPOTranslator.Create(GetCurrentDir + '/lang/' + CurrentLang + '.po');
   TPOTranslator(LRSTranslator).UpdateTranslation(MainForm);
+  TPOTranslator(LRSTranslator).UpdateTranslation(ScriptEditForm);
+  TPOTranslator(LRSTranslator).UpdateTranslation(ChipSearchForm);
+  TPOTranslator(LRSTranslator).UpdateTranslation(sregeditForm);
+  TPOTranslator(LRSTranslator).UpdateTranslation(SearchForm);
 end;
 
 procedure LoadLangList();
