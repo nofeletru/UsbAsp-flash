@@ -164,32 +164,32 @@ msgid "Прервать текущею операцию"
 msgstr "Прервать текущею операцию"
 
 #: tmainform.buttonerase.hint
-msgid "Стереть EEPROM"
-msgstr "Стереть EEPROM"
+msgid "Стереть"
+msgstr "Стереть"
 
 #: tmainform.buttonopenhex.hint
 msgid "Загрузить прошивку в редактор"
 msgstr "Загрузить прошивку в редактор"
 
 #: tmainform.buttonread.hint
-msgid "Прочитать EEPROM"
-msgstr "Прочитать EEPROM"
+msgid "Прочитать"
+msgstr "Прочитать"
 
 #: tmainform.buttonreadid.hint
-msgid "Прочитать индификатор EEPROM"
-msgstr "Прочитать индификатор EEPROM"
+msgid "Прочитать индификатор"
+msgstr "Прочитать индификатор"
 
 #: tmainform.buttonsavehex.hint
 msgid "Сохранить прошивку из редактора"
 msgstr "Сохранить прошивку из редактора"
 
 #: tmainform.buttonverify.hint
-msgid "Сравнить содержимое EEPROM"
-msgstr "Сравнить содержимое EEPROM"
+msgid "Сравнить содержимое"
+msgstr "Сравнить содержимое"
 
 #: tmainform.buttonwrite.hint
-msgid "Записать EEPROM"
-msgstr "Записать EEPROM"
+msgid "Записать"
+msgstr "Записать"
 
 #: tmainform.clearlogmenuitem.caption
 msgid "Очистить"
@@ -381,3 +381,55 @@ msgstr "Адрес устройства"
 msgctxt "tmainform.CheckBox_I2C_ByteRead.caption"
 msgid "Побайтовое чтение"
 msgstr "Побайтовое чтение"
+
+#: tmainform.scriptsmenuitem.caption
+msgid "Скрипты"
+msgstr "Скрипты"
+
+#: msgstr.str_script_no_section
+msgid "Нет секции: "
+msgstr "Нет секции: "
+
+#: msgstr.str_script_run_section
+msgid "Выполняется секция: "
+msgstr "Выполняется секция: "
+
+#: msgstr.str_script_sel_section
+msgid "Выберите секцию"
+msgstr "Выберите секцию"
+
+#: msgstr.str_dlg_filechgd
+msgid "файл изменён"
+msgstr "файл изменён"
+
+#: msgstr.str_dlg_savefile
+msgid "Сохранить изменения?"
+msgstr "Сохранить изменения?"
+
+#: msgstr.str_using_script
+msgid "Используется скрипт: "
+msgstr "Используется скрипт: "
+
+#: tscripteditform.menuitemfile.caption
+msgid "Файл"
+msgstr "Файл"
+
+#: tscripteditform.menuitemopen.caption
+msgid "Открыть"
+msgstr "Открыть"
+
+#: tscripteditform.menuitemrun.caption
+msgid "Выполнить"
+msgstr "Выполнить"
+
+#: tscripteditform.menuitemsave.caption
+msgid "Сохранить"
+msgstr "Сохранить"
+
+#: tscripteditform.menuitemsaveas.caption
+msgid "Сохранить как..."
+msgstr "Сохранить как..."
+
+#: tscripteditform.menuitemsection.caption
+msgid "Секция ="
+msgstr "Секция ="
