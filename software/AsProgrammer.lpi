@@ -23,9 +23,8 @@
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
       <MajorVersionNr Value="1"/>
-      <MinorVersionNr Value="3"/>
-      <RevisionNr Value="14"/>
-      <BuildNr Value="2"/>
+      <MinorVersionNr Value="4"/>
+      <BuildNr Value="1"/>
       <Language Value="0419"/>
       <StringTable ProductVersion=""/>
     </VersionInfo>
@@ -103,7 +102,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="10">
+    <Units Count="11">
       <Unit0>
         <Filename Value="AsProgrammer.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -153,6 +152,14 @@
         <Filename Value="ch341mw.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit9>
+      <Unit10>
+        <Filename Value="scriptedit.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ScriptEditForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ScriptEdit"/>
+      </Unit10>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

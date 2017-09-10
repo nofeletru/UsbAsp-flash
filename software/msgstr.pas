@@ -42,6 +42,12 @@ resourcestring
   STR_SIZE               = 'Размер: ';
   STR_CHANGED            = 'Изменен';
   STR_CURR_HW            = 'Используется программатор: ';
+  STR_USING_SCRIPT       = 'Используется скрипт: ';
+  STR_DLG_SAVEFILE       = 'Сохранить изменения?';
+  STR_DLG_FILECHGD       = 'Файл изменён';
+  STR_SCRIPT_NO_SECTION  = 'Нет секции: ';
+  STR_SCRIPT_SEL_SECTION = 'Выбирите секцию';
+  STR_SCRIPT_RUN_SECTION = 'Выполняется секция: ';
 
 implementation
 

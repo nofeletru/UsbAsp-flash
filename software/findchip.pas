@@ -117,7 +117,7 @@ begin
            if Upcase(chipname) = Upcase(cs) then
            begin
              ChipNode := Item[j].ChildNodes.Item[i];
-             MainForm.LabelChipName.Caption := UTF16ToUTF8(ChipNode.NodeName);
+             Main.CurrentICParam.Name:= UTF16ToUTF8(ChipNode.NodeName);
              if (ChipNode.HasAttributes) then
              begin
 
@@ -125,46 +125,73 @@ begin
                begin
                  MainForm.RadioSPI.Checked:= true;
                  if UpperCase(ChipNode.Attributes.GetNamedItem('spicmd').NodeValue) = 'KB'then
-                   MainForm.ComboSPICMD.ItemIndex:= SPI_CMD_KB;
+                   Main.CurrentICParam.SpiCmd:= SPI_CMD_KB;
                  if ChipNode.Attributes.GetNamedItem('spicmd').NodeValue = '45' then
-                   MainForm.ComboSPICMD.ItemIndex:= SPI_CMD_45;
+                   Main.CurrentICParam.SpiCmd:= SPI_CMD_45;
                  if ChipNode.Attributes.GetNamedItem('spicmd').NodeValue = '25' then
-                   MainForm.ComboSPICMD.ItemIndex:= SPI_CMD_25;
+                   Main.CurrentICParam.SpiCmd:= SPI_CMD_25;
                  if ChipNode.Attributes.GetNamedItem('spicmd').NodeValue = '95' then
-                   MainForm.ComboSPICMD.ItemIndex:= SPI_CMD_95;
+                   Main.CurrentICParam.SpiCmd:= SPI_CMD_95;
                end
                else //По дефолту spicmd25
                if (ChipNode.Attributes.GetNamedItem('addrtype') = nil) and
                      (ChipNode.Attributes.GetNamedItem('addrbitlen') = nil) then
                      begin
                         MainForm.RadioSPI.Checked:= true;
-                        MainForm.ComboSPICMD.ItemIndex:= SPI_CMD_25;
+                        Main.CurrentICParam.SpiCmd:= SPI_CMD_25;
                      end;
 
                if ChipNode.Attributes.GetNamedItem('addrbitlen') <> nil then
                begin
                  MainForm.RadioMw.Checked:= true;
-                 MainForm.ComboMWBitLen.Text := UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('addrbitlen').NodeValue)
+                 Main.CurrentICParam.MWAddLen := StrToInt(UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('addrbitlen').NodeValue));
                end
                else
-                 MainForm.ComboMWBitLen.Text := 'MW addr len';
+                 Main.CurrentICParam.MWAddLen := 0;
 
                if ChipNode.Attributes.GetNamedItem('addrtype') <> nil then
                  if IsNumber(UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('addrtype').NodeValue)) then
                  begin
                    MainForm.RadioI2C.Checked:= true;
-                   MainForm.ComboAddrType.ItemIndex := StrToInt(UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('addrtype').NodeValue));
+                   Main.CurrentICParam.I2CAddrType := StrToInt(UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('addrtype').NodeValue));
                  end;
 
                if  ChipNode.Attributes.GetNamedItem('page') <> nil then
-                 MainForm.ComboPageSize.Text := UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('page').NodeValue)
+                 Main.CurrentICParam.Page := StrToInt(UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('page').NodeValue))
                else
-                 MainForm.ComboPageSize.Text := 'Page size';
+                 Main.CurrentICParam.Page := 0;
 
                if ChipNode.Attributes.GetNamedItem('size') <> nil then
-                 MainForm.ComboChipSize.Text := UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('size').NodeValue)
+                 Main.CurrentICParam.Size:= StrToInt(UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('size').NodeValue))
                else
-                 MainForm.ComboChipSize.Text := 'Chip size';
+                 Main.CurrentICParam.Size := 0;
+
+               if ChipNode.Attributes.GetNamedItem('script') <> nil then
+                 Main.CurrentICParam.Script:= UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('script').NodeValue)
+               else
+                 Main.CurrentICParam.Script := '';
+
+
+
+                MainForm.LabelChipName.Caption := CurrentICParam.Name;
+                MainForm.ComboSPICMD.ItemIndex := CurrentICParam.SpiCmd;
+
+                if CurrentICParam.MWAddLen > 0 then
+                  MainForm.ComboMWBitLen.Text := IntToStr(CurrentICParam.MWAddLen)
+                else
+                  MainForm.ComboMWBitLen.Text := 'MW addr len';
+
+                MainForm.ComboAddrType.ItemIndex := CurrentICParam.I2CAddrType;
+
+                if CurrentICParam.Page > 0 then
+                  MainForm.ComboPageSize.Text := IntToStr(CurrentICParam.Page)
+                else
+                  MainForm.ComboPageSize.Text := 'Page size';
+
+                if CurrentICParam.Size > 0 then
+                  MainForm.ComboChipSize.Text := IntToStr(CurrentICParam.Size)
+                else
+                  MainForm.ComboChipSize.Text := 'Chip size';
 
               end;
            end;

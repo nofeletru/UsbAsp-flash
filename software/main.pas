@@ -14,7 +14,8 @@ uses
   KEditCommon, StrUtils, usbasp25, usbasp45, usbasp95, usbaspi2c, usbaspmw,
   usbaspmulti, usbhid, libusb, dos, XMLRead, XMLWrite, DOM, KControls, msgstr,
   Translations, LCLProc, LCLTranslator, LResources, search, sregedit,
-  utilfunc, CH341DLL, ch341mw, findchip, avrispmk2, DateUtils, lazUTF8;
+  utilfunc, CH341DLL, ch341mw, findchip, avrispmk2, DateUtils, lazUTF8, pascalc,
+  ScriptsFunc, ScriptEdit;
 
 type
 
@@ -72,6 +73,7 @@ type
     MenuAVRISP125KHz: TMenuItem;
     LangMenuItem: TMenuItem;
     BlankCheckMenuItem: TMenuItem;
+    ScriptsMenuItem: TMenuItem;
     MenuItemHardware: TMenuItem;
     MenuItemBenchmark: TMenuItem;
     MenuItemEditSreg: TMenuItem;
@@ -156,6 +158,7 @@ type
     procedure ButtonSaveHexClick(Sender: TObject);
     procedure ButtonCancelClick(Sender: TObject);
     procedure I2C_DevAddrChange(Sender: TObject);
+    procedure ScriptsMenuItemClick(Sender: TObject);
     procedure VerifyFlash(BlankCheck: boolean = false);
   private
     { private declarations }
@@ -172,6 +175,7 @@ type
   procedure Translate(XMLfile: TXMLDocument);
   function OpenDevice: boolean;
   function SetSPISpeed(OverrideSpeed: byte): boolean;
+  procedure SyncUI_ICParam();
 
 const
   SPI_CMD_25             = 0;
@@ -185,9 +189,22 @@ const
 
   ChipListFileName       = 'chiplist.xml';
   SettingsFileName       = 'settings.xml';
+  ScriptsPath            = 'scripts'+DirectorySeparator;
 
 type
   TCurrent_HW = (CH341, AVRISP, USBASP);
+
+  TCurrentICParam = record
+    Name: string;
+    Page: Word;
+    Size: Longword;
+    SpiCmd: byte;
+    I2CAddrType: byte;
+    MWAddLen: byte;
+
+    Script: string;
+  end;
+
 
 var
   MainForm: TMainForm;
@@ -195,6 +212,9 @@ var
   SettingsFile: TXMLDocument;
   hUSBDev: pusb_dev_handle; //Хендл usbasp
   Current_HW: TCurrent_HW = USBASP;
+  CurrentICParam: TCurrentICParam;
+  ScriptEngine: TPasCalc;
+  RomF: TMemoryStream;
 
 implementation
 
@@ -202,11 +222,26 @@ implementation
 var
   DeviceDescription: TDeviceDescription;
   avrisp_DeviceDescription: TDeviceDescription;
-  RomF: TMemoryStream;
   TimeCounter: TDateTime;
   CurrentLang: string = 'ru';
 
 {$R *.lfm}
+
+procedure SyncUI_ICParam();
+begin
+  CurrentICParam.SpiCmd := MainForm.ComboSPICMD.ItemIndex;
+  CurrentICParam.I2CAddrType := MainForm.ComboAddrType.ItemIndex;
+
+  if IsNumber(MainForm.ComboMWBitLen.Text) then
+    CurrentICParam.MWAddLen := StrToInt(MainForm.ComboMWBitLen.Text) else
+      CurrentICParam.MWAddLen := 0;
+  if IsNumber(MainForm.ComboPageSize.Text) then
+    CurrentICParam.Page := StrToInt(MainForm.ComboPageSize.Text) else
+      CurrentICParam.Page := 0;
+  if IsNumber(MainForm.ComboChipSize.Text) then
+    CurrentICParam.Size := StrToInt(MainForm.ComboChipSize.Text) else
+      CurrentICParam.Size := 0;
+end;
 
 procedure LoadXML;
 var
@@ -352,13 +387,13 @@ begin
 
   if Current_HW = CH341 then
   begin
-  
+
     for i:=0 to mCH341_MAX_NUMBER-1 do
     begin
       err := CH341OpenDevice(i);
       if not err < 0 then Break;
-    end;  
-	
+    end;
+
     if err < 0 then
     begin
       LogPrint(STR_CONNECT_ERROR_CH+'('+IntToStr(err)+')', ClRed);
@@ -1754,7 +1789,7 @@ end;
 procedure TMainForm.ChipClick(Sender: TObject);
 begin
   if Sender is TMenuItem then
-    findchip.SelectChip(chiplistfile, TMenuItem(Sender).Caption); 
+    findchip.SelectChip(chiplistfile, TMenuItem(Sender).Caption);
 end;
 
 procedure TMainForm.KHexEditorKeyUp(Sender: TObject; var Key: Word;
@@ -2126,7 +2161,11 @@ try
     if MessageDlg('AsProgrammer', STR_START_WRITE, mtConfirmation, [mbYes, mbNo], 0)
       <> mrYes then Exit;
   LockControl();
+
+  if RunScriptFromFile(CurrentICParam.Script, 'write') then Exit;
+
   LogPrint(TimeToStr(Time()));
+
   if (not IsNumber(ComboChipSize.Text)) then
   begin
     LogPrint(STR_CHECK_SETTINGS, clRed);
@@ -2306,6 +2345,9 @@ try
   ButtonCancel.Tag := 0;
   if not OpenDevice() then exit;
   LockControl();
+
+  if RunScriptFromFile(CurrentICParam.Script, 'verify') then Exit;
+
   LogPrint(TimeToStr(Time()));
   if not IsNumber(ComboChipSize.Text) then
   begin
@@ -2439,6 +2481,9 @@ try
   if not OpenDevice() then exit;
   sreg := 0;
   LockControl();
+
+  if RunScriptFromFile(CurrentICParam.Script, 'unlock') then Exit;
+
   if not SetSPISpeed(0) then exit;
   EnterProgMode25(hUSBdev);
 
@@ -2632,6 +2677,7 @@ end;
 procedure TMainForm.ButtonCancelClick(Sender: TObject);
 begin
   ButtonCancel.Tag:= 1;
+  ScriptEngine.Stop:= true;
 end;
 
 procedure TMainForm.I2C_DevAddrChange(Sender: TObject);
@@ -2640,6 +2686,11 @@ begin
   TToggleBox(Sender).Caption:= '0';
   if TToggleBox(Sender).State = cbChecked then
   TToggleBox(Sender).Caption:= '1';
+end;
+
+procedure TMainForm.ScriptsMenuItemClick(Sender: TObject);
+begin
+  ScriptEditForm.Show;
 end;
 
 procedure LoadChipList(XMLfile: TXMLDocument);
@@ -2697,6 +2748,8 @@ begin
 
   LoadChipList(ChipListFile);
   RomF := TMemoryStream.Create;
+  ScriptEngine := TPasCalc.Create;
+  ScriptsFunc.SetScriptFunctions(ScriptEngine);
 
   KHexEditor.ExecuteCommand(ecOverwriteMode);
   LoadOptions(SettingsFile);
@@ -2710,6 +2763,7 @@ begin
   SaveOptions(SettingsFile);
   ChipListFile.Free;
   SettingsFile.Free;
+  ScriptEngine.Free;
 end;
 
 procedure TMainForm.ButtonReadClick(Sender: TObject);
@@ -2721,6 +2775,9 @@ try
   ButtonCancel.Tag := 0;
   if not OpenDevice() then exit;
   LockControl();
+
+  if RunScriptFromFile(CurrentICParam.Script, 'read') then Exit;
+
   LogPrint(TimeToStr(Time()));
 
   if (not IsNumber(ComboChipSize.Text)) then
@@ -2758,7 +2815,7 @@ try
 
     RomF.Position := 0;
     KHexEditor.LoadFromStream(RomF);
-    StatusBar.Panels.Items[2].Text := 'EEPROM: '+ LabelChipName.Caption;
+    StatusBar.Panels.Items[2].Text := LabelChipName.Caption;
   end;
   //I2C
   if RadioI2C.Checked then
@@ -2786,7 +2843,7 @@ try
 
     RomF.Position := 0;
     KHexEditor.LoadFromStream(RomF);
-    StatusBar.Panels.Items[2].Text := 'EEPROM: '+ LabelChipName.Caption;
+    StatusBar.Panels.Items[2].Text := LabelChipName.Caption;
   end;
   //Microwire
   if RadioMw.Checked then
@@ -2804,7 +2861,7 @@ try
 
     RomF.Position := 0;
     KHexEditor.LoadFromStream(RomF);
-    StatusBar.Panels.Items[2].Text := 'EEPROM: '+ LabelChipName.Caption;
+    StatusBar.Panels.Items[2].Text := LabelChipName.Caption;
   end;
 
   LogPrint(STR_TIME + TimeToStr(Time() - TimeCounter));
@@ -2842,6 +2899,9 @@ try
     if MessageDlg('AsProgrammer', STR_START_ERASE, mtConfirmation, [mbYes, mbNo], 0)
       <> mrYes then Exit;
   LockControl();
+
+  if RunScriptFromFile(CurrentICParam.Script, 'erase') then Exit;
+
   LogPrint(TimeToStr(Time()));
 
   //SPI
