@@ -9,6 +9,7 @@ object MainForm: TMainForm
   Constraints.MinHeight = 300
   Constraints.MinWidth = 300
   Menu = MainMenu
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poDesktopCenter

@@ -128,6 +128,7 @@ type
     procedure ClearLogMenuItemClick(Sender: TObject);
     procedure ComboSPICMDChange(Sender: TObject);
     procedure CopyLogMenuItemClick(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ChipClick(Sender: TObject);
@@ -2890,6 +2891,11 @@ end;
 procedure TMainForm.CopyLogMenuItemClick(Sender: TObject);
 begin
   Log.CopyToClipboard;
+end;
+
+procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
+begin
+  ScriptEditForm.FormCloseQuery(Sender, CanClose);
 end;
 
 procedure TMainForm.ButtonEraseClick(Sender: TObject);
