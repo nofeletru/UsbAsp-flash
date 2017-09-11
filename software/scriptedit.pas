@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, SynEdit, SynHighlighterPas, Forms, Controls,
   Graphics, Dialogs, Menus, RichMemo, lazUTF8,
-  msgstr, scriptsfunc;
+  msgstr, scriptsfunc, usbhid;
 
 type
 
@@ -206,7 +206,9 @@ begin
     if ParseScriptText(SynEdit.Lines, CurrentSectionName, ScriptText) then
     begin
       ScriptLogPrint(STR_SCRIPT_RUN_SECTION+CurrentSectionName);
+      if not OpenDevice() then exit;
       RunScript(ScriptText);
+      USB_Dev_Close(hUSBdev);
     end
     else
       if CurrentSectionName = '' then
