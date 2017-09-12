@@ -5,8 +5,8 @@ unit scriptsfunc;
 interface
 
 uses
-  Classes, SysUtils, Variants, PasCalc, Dialogs, graphics,
-  usbasp25, msgstr;
+  Classes, SysUtils, Variants, Dialogs, graphics,
+  usbasp25, msgstr, PasCalc;
 
 procedure SetScriptFunctions(PC : TPasCalc);
 procedure SetScriptVars();
@@ -18,6 +18,9 @@ implementation
 
 uses main, scriptedit;
 
+
+{Возвращает текст выбранной секции
+ Если секция не найдена возвращает false}
 function ParseScriptText(Script: TStrings; SectionName: string; var ScriptText: TStrings ): Boolean;
 var
   st: string;
@@ -49,6 +52,7 @@ begin
   end;
 end;
 
+//Выполняет скрипт
 procedure RunScript(ScriptText: TStrings);
 var
   TimeCounter: TDateTime;
@@ -84,6 +88,8 @@ begin
   LogPrint(STR_TIME + TimeToStr(Time() - TimeCounter));
 end;
 
+{Выполняет секцию скрипта из файла
+ Если файл или секция отсутствует то возвращает false}
 function RunScriptFromFile(ScriptFile: string; Section: string): boolean;
 var
   ScriptText, ParsedScriptText: TStrings;
@@ -110,8 +116,10 @@ begin
   Result := (t=varString) or (t=varOleStr);
 end;
 
-
 //------------------------------------------------------------------------------
+
+{Script ShowMessage(text);
+ Аналог ShowMessage}
 function Script_ShowMessage(Sender:TObject; var A:TVarList) : boolean;
 var s: string;
 begin
@@ -122,6 +130,11 @@ begin
   Result := true;
 end;
 
+{Script LogPrint(text, color);
+ Выводит сообщение в лог
+ Параметры:
+   text текст сообщения
+   необязательный параметр color цвет bgr}
 function Script_LogPrint(Sender:TObject; var A:TVarList) : boolean;
 var
   s: string;
@@ -137,6 +150,35 @@ begin
   Result := true;
 end;
 
+{Script CreateByteArray(size): variant;
+ Создает массив с типом элементов varbyte}
+function Script_CreateByteArray(Sender:TObject; var A:TVarList; var R:TVar) : boolean;
+begin
+  if A.Count < 1 then Exit(false);
+  R.Value := VarArrayCreate([0, TPVar(A.Items[0])^.Value - 1], varByte);
+  Result := true;
+end;
+
+{Script GetArrayItem(array, index): variant;
+ Возвращает значение элемента массива}
+function Script_GetArrayItem(Sender:TObject; var A:TVarList; var R:TVar) : boolean;
+begin
+  if (A.Count < 2) or (not VarIsArray(TPVar(A.Items[0])^.Value)) then Exit(false);
+  R.Value := TPVar(A.Items[0])^.Value[TPVar(A.Items[1])^.Value];
+  Result := true;
+end;
+
+{Script SetArrayItem(array, index, value);
+ Устанавливает значение элемента массива}
+function Script_SetArrayItem(Sender:TObject; var A:TVarList) : boolean;
+begin
+  if (A.Count < 3) or (not VarIsArray(TPVar(A.Items[0])^.Value)) then Exit(false);
+  TPVar(A.Items[0])^.Value[TPVar(A.Items[1])^.Value] := TPVar(A.Items[2])^.Value;
+  Result := true;
+end;
+
+{Script IntToHex(value, digits): string;
+ Аналог IntToHex}
 function Script_IntToHex(Sender:TObject; var A:TVarList; var R:TVar) : boolean;
 begin
   if A.Count < 2 then Exit(false);
@@ -145,6 +187,10 @@ begin
   Result := true;
 end;
 
+{Script SetSPISpeed(speed): boolean;
+ Устанавливает частоту SPI
+ Если частота не установлена возвращает false
+ Игнорируется для CH341}
 function Script_SetSPISpeed(Sender:TObject; var A:TVarList; var R:TVar) : boolean;
 var speed: byte;
 begin
@@ -158,19 +204,29 @@ begin
   Result := true;
 end;
 
+{Script EnterProgModeSPI();
+ Инициализирует состояние пинов для SPI и устанавливает скорость}
 function Script_EnterProgModeSPI(Sender:TObject; var A:TVarList) : boolean;
 begin
   EnterProgMode25(hUSBdev);
   Result := true;
 end;
 
+{Script ExitProgModeSPI();
+ Отключает пины SPI}
 function Script_ExitProgModeSPI(Sender:TObject; var A:TVarList) : boolean;
 begin
   ExitProgMode25(hUSBdev);
   Result := true;
 end;
 
-//inc, (max, pos)
+{Script ProgressBar(inc, max, pos);
+ Устанавливает состояние ProgressBar
+ Параметры:
+   inc насколько увиличить позицию
+ Необязательные параметры:
+   max максимальная позиция ProgressBar
+   pos устанавливает конкретную позицию ProgressBar}
 function Script_ProgressBar(Sender:TObject; var A:TVarList) : boolean;
 begin
 
@@ -186,20 +242,36 @@ begin
   Result := true;
 end;
 
-//cs, size, buffer..
+{Script SPIRead(cs, size, buffer..): integer;
+ Читает данные в буфер
+ Параметры:
+   cs если cs=1 отпускать Chip Select после чтения данных
+   size размер данных в байтах
+   buffer переменные для хранения данных или массив созданный CreateByteArray
+ Возвращает количество прочитанных байт}
 function Script_SPIRead(Sender:TObject; var A:TVarList; var R: TVar) : boolean;
 var
-  i: integer;
+  i, size, cs: integer;
   DataArr: array of byte;
 begin
 
   if A.Count < 3 then Exit(false);
 
-  SetLength(DataArr, A.Count);
+  cs := TPVar(A.Items[0])^.Value;
+  size := TPVar(A.Items[1])^.Value;
 
-  R.Value := SPIRead(hUSBdev, TPVar(A.Items[0])^.Value, TPVar(A.Items[1])^.Value, DataArr[0]);
+  SetLength(DataArr, size);
 
-  for i := 0 to A.Count-3 do
+  R.Value := SPIRead(hUSBdev, cs, size, DataArr[0]);
+
+  //Если buffer массив
+  if (VarIsArray(TPVar(A.Items[2])^.Value)) then
+  for i := 0 to size-1 do
+  begin
+    TPVar(A.Items[2])^.Value[i] := DataArr[i];
+  end
+  else
+  for i := 0 to size-1 do
   begin
     TPVar(A.Items[i+2])^.Value := DataArr[i];
   end;
@@ -207,28 +279,47 @@ begin
   Result := true;
 end;
 
-//cs, size, buffer..
+{Script SPIWrite(cs, size, buffer..): integer;
+ Записывает данные из буфера
+ Параметры:
+   cs если cs=1 отпускать Chip Select после записи данных
+   size размер данных в байтах
+   buffer переменные для хранения данных или массив созданный CreateByteArray
+ Возвращает количество записанных байт}
 function Script_SPIWrite(Sender:TObject; var A:TVarList; var R: TVar) : boolean;
 var
-  i, BufferLen: integer;
+  i, size, cs: integer;
   DataArr: array of byte;
 begin
 
   if A.Count < 3 then Exit(false);
 
-  BufferLen := TPVar(A.Items[1])^.Value;
-  SetLength(DataArr, BufferLen);
+  size := TPVar(A.Items[1])^.Value;
+  cs := TPVar(A.Items[0])^.Value;
+  SetLength(DataArr, size);
 
-  for i := 0 to BufferLen-1 do
+  //Если buffer массив
+  if (VarIsArray(TPVar(A.Items[2])^.Value)) then
+  for i := 0 to size-1 do
+  begin
+    DataArr[i] := TPVar(A.Items[2])^.Value[i];
+  end
+  else
+  for i := 0 to size-1 do
   begin
     DataArr[i] := TPVar(A.Items[i+2])^.Value;
   end;
 
-  R.Value := SPIWrite(hUSBdev, TPVar(A.Items[0])^.Value, BufferLen, DataArr);
+  R.Value := SPIWrite(hUSBdev, cs, size, DataArr);
   Result := true;
 end;
 
-//cs, size
+{Script SPIReadToEditor(cs, size): integer;
+ Читает данные в редактор
+ Параметры:
+   cs если cs=1 отпускать Chip Select после чтения данных
+   size размер данных в байтах
+ Возвращает количество прочитанных байт}
 function Script_SPIReadToEditor(Sender:TObject; var A:TVarList; var R: TVar) : boolean;
 var
   DataArr: array of byte;
@@ -245,11 +336,16 @@ begin
   RomF.WriteBuffer(DataArr[0], BufferLen);
   RomF.Position := 0;
   MainForm.KHexEditor.LoadFromStream(RomF);
-
   Result := true;
 end;
 
-//cs, size, position
+{Script SPIWriteFromEditor(cs, size, position): integer;
+ Записывает данные из редактора размером size с позиции position
+ Параметры:
+   cs если cs=1 отпускать Chip Select после записи данных
+   size размер данных в байтах
+   position позиция в редакторе
+ Возвращает количество записанных байт}
 function Script_SPIWriteFromEditor(Sender:TObject; var A:TVarList; var R: TVar) : boolean;
 var
   DataArr: array of byte;
@@ -277,6 +373,11 @@ begin
   PC.SetFunction('ShowMessage', @Script_ShowMessage);
   PC.SetFunction('LogPrint', @Script_LogPrint);
   PC.SetFunction('ProgressBar', @Script_ProgressBar);
+  PC.SetFunction('IntToHex', @Script_IntToHex);
+
+  PC.SetFunction('CreateByteArray', @Script_CreateByteArray);
+  PC.SetFunction('GetArrayItem', @Script_GetArrayItem);
+  PC.SetFunction('SetArrayItem', @Script_SetArrayItem);
 
   PC.SetFunction('SetSPISpeed', @Script_SetSPISpeed);
   PC.SetFunction('EnterProgModeSPI', @Script_EnterProgModeSPI);
@@ -285,7 +386,7 @@ begin
   PC.SetFunction('SPIWrite', @Script_SPIWrite);
   PC.SetFunction('SPIReadToEditor', @Script_SPIReadToEditor);
   PC.SetFunction('SPIWriteFromEditor', @Script_SPIWriteFromEditor);
-  PC.SetFunction('IntToHex', @Script_IntToHex);
+
 end;
 
 procedure SetScriptVars();
