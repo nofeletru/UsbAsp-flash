@@ -42,7 +42,8 @@ begin
     else
     begin
       st:= StringReplace(st, ' ', '', [rfReplaceAll]);
-      if Upcase(st) = '{$' + Upcase(SectionName) + '}' then
+      if Pos('{$' + Upcase(SectionName) + '}', Upcase(st)) <> 0 then
+      //if Upcase(st) = '{$' + Upcase(SectionName) + '}' then
       begin
         s := true;
         Result := true;
@@ -187,11 +188,11 @@ begin
   Result := true;
 end;
 
-{Script SetSPISpeed(speed): boolean;
+{Script SPISetSpeed(speed): boolean;
  Устанавливает частоту SPI
  Если частота не установлена возвращает false
  Игнорируется для CH341}
-function Script_SetSPISpeed(Sender:TObject; var A:TVarList; var R:TVar) : boolean;
+function Script_SPISetSpeed(Sender:TObject; var A:TVarList; var R:TVar) : boolean;
 var speed: byte;
 begin
   if A.Count < 1 then Exit(false);
@@ -204,17 +205,17 @@ begin
   Result := true;
 end;
 
-{Script EnterProgModeSPI();
+{Script SPIEnterProgMode();
  Инициализирует состояние пинов для SPI и устанавливает скорость}
-function Script_EnterProgModeSPI(Sender:TObject; var A:TVarList) : boolean;
+function Script_SPIEnterProgMode(Sender:TObject; var A:TVarList) : boolean;
 begin
   EnterProgMode25(hUSBdev);
   Result := true;
 end;
 
-{Script ExitProgModeSPI();
+{Script SPIExitProgMode();
  Отключает пины SPI}
-function Script_ExitProgModeSPI(Sender:TObject; var A:TVarList) : boolean;
+function Script_SPIExitProgMode(Sender:TObject; var A:TVarList) : boolean;
 begin
   ExitProgMode25(hUSBdev);
   Result := true;
@@ -379,9 +380,9 @@ begin
   PC.SetFunction('GetArrayItem', @Script_GetArrayItem);
   PC.SetFunction('SetArrayItem', @Script_SetArrayItem);
 
-  PC.SetFunction('SetSPISpeed', @Script_SetSPISpeed);
-  PC.SetFunction('EnterProgModeSPI', @Script_EnterProgModeSPI);
-  PC.SetFunction('ExitProgModeSPI', @Script_ExitProgModeSPI);
+  PC.SetFunction('SPISetSpeed', @Script_SPISetSpeed);
+  PC.SetFunction('SPIEnterProgMode', @Script_SPIEnterProgMode);
+  PC.SetFunction('SPIExitProgMode', @Script_SPIExitProgMode);
   PC.SetFunction('SPIRead', @Script_SPIRead);
   PC.SetFunction('SPIWrite', @Script_SPIWrite);
   PC.SetFunction('SPIReadToEditor', @Script_SPIReadToEditor);
@@ -391,12 +392,12 @@ end;
 
 procedure SetScriptVars();
 begin
-  ScriptEngine.SetValue('IC_Name', CurrentICParam.Name);
-  ScriptEngine.SetValue('IC_Size', CurrentICParam.Size);
-  ScriptEngine.SetValue('IC_Page', CurrentICParam.Page);
-  ScriptEngine.SetValue('IC_SpiCmd', CurrentICParam.SpiCmd);
-  ScriptEngine.SetValue('IC_MWAddrLen', CurrentICParam.MWAddLen);
-  ScriptEngine.SetValue('IC_I2CAddrType', CurrentICParam.I2CAddrType);
+  ScriptEngine.SetValue('_IC_Name', CurrentICParam.Name);
+  ScriptEngine.SetValue('_IC_Size', CurrentICParam.Size);
+  ScriptEngine.SetValue('_IC_Page', CurrentICParam.Page);
+  ScriptEngine.SetValue('_IC_SpiCmd', CurrentICParam.SpiCmd);
+  ScriptEngine.SetValue('_IC_MWAddrLen', CurrentICParam.MWAddLen);
+  ScriptEngine.SetValue('_IC_I2CAddrType', CurrentICParam.I2CAddrType);
 end;
 
 end.
