@@ -1763,10 +1763,12 @@ begin
   MainForm.ButtonSaveHex.Enabled := False;
 
   MainForm.GroupChipSettings.Enabled := false;
+  MainForm.KHexEditor.Enabled := false;
 end;
 
 procedure UnlockControl;
 begin
+  MainForm.KHexEditor.Enabled := true;
   MainForm.GroupChipSettings.Enabled := true;
   MainForm.ButtonRead.Enabled := True;
   MainForm.ButtonWrite.Enabled := True;
@@ -2636,6 +2638,9 @@ begin
       if ChipSearchForm.ListBoxChips.Items.Capacity = 0 then FindChip.FindChip(XMLfile, '', IDstrABH);
       if ChipSearchForm.ListBoxChips.Items.Capacity = 0 then FindChip.FindChip(XMLfile, '', IDstr15H);
 
+      XMLfile.Free;
+    end;
+
       if ChipSearchForm.ListBoxChips.Items.Capacity > 0 then
       begin
         ChipSearchForm.Show;
@@ -2651,9 +2656,6 @@ begin
         LogPrint('ID(AB): '+ IDstrABH +STR_ID_UNKNOWN);
         LogPrint('ID(15): '+ IDstr15H +STR_ID_UNKNOWN);
       end;
-
-      XMLfile.Free;
-    end;
 
   finally
     UnlockControl();
