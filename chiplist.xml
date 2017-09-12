@@ -505,6 +505,7 @@
       <NX25P80 id="9D7F13" page="256" size="1048576"/>
     </NEXFLASH>
     <NUMONYX>
+	  <M45PE16 id="204015" page="256" size="2097152" script="blockerase.pas"/>
       <M25P05 id="202010" page="128" size="65536"/>
       <M25P05A id="202010" page="256" size="65536"/>
       <M25P10 id="202011" page="128" size="131072"/>
