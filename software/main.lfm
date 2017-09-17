@@ -1,8 +1,9 @@
 object MainForm: TMainForm
   Left = 358
-  Height = 519
+  Height = 499
   Top = 67
   Width = 802
+  ActiveControl = RadioSPI
   Caption = 'AsProgrammer'
   ClientHeight = 499
   ClientWidth = 802
@@ -14,10 +15,11 @@ object MainForm: TMainForm
   OnDestroy = FormDestroy
   Position = poDesktopCenter
   LCLVersion = '1.6.4.0'
+  Visible = False
   object ProgressBar: TProgressBar
     Left = 0
     Height = 20
-    Top = 373
+    Top = 353
     Width = 802
     Align = alBottom
     TabOrder = 0
@@ -471,29 +473,122 @@ object MainForm: TMainForm
       end
     end
   end
-  object KHexEditor: TKHexEditor
+  object MPHexEditorEx: TMPHexEditorEx
+    Cursor = crIBeam
     Left = 0
-    Height = 257
+    Height = 237
     Top = 93
     Width = 802
+    CreateBackup = False
+    BackupExtension = '.bak'
+    SupportsOtherClipFormats = False
+    PrintOptions.MarginLeft = 20
+    PrintOptions.MarginTop = 15
+    PrintOptions.MarginRight = 25
+    PrintOptions.MarginBottom = 25
+    PrintOptions.Flags = [pfSelectionBold, pfMonochrome]
+    PrintFont.Height = -15
+    PrintFont.Name = 'Courier New'
+    ZoomOnWheel = False
     Align = alClient
-    Colors.DigitTextEven = clNavy
-    Colors.DigitTextOdd = clNavy
-    DigitGrouping = 1
+    Font.CharSet = RUSSIAN_CHARSET
     Font.Height = -15
     Font.Name = 'Courier New'
     Font.Pitch = fpFixed
     Font.Quality = fqDraft
     Font.Style = [fsBold]
+    ParentFont = False
     PopupMenu = EditorPopupMenu
     TabOrder = 3
-    OnChange = KHexEditorChange
-    OnKeyUp = KHexEditorKeyUp
+    BytesPerRow = 16
+    BytesPerColumn = 1
+    Translation = tkASCII
+    OffsetFormat = '8!10:0x|'
+    Colors.Background = clWindow
+    Colors.ChangedBackground = 11075583
+    Colors.ChangedText = clMaroon
+    Colors.CursorFrame = clNavy
+    Colors.Offset = clBlack
+    Colors.OddColumn = clNavy
+    Colors.EvenColumn = clNavy
+    Colors.CurrentOffsetBackground = clBtnShadow
+    Colors.OffsetBackground = clBtnFace
+    Colors.CurrentOffset = clBtnHighlight
+    Colors.Grid = clBtnFace
+    Colors.NonFocusCursorFrame = clAqua
+    Colors.ActiveFieldBackground = clWindow
+    FocusFrame = True
+    NoSizeChange = True
+    DrawGridLines = True
+    Version = 'september 30, 2007; � markus stephany, vcl[at]mirkes[dot]de'
+    OnChange = MPHexEditorExChange
+    DrawGutter3D = False
+    ShowRuler = True
+    BytesPerBlock = 8
+    SeparateBlocksInCharField = False
+    ColWidths = (
+      120
+      6
+      9
+      18
+      9
+      18
+      9
+      18
+      9
+      18
+      9
+      18
+      9
+      18
+      9
+      18
+      9
+      27
+      9
+      18
+      9
+      18
+      9
+      18
+      9
+      18
+      9
+      18
+      9
+      18
+      9
+      18
+      9
+      18
+      9
+      10
+      10
+      10
+      10
+      10
+      10
+      10
+      10
+      10
+      10
+      10
+      10
+      10
+      10
+      10
+      19
+    )
+    RowHeights = (
+      22
+      0
+      19
+    )
   end
   object StatusBar: TStatusBar
     Left = 0
     Height = 23
-    Top = 350
+    Top = 330
     Width = 802
     Panels = <    
       item
@@ -511,7 +606,7 @@ object MainForm: TMainForm
   object Log: TRichMemo
     Left = 0
     Height = 106
-    Top = 393
+    Top = 373
     Width = 802
     Align = alBottom
     Font.Height = -12
@@ -1894,6 +1989,11 @@ object MainForm: TMainForm
       Caption = 'Поиск'
       ShortCut = 16454
       OnClick = MenuFindClick
+    end
+    object AllowInsertItem: TMenuItem
+      AutoCheck = True
+      Caption = 'Разрешить режим вставки'
+      OnClick = AllowInsertItemClick
     end
     object MenuItem1: TMenuItem
       Caption = '-'

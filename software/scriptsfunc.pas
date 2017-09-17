@@ -336,7 +336,7 @@ begin
 
   RomF.WriteBuffer(DataArr[0], BufferLen);
   RomF.Position := 0;
-  MainForm.KHexEditor.LoadFromStream(RomF);
+  MainForm.MPHexEditorEx.LoadFromStream(RomF);
   Result := true;
 end;
 
@@ -359,7 +359,7 @@ begin
   SetLength(DataArr, BufferLen);
 
   RomF.Clear;
-  MainForm.KHexEditor.SaveToStream(RomF);
+  MainForm.MPHexEditorEx.SaveToStream(RomF);
   RomF.Position := TPVar(A.Items[2])^.Value;
   RomF.ReadBuffer(DataArr[0], BufferLen);
 

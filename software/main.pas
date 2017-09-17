@@ -10,10 +10,10 @@ interface
 
 uses
   Classes, SysUtils, LazFileUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, ComCtrls, Menus, ActnList, Buttons, RichMemo, KHexEditor,
-  KEditCommon, StrUtils, usbasp25, usbasp45, usbasp95, usbaspi2c, usbaspmw,
-  usbaspmulti, usbhid, libusb, dos, XMLRead, XMLWrite, DOM, KControls, msgstr,
-  Translations, LCLProc, LCLTranslator, LResources, search, sregedit,
+  ExtCtrls, ComCtrls, Menus, ActnList, Buttons, RichMemo, StrUtils, usbasp25,
+  usbasp45, usbasp95, usbaspi2c, usbaspmw, usbaspmulti, usbhid, libusb, dos,
+  XMLRead, XMLWrite, DOM, KControls, msgstr, Translations, LCLProc, LCLType,
+  LCLTranslator, LResources, MPHexEditorEx, MPHexEditor, search, sregedit,
   utilfunc, CH341DLL, ch341mw, findchip, avrispmk2, DateUtils, lazUTF8, pascalc,
   ScriptsFunc, ScriptEdit;
 
@@ -31,7 +31,6 @@ type
     CheckBox_I2C_A2: TToggleBox;
     ComboAddrType: TComboBox;
     ComboSPICMD: TComboBox;
-    KHexEditor: TKHexEditor;
     ComboChipSize: TComboBox;
     ComboMWBitLen: TComboBox;
     ComboPageSize: TComboBox;
@@ -73,6 +72,8 @@ type
     MenuAVRISP125KHz: TMenuItem;
     LangMenuItem: TMenuItem;
     BlankCheckMenuItem: TMenuItem;
+    AllowInsertItem: TMenuItem;
+    MPHexEditorEx: TMPHexEditorEx;
     ScriptsMenuItem: TMenuItem;
     MenuItemHardware: TMenuItem;
     MenuItemBenchmark: TMenuItem;
@@ -128,15 +129,13 @@ type
     procedure ClearLogMenuItemClick(Sender: TObject);
     procedure ComboSPICMDChange(Sender: TObject);
     procedure CopyLogMenuItemClick(Sender: TObject);
+    procedure AllowInsertItemClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ChipClick(Sender: TObject);
     procedure ChangeLang(Sender: TObject);
-    procedure KHexEditorChange(Sender: TObject);
     procedure ComboItem1Click(Sender: TObject);
-    procedure KHexEditorKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
-      );
     procedure MenuHWAVRISPClick(Sender: TObject);
     procedure MenuCopyToClipClick(Sender: TObject);
     procedure MenuFindChipClick(Sender: TObject);
@@ -148,6 +147,7 @@ type
     procedure MenuItemEditSregClick(Sender: TObject);
     procedure MenuItemLockFlashClick(Sender: TObject);
     procedure MenuItemReadSregClick(Sender: TObject);
+    procedure MPHexEditorExChange(Sender: TObject);
     procedure RadioI2CChange(Sender: TObject);
     procedure RadioMwChange(Sender: TObject);
     procedure RadioSPIChange(Sender: TObject);
@@ -1763,12 +1763,12 @@ begin
   MainForm.ButtonSaveHex.Enabled := False;
 
   MainForm.GroupChipSettings.Enabled := false;
-  MainForm.KHexEditor.Enabled := false;
+  MainForm.MPHexEditorEx.Enabled := false;
 end;
 
 procedure UnlockControl;
 begin
-  MainForm.KHexEditor.Enabled := true;
+  MainForm.MPHexEditorEx.Enabled := true;
   MainForm.GroupChipSettings.Enabled := true;
   MainForm.ButtonRead.Enabled := True;
   MainForm.ButtonWrite.Enabled := True;
@@ -1799,17 +1799,10 @@ begin
     findchip.SelectChip(chiplistfile, TMenuItem(Sender).Caption);
 end;
 
-procedure TMainForm.KHexEditorKeyUp(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TMainForm.MPHexEditorExChange(Sender: TObject);
 begin
-  //Костыль. Так как событие TKHEXEditor.OnChange вызывается до изменения содержимого =)
-  StatusBar.Panels.Items[0].Text := STR_SIZE+IntToStr(KHexEditor.Data.Size);
-end;
-
-procedure TMainForm.KHexEditorChange(Sender: TObject);
-begin
-  StatusBar.Panels.Items[0].Text := STR_SIZE+IntToStr(KHexEditor.Data.Size);
-  if KHexEditor.Modified then
+  StatusBar.Panels.Items[0].Text := STR_SIZE+IntToStr(MPHexEditorEx.DataSize);
+  if MPHexEditorEx.Modified then
     StatusBar.Panels.Items[1].Text := STR_CHANGED
   else
     StatusBar.Panels.Items[1].Text := '';
@@ -1836,10 +1829,9 @@ begin
   MenuAutoCheck.Checked := CheckTemp;
 end;
 
-
 procedure TMainForm.MenuCopyToClipClick(Sender: TObject);
 begin
-  MainForm.KHexEditor.ExecuteCommand(ecCopy);
+    MainForm.MPHexEditorEx.CBCopy;
 end;
 
 procedure TMainForm.MenuFindChipClick(Sender: TObject);
@@ -1857,20 +1849,15 @@ end;
 procedure TMainForm.MenuGotoOffsetClick(Sender: TObject);
 var
   s : string;
-  ss: TKHexEditorSelection;
+  addr: integer;
 begin
   s := InputBox(STR_GOTO_ADDR,'','');
   s := Trim(s);
   if IsNumber('$'+s)  then
   begin
-    s := '$' + s;
-    ss.Digit:= 0;
-    ss.index:= StrToInt(s)+1;
-    MainForm.KHexEditor.SelStart := ss;
-    ss.index:= ss.index-1;
-    MainForm.KHexEditor.SelEnd := ss ;
-
-    MainForm.KHexEditor.ExecuteCommand(ecScrollCenter);
+    addr := StrToInt('$' + s);
+    MainForm.MPHexEditorEx.SelStart := addr;
+    MainForm.MPHexEditorEx.SelEnd := addr;
   end;
 end;
 
@@ -2077,8 +2064,6 @@ end;
 
 end;
 
-
-
 procedure TMainForm.RadioI2CChange(Sender: TObject);
 begin
   Label1.Visible              := True;
@@ -2179,7 +2164,7 @@ try
     Exit;
   end;
 
-  if KHexEditor.Data.Size > StrToInt(ComboChipSize.Text) then
+  if MPHexEditorEx.DataSize > StrToInt(ComboChipSize.Text) then
   begin
     LogPrint(STR_WRONG_FILE_SIZE, clRed);
     Exit;
@@ -2200,7 +2185,7 @@ try
     TimeCounter := Time();
 
     RomF.Position := 0;
-    KHexEditor.SaveToStream(RomF);
+    MPHexEditorEx.SaveToStream(RomF);
     RomF.Position := 0;
 
     if UpperCase(ComboPageSize.Text)='SSTB' then
@@ -2227,25 +2212,25 @@ try
     end;
 
     if ComboSPICMD.ItemIndex = SPI_CMD_25 then
-      WriteFlash25(RomF, 0, KHexEditor.Data.Size, PageSize, WriteType);
+      WriteFlash25(RomF, 0, MPHexEditorEx.DataSize, PageSize, WriteType);
     if ComboSPICMD.ItemIndex = SPI_CMD_95 then
-      WriteFlash95(RomF, 0, KHexEditor.Data.Size, PageSize, StrToInt(ComboChipSize.Text));
+      WriteFlash95(RomF, 0, MPHexEditorEx.DataSize, PageSize, StrToInt(ComboChipSize.Text));
     if ComboSPICMD.ItemIndex = SPI_CMD_45 then
-      WriteFlash45(RomF, 0, KHexEditor.Data.Size, PageSize, WriteType);
+      WriteFlash45(RomF, 0, MPHexEditorEx.DataSize, PageSize, WriteType);
     if ComboSPICMD.ItemIndex = SPI_CMD_KB then
-      WriteFlashKB(RomF, 0, (KHexEditor.Data.Size div PageSize), PageSize);
+      WriteFlashKB(RomF, 0, (MPHexEditorEx.DataSize div PageSize), PageSize);
 
     if (MenuAutoCheck.Checked) and (WriteType <> WT_PAGE) then
     begin
       LogPrint(STR_TIME + TimeToStr(Time() - TimeCounter));
       TimeCounter := Time();
       RomF.Position :=0;
-      KHexEditor.SaveToStream(RomF);
+      MPHexEditorEx.SaveToStream(RomF);
       RomF.Position :=0;
       if ComboSPICMD.ItemIndex <> SPI_CMD_KB then
-        VerifyFlash25(RomF, 0, KHexEditor.Data.Size)
+        VerifyFlash25(RomF, 0, MPHexEditorEx.DataSize)
       else
-        VerifyFlashKB(RomF, 0, KHexEditor.Data.Size);
+        VerifyFlashKB(RomF, 0, MPHexEditorEx.DataSize);
     end;
 
   end;
@@ -2273,12 +2258,12 @@ try
     TimeCounter := Time();
 
     RomF.Position := 0;
-    KHexEditor.SaveToStream(RomF);
+    MPHexEditorEx.SaveToStream(RomF);
     RomF.Position := 0;
 
     if StrToInt(ComboPageSize.Text) < 1 then ComboPageSize.Text := '1';
 
-    WriteFlashI2C(RomF, 0, KHexEditor.Data.Size, StrToInt(ComboPageSize.Text), I2C_DevAddr);
+    WriteFlashI2C(RomF, 0, MPHexEditorEx.DataSize, StrToInt(ComboPageSize.Text), I2C_DevAddr);
 
     if MenuAutoCheck.Checked then
     begin
@@ -2292,9 +2277,9 @@ try
       TimeCounter := Time();
 
       RomF.Position :=0;
-      KHexEditor.SaveToStream(RomF);
+      MPHexEditorEx.SaveToStream(RomF);
       RomF.Position :=0;
-      VerifyFlashI2C(RomF, KHexEditor.Data.Size, I2C_ChunkSize, I2C_DevAddr);
+      VerifyFlashI2C(RomF, MPHexEditorEx.DataSize, I2C_ChunkSize, I2C_DevAddr);
     end;
 
   end;
@@ -2312,16 +2297,16 @@ try
     TimeCounter := Time();
 
     RomF.Position := 0;
-    KHexEditor.SaveToStream(RomF);
+    MPHexEditorEx.SaveToStream(RomF);
     RomF.Position := 0;
 
-    WriteFlashMW(RomF, StrToInt(ComboMWBitLen.Text), 0, KHexEditor.Data.Size);
+    WriteFlashMW(RomF, StrToInt(ComboMWBitLen.Text), 0, MPHexEditorEx.DataSize);
 
     if MenuAutoCheck.Checked then
     begin
       TimeCounter := Time();
       RomF.Position :=0;
-      KHexEditor.SaveToStream(RomF);
+      MPHexEditorEx.SaveToStream(RomF);
       RomF.Position :=0;
       VerifyFlashMW(RomF, StrToInt(ComboMWBitLen.Text), 0, StrToInt(ComboChipSize.Text));
     end;
@@ -2361,7 +2346,7 @@ try
     LogPrint(STR_CHECK_SETTINGS, clRed);
     Exit;
   end;
-  if (KHexEditor.Data.Size > StrToInt(ComboChipSize.Text)) and (not BlankCheck) then
+  if (MPHexEditorEx.DataSize > StrToInt(ComboChipSize.Text)) and (not BlankCheck) then
   begin
     LogPrint(STR_WRONG_FILE_SIZE, clRed);
     Exit;
@@ -2381,7 +2366,7 @@ try
         RomF.WriteByte($FF);
     end
     else
-      KHexEditor.SaveToStream(RomF);
+      MPHexEditorEx.SaveToStream(RomF);
     RomF.Position :=0;
 
     if  ComboSPICMD.ItemIndex = SPI_CMD_KB then
@@ -2435,7 +2420,7 @@ try
         RomF.WriteByte($FF);
     end
     else
-      KHexEditor.SaveToStream(RomF);
+      MPHexEditorEx.SaveToStream(RomF);
     RomF.Position :=0;
 
     VerifyFlashI2C(RomF, RomF.Size, I2C_ChunkSize, I2C_DevAddr);
@@ -2461,7 +2446,7 @@ try
         RomF.WriteByte($FF);
     end
     else
-      KHexEditor.SaveToStream(RomF);
+      MPHexEditorEx.SaveToStream(RomF);
     RomF.Position :=0;
 
     VerifyFlashMW(RomF, StrToInt(ComboMWBitLen.Text), 0, StrToInt(ComboChipSize.Text));
@@ -2667,7 +2652,7 @@ procedure TMainForm.ButtonOpenHexClick(Sender: TObject);
 begin
   if OpenDialog.Execute then
   begin
-   KHexEditor.LoadFromFile(OpenDialog.FileName);
+   MPHexEditorEx.LoadFromFile(OpenDialog.FileName);
    StatusBar.Panels.Items[2].Text := OpenDialog.FileName;
   end;
 end;
@@ -2676,7 +2661,7 @@ procedure TMainForm.ButtonSaveHexClick(Sender: TObject);
 begin
   if SaveDialog.Execute then
   begin
-    KHexEditor.SaveToFile(SaveDialog.FileName);
+    MPHexEditorEx.SaveToFile(SaveDialog.FileName);
     StatusBar.Panels.Items[2].Text := SaveDialog.FileName;
   end;
 end;
@@ -2758,14 +2743,14 @@ begin
   ScriptEngine := TPasCalc.Create;
   ScriptsFunc.SetScriptFunctions(ScriptEngine);
 
-  KHexEditor.ExecuteCommand(ecOverwriteMode);
+  MPHexEditorEx.InsertMode := false;
   LoadOptions(SettingsFile);
   LoadLangList();
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
-  MainForm.KHexEditor.Free;
+  MainForm.MPHexEditorEx.Free;
   RomF.Free;
   SaveOptions(SettingsFile);
   ChipListFile.Free;
@@ -2821,7 +2806,7 @@ try
       ReadFlash95(RomF, 0, StrToInt(ComboChipSize.Text));
 
     RomF.Position := 0;
-    KHexEditor.LoadFromStream(RomF);
+    MPHexEditorEx.LoadFromStream(RomF);
     StatusBar.Panels.Items[2].Text := LabelChipName.Caption;
   end;
   //I2C
@@ -2849,7 +2834,7 @@ try
     ReadFlashI2C(RomF, StrToInt(ComboChipSize.Text), I2C_ChunkSize, I2C_DevAddr);
 
     RomF.Position := 0;
-    KHexEditor.LoadFromStream(RomF);
+    MPHexEditorEx.LoadFromStream(RomF);
     StatusBar.Panels.Items[2].Text := LabelChipName.Caption;
   end;
   //Microwire
@@ -2867,7 +2852,7 @@ try
     ReadFlashMW(RomF, StrToInt(ComboMWBitLen.Text), 0, StrToInt(ComboChipSize.Text));
 
     RomF.Position := 0;
-    KHexEditor.LoadFromStream(RomF);
+    MPHexEditorEx.LoadFromStream(RomF);
     StatusBar.Panels.Items[2].Text := LabelChipName.Caption;
   end;
 
@@ -2893,6 +2878,11 @@ end;
 procedure TMainForm.CopyLogMenuItemClick(Sender: TObject);
 begin
   Log.CopyToClipboard;
+end;
+
+procedure TMainForm.AllowInsertItemClick(Sender: TObject);
+begin
+  MPHexEditorEx.NoSizeChange := not AllowInsertItem.Checked;
 end;
 
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
