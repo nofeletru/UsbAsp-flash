@@ -12,7 +12,7 @@ uses
   Classes, SysUtils, LazFileUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ComCtrls, Menus, ActnList, Buttons, RichMemo, StrUtils, usbasp25,
   usbasp45, usbasp95, usbaspi2c, usbaspmw, usbaspmulti, usbhid, libusb, dos,
-  XMLRead, XMLWrite, DOM, KControls, msgstr, Translations, LCLProc, LCLType,
+  XMLRead, XMLWrite, DOM, msgstr, Translations, LCLProc, LCLType,
   LCLTranslator, LResources, MPHexEditorEx, MPHexEditor, search, sregedit,
   utilfunc, CH341DLL, ch341mw, findchip, avrispmk2, DateUtils, lazUTF8, pascalc,
   ScriptsFunc, ScriptEdit;
