@@ -1,0 +1,140 @@
+<table border="1" cellpadding="5" cellspacing="0" style="width: 0px; height: 0px">
+	<tbody>
+		<tr>
+			<td colspan="2" style="text-align: center;"><font size="5"><b>Предопределенные переменные</b></font></td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>_IC_Name</b></td>
+			<td>Название текущей выбранной микросхемы&nbsp;</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>_IC_Size</b></td>
+			<td>Размер, в байтах, текущей выбранной микросхемы</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>_IC_Page</b></td>
+			<td>Размер&nbsp;страницы,&nbsp;в байтах,&nbsp;текущей выбранной микросхемы&nbsp;</td>
+		</tr>
+		<tr>
+			<td colspan="2" style="text-align: center;"><b><font size="5">Основные функции</font></b></td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>ShowMessage(<font color="#0000FF">text</font>);</b></td>
+			<td style="text-align: center;">
+				<p align="left">Аналог ShowMessage</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>LogPrint(<font color="#0000FF">text</font>, <font color="#0000FF">color</font>);</b></td>
+			<td style="text-align: center;">
+				<p align="left">Выводит сообщение в лог<br>
+					Параметры:<br>
+					&nbsp;&nbsp; <b><font color="#0000FF">text</font></b> текст сообщения<br>
+					Необязательные параметры:<br>
+					&nbsp;&nbsp;<b style="text-align: center; color: #0000ff;">color&nbsp;</b>цвет bgr</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>IntToHex(<font color="#0000FF">value</font>, <font color="#0000FF">digits</font>): string;</b></td>
+			<td style="text-align: center;">
+				<p align="left">&nbsp;Аналог IntToHex</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>ProgressBar(<font color="#0000FF">inc</font>, <font color="#0000FF">max</font>, <font color="#0000FF">pos</font>);</b></td>
+			<td style="text-align: center;">
+				<p align="left">&nbsp;Устанавливает состояние ProgressBar<br>
+					Параметры:<br>
+					&nbsp;&nbsp; <b><font color="#0000FF">inc </font></b>насколько увиличить позицию<br>
+					Необязательные параметры:<br>
+					&nbsp;&nbsp; <font color="#0000FF"><b>max</b></font> максимальная позиция ProgressBar<br>
+					&nbsp;&nbsp; <font color="#0000FF"><b>pos</b></font> устанавливает конкретную позицию ProgressBar</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>CreateByteArray(<font color="#0000FF">size</font>): variant;</b></td>
+			<td style="text-align: center;">
+				<p align="left">&nbsp;Создает массив с типом элементов varbyte</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>GetArrayItem(<font color="#0000FF">array</font>, <font color="#0000FF">index</font>): variant;</b></td>
+			<td style="text-align: center;">
+				<p align="left">Возвращает значение элемента массива</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>SetArrayItem(<font color="#0000FF">array</font>, <font color="#0000FF">index</font>, <font color="#0000FF">value</font>);</b></td>
+			<td style="text-align: center;">
+				<p align="left">Устанавливает значение элемента массива</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" style="text-align: center;"><font size="5"><b>Работа с SPI</b></font></td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>SPISetSpeed(<font color="#0000FF">speed</font>): boolean;</b></td>
+			<td>
+				<p>Устанавливает частоту SPI&nbsp;&nbsp;<br>
+					&nbsp;&nbsp; Если частота не установлена возвращает false&nbsp;&nbsp;<br>
+					&nbsp;&nbsp; Игнорируется для CH341</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>SPIEnterProgMode();</b></td>
+			<td>
+				<p>Инициализирует состояние пинов для SPI</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>SPIExitProgMode();</b></td>
+			<td>
+				<p>Отключает пины SPI</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>SPIRead(<font color="#0000FF">cs</font>, <font color="#0000FF">size</font>, <font color="#0000FF">buffer</font></b><b>, ...</b><b>): integer;</b></td>
+			<td>
+				<p>Читает данные в буфер&nbsp;&nbsp;<br>
+					&nbsp;&nbsp; Параметры:&nbsp;&nbsp;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF"><b>cs</b></font> если <font color="#0000FF"><b>cs</b></font>=1 отпускать Chip Select после чтения данных&nbsp;&nbsp;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF"><b>size </b></font>размер данных в байтах&nbsp;&nbsp;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000FF"><b>buffer</b></font> переменные для хранения данных или массив созданный <b>CreateByteArray</b>&nbsp;&nbsp;<br>
+					&nbsp;&nbsp; Возвращает количество прочитанных байт</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>SPIWrite(<font color="#0000FF">cs</font>, <font color="#0000FF">size</font>, <font color="#0000FF">buffer</font></b><b>, ...</b><b>): integer;</b></td>
+			<td>
+				<p>Записывает данные из буфера&nbsp;&nbsp;<br>
+					&nbsp;&nbsp; Параметры:&nbsp;&nbsp;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#0000FF">cs</font> </b>если <b><font color="#0000FF">cs</font></b>=1 отпускать Chip Select после записи данных&nbsp;&nbsp;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#0000FF">size </font></b>размер данных в байтах&nbsp;&nbsp;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#0000FF">buffer </font></b>переменные с&nbsp;данными&nbsp;или массив созданный <b>CreateByteArray&nbsp;&nbsp;</b><br>
+					&nbsp;&nbsp; Возвращает количество записанных байт</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>SPIReadToEditor(<font color="#0000FF">cs</font>, <font color="#0000FF">size</font>): integer;</b></td>
+			<td>
+				<p>Читает данные в редактор&nbsp;&nbsp;<br>
+					&nbsp;&nbsp; Параметры:&nbsp;&nbsp;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#0000FF">cs </font></b>если <b><font color="#0000FF">cs</font></b>=1 отпускать Chip Select после чтения данных&nbsp;&nbsp;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#0000FF">size</font> </b>размер данных в байтах&nbsp;&nbsp;<br>
+					&nbsp;&nbsp; Возвращает количество прочитанных байт</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>SPIWriteFromEditor(<font color="#0000FF">cs</font>, <font color="#0000FF">size</font>, <font color="#0000FF">position</font>): integer;</b></td>
+			<td>
+				<p>Записывает данные из редактора размером <b><font color="#0000FF">size </font></b>с позиции <b><font color="#0000FF">position&nbsp;&nbsp;</font></b><br>
+					&nbsp;&nbsp; Параметры:&nbsp;&nbsp;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#0000FF">cs </font></b>если <b><font color="#0000FF">cs</font></b>=1 отпускать Chip Select после записи данных&nbsp;&nbsp;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#0000FF">size </font></b>размер данных в байтах&nbsp;&nbsp;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#0000FF">position</font> </b>позиция в редакторе&nbsp;&nbsp;<br>
+					&nbsp;&nbsp; Возвращает количество записанных байт</p>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<p>&nbsp;</p>
