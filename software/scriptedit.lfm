@@ -1,8 +1,9 @@
 object ScriptEditForm: TScriptEditForm
   Left = 433
-  Height = 442
+  Height = 422
   Top = 144
   Width = 727
+  ActiveControl = SynEdit
   Caption = 'Script editor'
   ClientHeight = 422
   ClientWidth = 727
@@ -12,9 +13,10 @@ object ScriptEditForm: TScriptEditForm
   OnShow = FormShow
   Position = poOwnerFormCenter
   LCLVersion = '1.6.4.0'
+  Visible = False
   inline SynEdit: TSynEdit
     Left = 0
-    Height = 344
+    Height = 324
     Top = 0
     Width = 727
     Align = alClient
@@ -473,7 +475,6 @@ object ScriptEditForm: TScriptEditForm
     MouseLinkColor.Foreground = clBlue
     LineHighlightColor.Background = clNone
     LineHighlightColor.Foreground = clNone
-    OnChange = SynEditChange
     inline SynLeftGutterPartList1: TSynGutterPartList
       object SynGutterLineNumber1: TSynGutterLineNumber
         Width = 17
@@ -509,7 +510,7 @@ object ScriptEditForm: TScriptEditForm
   object ScriptEditLog: TRichMemo
     Left = 0
     Height = 78
-    Top = 344
+    Top = 324
     Width = 727
     Align = alBottom
     HideSelection = False
@@ -557,6 +558,7 @@ object ScriptEditForm: TScriptEditForm
     end
     object MenuItemSection: TMenuItem
       Caption = 'Секция ='
+      OnClick = MenuItemSectionClick
     end
     object MenuItemScetionName: TMenuItem
     end

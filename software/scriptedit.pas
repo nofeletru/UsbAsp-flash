@@ -34,8 +34,8 @@ type
     procedure MenuItemRunClick(Sender: TObject);
     procedure MenuItemSaveAsClick(Sender: TObject);
     procedure MenuItemSaveClick(Sender: TObject);
+    procedure MenuItemSectionClick(Sender: TObject);
     procedure SectionItemMenuClick(Sender: TObject);
-    procedure SynEditChange(Sender: TObject);
   private
     { private declarations }
   public
@@ -103,6 +103,8 @@ begin
     end;
   end;
 
+  mi := NewItem('-', 0, false, true, NIL, 0, '');
+  ScriptEditForm.MenuItemSection.Add(mi);
 end;
 
 function SaveFile: boolean;
@@ -131,11 +133,6 @@ begin
 
   end;
 
-end;
-
-procedure TScriptEditForm.SynEditChange(Sender: TObject);
-begin
-  FillScriptSection(SynEdit.Lines);
 end;
 
 procedure TScriptEditForm.FormShow(Sender: TObject);
@@ -177,6 +174,11 @@ end;
 procedure TScriptEditForm.MenuItemSaveClick(Sender: TObject);
 begin
   SaveFile();
+end;
+
+procedure TScriptEditForm.MenuItemSectionClick(Sender: TObject);
+begin
+  FillScriptSection(SynEdit.Lines);
 end;
 
 procedure TScriptEditForm.FormCloseQuery(Sender: TObject; var CanClose: boolean
