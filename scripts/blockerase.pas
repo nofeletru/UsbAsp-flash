@@ -1,6 +1,6 @@
 {$erase} //секция будет выполняться при нажатии кнопки "стереть"
 begin
-  if not SPISetSpeed(0) then LogPrint('Error setting SPI speed');
+  if not SPISetSpeed(_SPI_SPEED_MAX) then LogPrint('Error setting SPI speed');
   SPIEnterProgMode();
 
   BlockSize := 65536; //Размер блока

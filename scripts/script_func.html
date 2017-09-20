@@ -1,6 +1,29 @@
 <table border="1" cellpadding="5" cellspacing="0" style="width: 0px; height: 0px">
 	<tbody>
 		<tr>
+			<td colspan="2" style="text-align: center;"><font size="5"><b>Секции</b></font></td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>{$read}</b></td>
+			<td>Код секции выполняется при нажатии кнопки чтении памяти</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>{$write}</b></td>
+			<td>Код секции выполняется при нажатии кнопки записи памяти</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>{$erase}</b></td>
+			<td>Код секции выполняется при нажатии кнопки стирания памяти</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>{$verify}</b></td>
+			<td>Код секции выполняется при нажатии кнопки сравнения памяти</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>{$unlock}</b></td>
+			<td>Код секции выполняется при нажатии кнопки снятия защиты</td>
+		</tr>
+		<tr>
 			<td colspan="2" style="text-align: center;"><font size="5"><b>Предопределенные переменные</b></font></td>
 		</tr>
 		<tr>
@@ -14,6 +37,10 @@
 		<tr>
 			<td style="text-align: center;"><b>_IC_Page</b></td>
 			<td>Размер&nbsp;страницы,&nbsp;в байтах,&nbsp;текущей выбранной микросхемы&nbsp;</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>_SPI_SPEED_MAX</b></td>
+			<td>Максимально возможная частота для&nbsp;<b style="text-align: center;">SPISetSpeed</b></td>
 		</tr>
 		<tr>
 			<td colspan="2" style="text-align: center;"><b><font size="5">Основные функции</font></b></td>
@@ -75,9 +102,12 @@
 		<tr>
 			<td style="text-align: center;"><b>SPISetSpeed(<font color="#0000FF">speed</font>): boolean;</b></td>
 			<td>
-				<p>Устанавливает частоту SPI&nbsp;&nbsp;<br>
-					&nbsp;&nbsp; Если частота не установлена возвращает false&nbsp;&nbsp;<br>
-					&nbsp;&nbsp; Игнорируется для CH341</p>
+				<p>Устанавливает частоту SPI &nbsp;<br>
+					&nbsp; Параметры:<br>
+					&nbsp; &nbsp; <font color="#0000FF"><b>speed</b></font><br>
+					&nbsp; &nbsp; <b>_SPI_SPEED_MAX</b>&nbsp;= AvrIsp 8(4) MHz / USbAsp 3 MHz<br>
+					&nbsp;Если частота не установлена возвращает false<br>
+					&nbsp;Игнорируется для CH341</p>
 			</td>
 		</tr>
 		<tr>

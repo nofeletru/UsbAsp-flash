@@ -18,6 +18,8 @@ implementation
 
 uses main, scriptedit;
 
+const _SPI_SPEED_MAX = 255;
+
 
 {Возвращает текст выбранной секции
  Если секция не найдена возвращает false}
@@ -198,6 +200,9 @@ begin
   if A.Count < 1 then Exit(false);
 
   speed := TPVar(A.Items[0])^.Value;
+  if speed = _SPI_SPEED_MAX then
+    if Current_HW = AVRISP then speed := 0
+      else speed := 13;
   if UsbAsp_SetISPSpeed(hUSBDev, speed) <> 0 then
     R.Value := False
   else
@@ -398,6 +403,7 @@ begin
   ScriptEngine.SetValue('_IC_SpiCmd', CurrentICParam.SpiCmd);
   ScriptEngine.SetValue('_IC_MWAddrLen', CurrentICParam.MWAddLen);
   ScriptEngine.SetValue('_IC_I2CAddrType', CurrentICParam.I2CAddrType);
+  ScriptEngine.SetValue('_SPI_SPEED_MAX', _SPI_SPEED_MAX);
 end;
 
 end.
