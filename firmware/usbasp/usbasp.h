@@ -87,7 +87,6 @@
 #define USBASP_ISP_SCK_750    11  /* 750 kHz   */
 #define USBASP_ISP_SCK_1500   12  /* 1.5 MHz   */
 #define USBASP_ISP_SCK_3000   13  /* 3 MHz   */
-#define USBASP_ISP_SCK_6000   14  /* 6 MHz   */
 
 /* macros for gpio functions */
 #define ledRedOn()    PORTC &= ~(1 << PC1)
