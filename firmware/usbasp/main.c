@@ -209,7 +209,10 @@ usbMsgLen_t usbFunctionSetup(uchar data[8]) {
 			for (i = speed; i >= USBASP_ISP_SCK_2; i--){
 				ispSetSCKOption(i);
 				replyBuffer[0] = ispEnterProgrammingMode();
-				if (replyBuffer[0] == 0) break; 
+				if (replyBuffer[0] == 0){
+					ispSetSCKOption(i-1);
+					break; 
+				}	
 			}
 		}
 		#endif
