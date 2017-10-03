@@ -16,7 +16,7 @@ begin
     repeat
       SPIWrite(0, 1, $05);
       SPIRead(1, 1, sreg);
-    until((sreg or 1) = 1);
+    until((sreg and 1) <> 1);
     ProgressBar(1);
   end;
 
