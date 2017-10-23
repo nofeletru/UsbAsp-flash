@@ -197,7 +197,7 @@ type
 
   TCurrentICParam = record
     Name: string;
-    Page: Word;
+    Page: integer;
     Size: Longword;
     SpiCmd: byte;
     I2CAddrType: byte;
@@ -236,9 +236,16 @@ begin
   if IsNumber(MainForm.ComboMWBitLen.Text) then
     CurrentICParam.MWAddLen := StrToInt(MainForm.ComboMWBitLen.Text) else
       CurrentICParam.MWAddLen := 0;
+
   if IsNumber(MainForm.ComboPageSize.Text) then
-    CurrentICParam.Page := StrToInt(MainForm.ComboPageSize.Text) else
-      CurrentICParam.Page := 0;
+    CurrentICParam.Page := StrToInt(MainForm.ComboPageSize.Text)
+  else if UpCase(MainForm.ComboPageSize.Text) = 'SSTB' then
+    CurrentICParam.Page := -1
+  else if UpCase(MainForm.ComboPageSize.Text) = 'SSTW' then
+    CurrentICParam.Page := -2
+  else
+    CurrentICParam.Page := 0;
+
   if IsNumber(MainForm.ComboChipSize.Text) then
     CurrentICParam.Size := StrToInt(MainForm.ComboChipSize.Text) else
       CurrentICParam.Size := 0;

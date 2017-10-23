@@ -157,7 +157,14 @@ begin
                  end;
 
                if  ChipNode.Attributes.GetNamedItem('page') <> nil then
-                 Main.CurrentICParam.Page := StrToInt(UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('page').NodeValue))
+               begin
+                 if UpCase(UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('page').NodeValue)) = 'SSTB' then
+                   Main.CurrentICParam.Page := -1
+                 else if UpCase(UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('page').NodeValue)) = 'SSTW' then
+                   Main.CurrentICParam.Page := -2
+                 else
+                   Main.CurrentICParam.Page := StrToInt(UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('page').NodeValue));
+               end
                else
                  Main.CurrentICParam.Page := 0;
 
@@ -185,6 +192,10 @@ begin
 
                 if CurrentICParam.Page > 0 then
                   MainForm.ComboPageSize.Text := IntToStr(CurrentICParam.Page)
+                else if CurrentICParam.Page = -1 then
+                  MainForm.ComboPageSize.Text := 'SSTB'
+                else if CurrentICParam.Page = -2 then
+                  MainForm.ComboPageSize.Text := 'SSTW'
                 else
                   MainForm.ComboPageSize.Text := 'Page size';
 
