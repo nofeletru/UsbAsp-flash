@@ -11,6 +11,9 @@
     <KB90XX>
       <KB9012 id="0" page="128" size="131072" spicmd="KB"/>
     </KB90XX>
+	<ADESTO>
+	  <AT25DN256 id="1F4000" page="256" size="32768"/>
+	</ADESTO>
     <AMIC>
       <A25L05PT id="372020" page="256" size="65536"/>
       <A25L05PU id="372010" page="256" size="65536"/>
