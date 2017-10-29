@@ -75,7 +75,7 @@ function UsbAsp25_WriteSSTW(devHandle: Pusb_dev_handle; Opcode: byte; Data1, Dat
 function UsbAsp25_EN4B(devHandle: Pusb_dev_handle): integer;
 function UsbAsp25_EX4B(devHandle: Pusb_dev_handle): integer;
 
-function SPIRead(devHandle: Pusb_dev_handle; CS: byte; BufferLen: integer; var buffer: array of byte): integer;
+function SPIRead(devHandle: Pusb_dev_handle; CS: byte; BufferLen: integer; out buffer: array of byte): integer;
 function SPIWrite(devHandle: Pusb_dev_handle; CS: byte; BufferLen: integer; buffer: array of byte): integer;
 
 implementation
@@ -99,21 +99,25 @@ procedure EnterProgMode25(devHandle: Pusb_dev_handle);
 var
   dummy: byte;
 begin
-  if Current_HW = CH341 then
-  begin
-    //CH341SetTimeout(0, 1000,1000);
-     CH341SetStream(0, %10000001);
-     exit;
+  case Current_HW of
+  CH341:
+    begin
+      CH341SetStream(0, %10000001);
+      exit;
+    end;
+  AVRISP:
+    begin
+      avrisp_enter_progmode();
+      exit;
+    end;
+  USBASP:
+      USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_CONNECT, 0, 0, 0, dummy);
   end;
-
-  if Current_HW = AVRISP then
-  begin
-    avrisp_enter_progmode();
-    exit;
-  end;
-
-  USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_CONNECT, 0, 0, 0, dummy);
   sleep(50);
+
+  //release power-down
+  SPIWrite(hUSBDev, 1, 1, $AB);
+  sleep(2);
 end;
 
 //Выход из режима программирования
@@ -355,7 +359,7 @@ begin
   result := SPIWrite(devHandle, 1, 1, buff);
 end;
 
-function SPIRead(devHandle: Pusb_dev_handle; CS: byte; BufferLen: integer; var buffer: array of byte): integer;
+function SPIRead(devHandle: Pusb_dev_handle; CS: byte; BufferLen: integer; out buffer: array of byte): integer;
 begin
   result := USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_25_READ, CS, 0, BufferLen, buffer);
 end;
