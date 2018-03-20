@@ -852,6 +852,7 @@
 	  <AT45DB021D id="1F2300" page="264" size="270336" spicmd="45"/>
       <AT45DB041D id="1F2400" page="264" size="540672" spicmd="45"/>
 	  <AT45DB161D id="1F2600" page="528" size="2162688" spicmd="45"/>
+	  <AT45DB321D id="1F2701" page="528" size="4325376" spicmd="45"/>
       <AT25010 page="8" size="128" spicmd="95"/>
       <AT25010A page="8" size="128" spicmd="95"/>
       <AT25020 page="8" size="256" spicmd="95"/>
