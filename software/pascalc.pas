@@ -2084,7 +2084,7 @@ begin
                           Exit;
                         end;
 
-                        h := FileOpen(s, fmOpenRead or fmShareDenyNone);
+                        h := FileOpen('scripts\'+s, fmOpenRead or fmShareDenyNone);
                         if h=INVALID_HANDLE_VALUE then
                         begin
                           Error('Can''t open file "'+Op+'", error code '+IntToStr(GetLastOSError),
