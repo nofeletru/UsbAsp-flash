@@ -189,6 +189,7 @@ begin
                   MainForm.ComboMWBitLen.Text := 'MW addr len';
 
                 MainForm.ComboAddrType.ItemIndex := CurrentICParam.I2CAddrType;
+                MainForm.ComboAddrType.OnChange(MainForm.ComboAddrType);
 
                 if CurrentICParam.Page > 0 then
                   MainForm.ComboPageSize.Text := IntToStr(CurrentICParam.Page)

@@ -127,6 +127,7 @@ type
     procedure ButtonEraseClick(Sender: TObject);
     procedure ButtonReadClick(Sender: TObject);
     procedure ClearLogMenuItemClick(Sender: TObject);
+    procedure ComboAddrTypeChange(Sender: TObject);
     procedure ComboSPICMDChange(Sender: TObject);
     procedure CopyLogMenuItemClick(Sender: TObject);
     procedure AllowInsertItemClick(Sender: TObject);
@@ -160,6 +161,7 @@ type
     procedure ButtonCancelClick(Sender: TObject);
     procedure I2C_DevAddrChange(Sender: TObject);
     procedure ScriptsMenuItemClick(Sender: TObject);
+    procedure ToolBarClick(Sender: TObject);
     procedure VerifyFlash(BlankCheck: boolean = false);
   private
     { private declarations }
@@ -2692,6 +2694,11 @@ begin
   ScriptEditForm.Show;
 end;
 
+procedure TMainForm.ToolBarClick(Sender: TObject);
+begin
+
+end;
+
 procedure LoadChipList(XMLfile: TXMLDocument);
 var
   Node: TDOMNode;
@@ -2875,6 +2882,58 @@ end;
 procedure TMainForm.ClearLogMenuItemClick(Sender: TObject);
 begin
   Log.Lines.Clear;
+end;
+
+procedure TMainForm.ComboAddrTypeChange(Sender: TObject);
+begin
+  if TComboBox(Sender).ItemIndex = I2C_ADDR_TYPE_7BIT then
+   begin
+     CheckBox_I2C_A0.Enabled:=true;
+     CheckBox_I2C_A1.Enabled:=true;
+     CheckBox_I2C_A2.Enabled:=true;
+   end
+  else if TComboBox(Sender).ItemIndex = I2C_ADDR_TYPE_1BYTE  then
+   begin
+     CheckBox_I2C_A0.Enabled:=true;
+     CheckBox_I2C_A1.Enabled:=true;
+     CheckBox_I2C_A2.Enabled:=true;
+   end
+  else if TComboBox(Sender).ItemIndex = I2C_ADDR_TYPE_1BYTE_1BIT then
+   begin
+     CheckBox_I2C_A0.Enabled:=false;
+     CheckBox_I2C_A1.Enabled:=true;
+     CheckBox_I2C_A2.Enabled:=true;
+   end
+  else if TComboBox(Sender).ItemIndex = I2C_ADDR_TYPE_1BYTE_2BIT then
+   begin
+     CheckBox_I2C_A0.Enabled:=false;
+     CheckBox_I2C_A1.Enabled:=false;
+     CheckBox_I2C_A2.Enabled:=true;
+   end
+  else if TComboBox(Sender).ItemIndex = I2C_ADDR_TYPE_1BYTE_3BIT then
+   begin
+     CheckBox_I2C_A0.Enabled:=false;
+     CheckBox_I2C_A1.Enabled:=false;
+     CheckBox_I2C_A2.Enabled:=false;
+   end
+  else if TComboBox(Sender).ItemIndex = I2C_ADDR_TYPE_2BYTE then
+   begin
+     CheckBox_I2C_A0.Enabled:=true;
+     CheckBox_I2C_A1.Enabled:=true;
+     CheckBox_I2C_A2.Enabled:=true;
+   end
+  else if TComboBox(Sender).ItemIndex = I2C_ADDR_TYPE_2BYTE_1BIT then
+   begin
+     CheckBox_I2C_A0.Enabled:=false;
+     CheckBox_I2C_A1.Enabled:=true;
+     CheckBox_I2C_A2.Enabled:=true;
+   end
+  else
+   begin
+     CheckBox_I2C_A0.Enabled:=true;
+     CheckBox_I2C_A1.Enabled:=true;
+     CheckBox_I2C_A2.Enabled:=true;
+   end;
 end;
 
 procedure TMainForm.ComboSPICMDChange(Sender: TObject);
