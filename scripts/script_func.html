@@ -46,6 +46,42 @@
 			<td>Максимально возможная частота для&nbsp;<b style="text-align: center;">SPISetSpeed</b></td>
 		</tr>
 		<tr>
+			<td style="text-align: center;"><b>_IC_I2CAddrType</b></td>
+			<td>Формат передачи адреса</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>_IC_I2CAddr</b></td>
+			<td>Аппаратный адрес устройства</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>_IC_I2CAddrType7Bit</b></td>
+			<td>Тип передачи адреса 7 бит</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>_IC_I2CAddrType1Byte</b></td>
+			<td>Тип передачи адреса 8 бит</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>_IC_I2CAddrType1Byte1Bit</b></td>
+			<td>Тип передачи адреса 9 бит</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>_IC_I2CAddrType1Byte2Bit</b></td>
+			<td>Тип передачи адреса 10 бит</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>_IC_I2CAddrType1Byte3Bit</b></td>
+			<td>Тип передачи адреса 11 бит</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>_IC_I2CAddrType2Byte</b></td>
+			<td>Тип передачи адреса 16 бит</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>_IC_I2CAddrType2Byte1Bit</b></td>
+			<td>Тип передачи адреса 17 бит</td>
+		</tr>
+		<tr>
 			<td colspan="2" style="text-align: center;"><b><font size="5">Основные функции</font></b></td>
 		</tr>
 		<tr>
@@ -166,6 +202,74 @@
 					&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#0000FF">size </font></b>размер данных в байтах&nbsp;&nbsp;<br>
 					&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#0000FF">position</font> </b>позиция в редакторе&nbsp;&nbsp;<br>
 					&nbsp;&nbsp; Возвращает количество записанных байт</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" style="text-align: center;"><font size="5"><b>Работа с I2C</b></font></td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>I2CEnterProgMode();</b></td>
+			<td>
+				<p>Инициализация интерфейса i2c</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>I2CBUSY(<font color="#0000FF">devAddr</font>):bolean;</b></td>
+			<td>
+				<p>Проверка занято ли устройства<br>
+					&nbsp;&nbsp; Параметры:&nbsp;&nbsp;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#0000FF">devAddr</font></b> аппаратный адрес цстройства<br>
+					&nbsp;&nbsp; Возвращает занято ли устройство</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>I2CRead(<font color="#0000FF">devAddr</font>, <font color="#0000FF">TypeAddr</font>, <font color="#0000FF">Address</font>, <font color="#0000FF">bufferSize</font>, <font color="#0000FF">buffer</font>): integer;</b></td>
+			<td>
+				<p>Читает данные в буфер<br>
+					Параметры:<br>
+					<b><font color="#0000FF">devAddr</font></b> адрес устройства<br>
+					<b><font color="#0000FF">TypeAddr</font></b> тип адресации<br>
+					<b><font color="#0000FF">Address</font></b> адрес обращения<br>
+					<b><font color="#0000FF">Size</font></b> рзмер считывания<br>
+					<b><font color="#0000FF">buffer</font></b> буфер<br>
+					возвращает количество считанных байт</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>I2CWrite(<font color="#0000FF">devAddr</font>, <font color="#0000FF">TypeAddr</font>, <font color="#0000FF">Address</font>, <font color="#0000FF">PageSize</font>, <font color="#0000FF">Size</font>, <font color="#0000FF">buffer</font>): integer;</b></td>
+			<td>
+				<p>Записывает данные из буфера<br>
+					Параметры:<br>
+					<b><font color="#0000FF">devAddr</font></b> адрес устройства<br>
+					<b><font color="#0000FF">TypeAddr</font></b> тип адресации<br>
+					<b><font color="#0000FF">Address</font></b> адрес обращения<br>
+					<b><font color="#0000FF">PageSize</font></b> размер страницы<br>
+					<b><font color="#0000FF">Size</font></b> рзмер записи<br>
+					<b><font color="#0000FF">buffer</font></b> буфер<br>
+					возвращает количество записанных байт</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>I2CReadToEditor(<font color="#0000FF">devAddr</font>, <font color="#0000FF">TypeAddr</font>, <font color="#0000FF">Size</font>): integer;</b></td>
+			<td>
+				<p>Читает данные в редактор<br>
+					Параметры:<br>
+					<b><font color="#0000FF">devAddr</font></b> адрес устройства<br>
+					<b><font color="#0000FF">TypeAddr</font></b> тип адресации<br>
+					<b><font color="#0000FF">Size</font></b> рзмер записи<br>
+					возвращает количество считанных байт</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>I2CWriteFromEditor(<font color="#0000FF">devAddr</font>, <font color="#0000FF">TypeAddr</font>, <font color="#0000FF">PageSize</font>, <font color="#0000FF">Size</font>): integer;</b></td>
+			<td>
+				<p>Записывает данные из редактора<br>
+					Параметры:<br>
+					<b><font color="#0000FF">devAddr</font></b> адрес устройства<br>
+					<b><font color="#0000FF">TypeAddr</font></b> тип адресации<br>
+					<b><font color="#0000FF">PageSize</font></b> размер страницы<br>
+					<b><font color="#0000FF">Size</font></b> рзмер записи<br>
+					возвращает количество записанных байт</p>
 			</td>
 		</tr>
 	</tbody>

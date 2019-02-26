@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Variants, Dialogs, graphics,
-  usbasp25, msgstr, PasCalc;
+  usbasp25, msgstr, PasCalc, forms;
 
 procedure SetScriptFunctions(PC : TPasCalc);
 procedure SetScriptVars();
@@ -16,7 +16,7 @@ function ParseScriptText(Script: TStrings; SectionName: string; var ScriptText: 
 
 implementation
 
-uses main, scriptedit;
+uses main, scriptedit, usbaspi2c;
 
 const _SPI_SPEED_MAX = 255;
 
@@ -373,6 +373,205 @@ begin
   Result := true;
 end;
 
+
+{Script I2CEnterProgMode();
+ Инициализирует состояние пинов для I2C и устанавливает скорость}
+function Script_I2CEnterProgMode(Sender:TObject) : boolean;
+begin
+  EnterProgModeI2c(hUSBdev);
+  Result := true;
+end;
+
+{Script I2CRead(devAddr, TypeAddr, Address, bufferSize, buffer)
+читает данные в буфер
+devAddr     - адрес устройства
+TypeAddr    - тип адресации
+Address     - адрес обращения
+Size        - рзмер считывания
+buffer      - буфер
+возвращает количество считанных байт}
+function Script_I2CRead(Sender:TObject; var A:TVarList; var R: TVar) : boolean;
+var
+   DevAddr,TypeAddr: byte;
+   Address, Size:longword;
+   i:integer;
+   buffer: array of byte;
+begin
+  if A.Count < 5 then Exit(false);
+
+  DevAddr := TPVar(A.Items[0])^.Value;
+  TypeAddr := TPVar(A.Items[1])^.Value;
+  Address := TPVar(A.Items[2])^.Value;
+  Size := TPVar(A.Items[3])^.Value;
+
+  SetLength(buffer, Size);
+
+  R.Value := UsbAspI2C_Read(hUSBDev, DevAddr, TypeAddr, Address, buffer, Size);
+
+  //Если buffer массив
+  if (VarIsArray(TPVar(A.Items[4])^.Value)) then
+     for i := 0 to Size-1 do
+       begin
+         TPVar(A.Items[4])^.Value[i] := buffer[i];
+       end
+  else
+     for i := 0 to size-1 do
+       begin
+         TPVar(A.Items[4+i])^.Value := buffer[i];
+       end;
+
+  Result := true;
+end;
+
+{Script I2CWrite(devAddr, TypeAddr, Address, buffer, bufferSize):integer;
+ Записывает данные из буфера
+ Параметры:
+devAddr     - адрес устройства
+TypeAddr    - тип адресации
+Address     - адрес обращения      
+PageSize    - размер страницы
+Size        - рзмер считывания
+buffer      - буфер
+возвращает количество считанных байт
+ Возвращает количество записанных байт}
+function Script_I2CWrite(Sender:TObject; var A:TVarList; var R: TVar) : boolean;
+var
+   DevAddr,TypeAddr: byte;
+   Address, Size, PageSize, offset, writecount, totalwrite, EndAddress:longword;
+   i:integer;
+   buffer: array of byte;
+begin
+  if A.Count < 5 then Exit(false);
+
+  DevAddr := TPVar(A.Items[0])^.Value;
+  TypeAddr := TPVar(A.Items[1])^.Value;
+  Address := TPVar(A.Items[2])^.Value;
+  PageSize := TPVar(A.Items[3])^.Value;
+  Size := TPVar(A.Items[4])^.Value;
+  EndAddress:=Address+Size;
+
+  SetLength(buffer, PageSize);
+  offset:=0;
+  writecount:=0;
+  totalwrite:=0;
+
+  //Если buffer массив
+  while Address<EndAddress do
+  begin
+    writecount:=pagesize - (address mod pagesize);
+    if address+writecount>endaddress then writecount:=endaddress-address;
+    if (VarIsArray(TPVar(A.Items[5])^.Value)) then
+      for i := 0 to writecount-1 do
+        begin
+          buffer[i] := TPVar(A.Items[5])^.Value[offset+i];
+        end
+    else
+      for i := 0 to writecount-1 do
+       begin
+         buffer[i] := TPVar(A.Items[5+offset+i])^.Value;
+       end;
+
+    totalwrite:=totalwrite + UsbAspI2C_Write(hUSBDev, DevAddr, TypeAddr, Address, buffer, writecount);
+    address:=address+writecount;
+    size:=size-writecount;
+
+    while UsbAspI2C_BUSY(hUSBdev, DevAddr) do
+      Application.ProcessMessages;
+
+  end;
+  R.Value := totalwrite;
+  Result := true;
+end;
+
+{Script_I2CReadToEditor(devAddr, TypeAddr, Size);
+devAddr     - адрес устройства
+TypeAddr    - тип адресации
+Size        - рзмер считывания
+возвращает количество считанных байт}
+function Script_I2CReadToEditor(Sender:TObject; var A:TVarList; var R: TVar) : boolean;
+var
+   DevAddr,TypeAddr: byte;
+   Address, Size:longword;
+   buffer: array of byte;
+begin
+  if A.Count < 3 then Exit(false);
+
+  DevAddr := TPVar(A.Items[0])^.Value;
+  TypeAddr := TPVar(A.Items[1])^.Value;
+  Size := TPVar(A.Items[2])^.Value;
+  Address := 0;
+
+  SetLength(buffer, Size);
+
+  R.Value := UsbAspI2C_Read(hUSBDev, DevAddr, TypeAddr, Address, buffer, Size);
+
+  RomF.Clear;
+  RomF.WriteBuffer(Pointer(buffer)^, Size);
+  RomF.Position := 0;
+  MainForm.MPHexEditorEx.LoadFromStream(RomF);
+  Result := true;
+end;
+
+{Script_I2CWriteFromEditor(devAddr, TypeAddr, Address, Size);
+devAddr     - адрес устройства
+TypeAddr    - тип адресации        
+PageSize    - размер страницы
+Size        - рзмер считывания
+возвращает количество считанных байт}
+function Script_I2CWriteFromEditor(Sender:TObject; var A:TVarList; var R: TVar) : boolean;
+var
+   DevAddr,TypeAddr: byte;
+   Address, Size, PageSize, WriteSize:longword;
+   buffer: array of byte;
+begin
+  if A.Count < 4 then Exit(false);
+
+  DevAddr := TPVar(A.Items[0])^.Value;
+  TypeAddr := TPVar(A.Items[1])^.Value;   
+  PageSize := TPVar(A.Items[2])^.Value;
+  Size := TPVar(A.Items[3])^.Value;
+  Address := 0;
+  WriteSize:=0;
+
+  SetLength(buffer, PageSize);
+
+  RomF.Clear;
+  MainForm.MPHexEditorEx.SaveToStream(RomF);
+  RomF.Position := 0;
+
+  while Address < Size do
+  begin
+    if (Size - Address) < PageSize then PageSize := (Size - Address);
+    RomF.ReadBuffer(Pointer(buffer)^, PageSize);
+    WriteSize := WriteSize + UsbAspI2C_Write(hUSBDev, DevAddr, TypeAddr, Address, buffer, PageSize);
+    Address := Address + PageSize;
+
+    while UsbAspI2C_BUSY(hUSBdev, DevAddr) do
+      Application.ProcessMessages;
+  end;
+
+  R.Value:= WriteSize;
+
+
+  Result := true;
+end;
+
+{Script I2CBUSY(devAddr):bolean;
+devAddr     - адрес устройства
+возвращает количество считанных байт}
+function Script_I2CBUSY(Sender:TObject; var A:TVarList; var R: TVar) : boolean;
+var
+   DevAddr: byte;
+begin
+  if A.Count < 1 then Exit(false);
+
+  DevAddr := TPVar(A.Items[0])^.Value;
+
+  R.Value := UsbAspI2C_BUSY(hUSBdev, DevAddr);
+
+  Result := true;
+end;
+
 //------------------------------------------------------------------------------
 procedure SetScriptFunctions(PC : TPasCalc);
 begin
@@ -393,6 +592,13 @@ begin
   PC.SetFunction('SPIReadToEditor', @Script_SPIReadToEditor);
   PC.SetFunction('SPIWriteFromEditor', @Script_SPIWriteFromEditor);
 
+  PC.SetFunction('I2CEnterProgMode', @Script_I2CEnterProgMode);
+  PC.SetFunction('I2CBUSY', @Script_I2CBUSY);
+  PC.SetFunction('I2CWrite', @Script_I2CWrite);
+  PC.SetFunction('I2CRead', @Script_I2CRead);           
+  PC.SetFunction('I2CWriteFromEditor', @Script_I2CWriteFromEditor);
+  PC.SetFunction('I2CReadToEditor', @Script_I2CReadToEditor);
+
 end;
 
 procedure SetScriptVars();
@@ -404,6 +610,14 @@ begin
   ScriptEngine.SetValue('_IC_MWAddrLen', CurrentICParam.MWAddLen);
   ScriptEngine.SetValue('_IC_I2CAddrType', CurrentICParam.I2CAddrType);
   ScriptEngine.SetValue('_SPI_SPEED_MAX', _SPI_SPEED_MAX);
+  ScriptEngine.SetValue('_IC_I2CAddr', SetI2CDevAddr());
+  ScriptEngine.SetValue('_IC_I2CAddrType7Bit', I2C_ADDR_TYPE_7BIT);
+  ScriptEngine.SetValue('_IC_I2CAddrType1Byte', I2C_ADDR_TYPE_1BYTE);
+  ScriptEngine.SetValue('_IC_I2CAddrType1Byte1Bit', I2C_ADDR_TYPE_1BYTE_1BIT);
+  ScriptEngine.SetValue('_IC_I2CAddrType1Byte2Bit', I2C_ADDR_TYPE_1BYTE_2BIT);
+  ScriptEngine.SetValue('_IC_I2CAddrType1Byte3Bit', I2C_ADDR_TYPE_1BYTE_3BIT);
+  ScriptEngine.SetValue('_IC_I2CAddrType2Byte', I2C_ADDR_TYPE_2BYTE);
+  ScriptEngine.SetValue('_IC_I2CAddrType2Byte1Bit', I2C_ADDR_TYPE_2BYTE_1BIT);
 end;
 
 end.

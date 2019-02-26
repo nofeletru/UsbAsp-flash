@@ -179,6 +179,7 @@ type
   function OpenDevice: boolean;
   function SetSPISpeed(OverrideSpeed: byte): boolean;
   procedure SyncUI_ICParam();
+  function SetI2CDevAddr(): byte;
 
 const
   SPI_CMD_25             = 0;
