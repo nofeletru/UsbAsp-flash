@@ -150,8 +150,9 @@
     </PMC>
 	<PFLASH>
 	  <Pm25LV010 id="7F9D7C" page="256" size="131072"/>
-      <Pm25LV020 id="7F9D22" page="256" size="262144"/>
-      <Pm25W020 id="7F9D7D" page="256" size="262144"/>
+	  <Pm25LD010 id="7F9D21" page="256" size="131072"/>
+	  <Pm25LV020 id="7F9D22" page="256" size="262144"/>
+	  <Pm25W020 id="7F9D7D" page="256" size="262144"/>
 	</PFLASH>
 	<TERRA>
 	  <TS25L512A id="373010" page="256" size="65536"/>
