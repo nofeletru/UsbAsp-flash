@@ -7,8 +7,8 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, richmemopackage, main, usbaspi2c, usbaspmw, usbaspmulti,
-  usbasp95, search, sregedit, ch341mw, findchip, avrispmk2, ScriptEdit;
+  Forms, main, i2c, microwire,
+  spi95, search, sregedit, findchip, ScriptEdit, spi25;
 
 {$R *.res}
 

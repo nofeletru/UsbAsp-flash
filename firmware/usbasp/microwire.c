@@ -17,13 +17,14 @@ void mwStart()
 
 	// set CS to 1
     ISP_OUT |= (1 << ISP_RST);
+	/*
 	//send start bit
                 ISP_OUT |= (1 << ISP_MOSI);
 	ispDelay();
                 ISP_OUT |= (1 << ISP_SCK);
 	ispDelay();
                 ISP_OUT &= ~(1 << ISP_SCK);
-	ispDelay();	
+	ispDelay();	*/
 }
 
 void mwSendData(unsigned int data,unsigned char n)

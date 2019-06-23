@@ -1,17 +1,13 @@
-unit usbaspi2c;
+unit i2c;
 
 {$mode objfpc}
 
 interface
 
 uses
-  Classes, SysUtils, libusb, usbhid, utilfunc, CH341DLL, avrispmk2;
+  Classes, SysUtils, utilfunc;
 
 const
-  USBASP_FUNC_I2C_INIT		 = 70;
-  USBASP_FUNC_I2C_READ		 = 71;
-  USBASP_FUNC_I2C_WRITE		 = 72;
-  USBASP_FUNC_I2C_ACK 		 = 73;
 
   //Как посылать адрес ячейки в чип
   I2C_ADDR_TYPE_7BIT             = 0;
@@ -22,88 +18,36 @@ const
   I2C_ADDR_TYPE_2BYTE            = 5;
   I2C_ADDR_TYPE_2BYTE_1BIT       = 6;
 
-  //Байт в микрокоде отвечающий за режим адресации
-  I2C_0BYTE_ADDR                 = 0;
-  I2C_1BYTE_ADDR                 = 1;
-  I2C_2BYTE_ADDR                 = 2;
 
-
-procedure EnterProgModeI2C(devHandle: Pusb_dev_handle);
-function UsbAspI2C_BUSY(devHandle: Pusb_dev_handle; Address: byte): Boolean;
-function UsbAspI2C_Read(devHandle: Pusb_dev_handle; DevAddr, AddrType: byte; Address: longword;var buffer: array of byte; bufflen: integer): integer;
-function UsbAspI2C_Write(devHandle: Pusb_dev_handle; DevAddr, AddrType: byte; Address: longword; buffer: array of byte; bufflen: integer): integer;
+procedure EnterProgModeI2C();
+function UsbAspI2C_BUSY(Address: byte): Boolean;
+function UsbAspI2C_Read(DevAddr, AddrType: byte; Address: longword;var buffer: array of byte; bufflen: integer): integer;
+function UsbAspI2C_Write(DevAddr, AddrType: byte; Address: longword; buffer: array of byte; bufflen: integer): integer;
 
 implementation
 
 uses main;
 
-procedure EnterProgModeI2C(devHandle: Pusb_dev_handle);
+procedure EnterProgModeI2C();
 var
   dummy: byte;
 begin
-  if Current_HW = AVRISP then exit;
-  USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_I2C_INIT, 0, 0, 0, dummy);
+  AsProgrammer.Programmer.I2CInit;
   sleep(50);
 end;
 
-function UsbAspI2C_BUSY(devHandle: Pusb_dev_handle; Address: byte): Boolean;
-procedure SendBit(bit: byte);
-begin
-  if boolean(bit) then
-  begin
-    CH341SetOutput(0, $10, 0, $0); //scl low
-    CH341SetOutput(0, $10, 0, $80000); //1
-    CH341SetOutput(0, $10, 0, $C0000); //scl hi
-  end
-  else
-  begin
-    CH341SetOutput(0, $10, 0, $0); //scl low
-    CH341SetOutput(0, $10, 0, $0); //0
-    CH341SetOutput(0, $10, 0, $40000); //scl hi
-  end;
-end;
-
+function UsbAspI2C_BUSY(Address: byte): Boolean;
 var
   Status: byte;
-  pins, i: cardinal;
-
 begin
-  if Current_HW = CH341 then
-  begin
-    CH341SetOutput(0, $10, 0, $40000); //sda low(start)
-
-    for i:=7 downto 1 do
-    begin
-      if IsBitSet(Address, i) then SendBit(1) else SendBit(0);
-    end;
-
-    //rw
-    SendBit(0);
-    //ack
-    SendBit(1);
-    CH341GetStatus(0, @pins);
-    Result := IsBitSet(pins, 23);
-    //stop
-    SendBit(0);
-
-    CH341SetOutput(0, $10, 0, $C0000); //sda hi
-    exit;
-  end;
-
-  if Current_HW = AVRISP then
-  begin
-    result := not avrisp_i2c_ack(Address);
-    exit;
-  end;
-
-  USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_I2C_ACK, Address, 0, 1, Status);
-  Result := not Boolean(Status);
+  Result := AsProgrammer.Programmer.I2CLineIsBusy(Address);
 end;
 
 //Возвращает сколько байт прочитали
-function UsbAspI2C_Read(devHandle: Pusb_dev_handle; DevAddr, AddrType: byte; Address: longword;var buffer: array of byte; bufflen: integer): integer;
+function UsbAspI2C_Read(DevAddr, AddrType: byte; Address: longword;var buffer: array of byte; bufflen: integer): integer;
 var
   value, index: Integer;
+  wBuffer: array of byte;
 begin
 
    //TODO: 24LC1025
@@ -114,12 +58,15 @@ begin
     value := 0;
     value := (Byte(Address) shl 1);
     index := 0;
+    SetLength(wBuffer, 0);
   end;
 
   if AddrType = I2C_ADDR_TYPE_1BYTE  then
   begin
-    value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
+    value := DevAddr;
     index := Byte(Address);
+    SetLength(wBuffer, 1);
+    wBuffer[0] := index;
   end;
 
   if AddrType = I2C_ADDR_TYPE_1BYTE_1BIT then
@@ -129,8 +76,10 @@ begin
     else
       DevAddr := ClearBit(DevAddr, 1);
 
-    value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
+    value := DevAddr;
     index := Byte(Address);
+    SetLength(wBuffer, 1);
+    wBuffer[0] := index;
   end;
 
   if AddrType = I2C_ADDR_TYPE_1BYTE_2BIT then
@@ -145,8 +94,10 @@ begin
     else
       DevAddr := ClearBit(DevAddr, 2);
 
-    value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
+    value := DevAddr;
     index := Byte(Address);
+    SetLength(wBuffer, 1);
+    wBuffer[0] := index;
   end;
 
   if AddrType = I2C_ADDR_TYPE_1BYTE_3BIT then
@@ -166,14 +117,19 @@ begin
     else
       DevAddr := ClearBit(DevAddr, 3);
 
-    value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
+    value := DevAddr;
     index := Byte(Address);
+    SetLength(wBuffer, 1);
+    wBuffer[0] := index;
   end;
 
   if (AddrType = I2C_ADDR_TYPE_2BYTE) then
   begin
-    value := (I2C_2BYTE_ADDR shl 8) or (DevAddr);
+    value := DevAddr;
     index := Word(Address);
+    SetLength(wBuffer, 2);
+    wBuffer[0] := hi(index);
+    wBuffer[1] := lo(index);
   end;
 
   if (AddrType = I2C_ADDR_TYPE_2BYTE_1BIT) then
@@ -183,17 +139,24 @@ begin
     else
       DevAddr := ClearBit(DevAddr, 1);
 
-    value := (I2C_2BYTE_ADDR shl 8) or (DevAddr);
+    value := DevAddr;
     index := Word(Address);
+    SetLength(wBuffer, 2);
+    wBuffer[0] := hi(index);
+    wBuffer[1] := lo(index);
   end;
 
-  result := USBSendControlMessage(devHandle, USB2PC, USBASP_FUNC_I2C_READ, value, index, bufflen, buffer);
+  //value hi=сколько байт слать lo= адрес устройства
+  //index hi=1 байт адреса памяти lo=второй
+  result := AsProgrammer.Programmer.I2CReadWrite(value, Length(wBuffer), wBuffer, bufflen, buffer)-Length(wBuffer);
 end;
 
 //Возвращает сколько байт записали
-function UsbAspI2C_Write(devHandle: Pusb_dev_handle; DevAddr, AddrType: byte; Address: longword; buffer: array of byte; bufflen: integer): integer;
+function UsbAspI2C_Write(DevAddr, AddrType: byte; Address: longword; buffer: array of byte; bufflen: integer): integer;
 var
-  value, index: Integer;
+  value, index, address_size: Integer;
+  wBuffer: array of byte;
+  dummy: byte;
 begin
   //Low(value) = 2; Адрес устройства
   //Hi(value)  = 3; Посылать ли первый(lo) или второй(hi) байт
@@ -204,14 +167,17 @@ begin
 
   if AddrType = I2C_ADDR_TYPE_7BIT then
   begin
-    Value := (I2C_0BYTE_ADDR shl 8) or (Byte(Address) shl 1); //7 бит
+    Value := Byte(Address) shl 1; //7 бит
     index := 0;
+    SetLength(wBuffer, 0);
   end;
 
   if AddrType = I2C_ADDR_TYPE_1BYTE then
   begin
-    Value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
+    Value := DevAddr;
     index := Byte(Address);
+    SetLength(wBuffer, 1);
+    wBuffer[0] := index;
   end;
 
   if AddrType = I2C_ADDR_TYPE_1BYTE_1BIT then
@@ -221,8 +187,10 @@ begin
     else
       DevAddr := ClearBit(DevAddr, 1);
 
-    value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
+    value := DevAddr;
     index := Byte(Address);
+    SetLength(wBuffer, 1);
+    wBuffer[0] := index;
   end;
 
   if AddrType = I2C_ADDR_TYPE_1BYTE_2BIT then
@@ -237,8 +205,10 @@ begin
     else
       DevAddr := ClearBit(DevAddr, 2);
 
-    value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
+    value := DevAddr;
     index := Byte(Address);
+    SetLength(wBuffer, 1);
+    wBuffer[0] := index;
   end;
 
   if AddrType = I2C_ADDR_TYPE_1BYTE_3BIT then
@@ -258,14 +228,19 @@ begin
     else
       DevAddr := ClearBit(DevAddr, 3);
 
-    value := (I2C_1BYTE_ADDR shl 8) or (DevAddr);
+    value := DevAddr;
     index := Byte(Address);
+    SetLength(wBuffer, 1);
+    wBuffer[0] := index;
   end;
 
   if AddrType = I2C_ADDR_TYPE_2BYTE then
   begin
-    value := (I2C_2BYTE_ADDR shl 8) or (DevAddr);
+    value := DevAddr;
     index := Word(Address);
+    SetLength(wBuffer, 2);
+    wBuffer[0] := hi(index);
+    wBuffer[1] := lo(index);
   end;
 
   if AddrType = I2C_ADDR_TYPE_2BYTE_1BIT then
@@ -275,11 +250,18 @@ begin
     else
       DevAddr := ClearBit(DevAddr, 1);
 
-    value := (I2C_2BYTE_ADDR shl 8) or (DevAddr);
+    value := DevAddr;
     index := Word(Address);
+    SetLength(wBuffer, 2);
+    wBuffer[0] := hi(index);
+    wBuffer[1] := lo(index);
   end;
 
-  result := USBSendControlMessage(devHandle, PC2USB, USBASP_FUNC_I2C_WRITE, value, index, bufflen, buffer);
+  address_size := Length(wBuffer);
+  SetLength(wBuffer, bufflen+address_size);
+  move(buffer, wBuffer[address_size], bufflen);
+
+  result := AsProgrammer.Programmer.I2CReadWrite(value, bufflen+address_size, wBuffer, 0, dummy)-address_size;
 end;
 
 end.

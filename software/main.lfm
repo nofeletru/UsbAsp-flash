@@ -1,11 +1,11 @@
 object MainForm: TMainForm
-  Left = 358
+  Left = 374
   Height = 499
-  Top = 67
+  Top = 116
   Width = 802
   ActiveControl = RadioSPI
   Caption = 'AsProgrammer'
-  ClientHeight = 499
+  ClientHeight = 479
   ClientWidth = 802
   Constraints.MinHeight = 300
   Constraints.MinWidth = 300
@@ -14,14 +14,14 @@ object MainForm: TMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poDesktopCenter
-  LCLVersion = '1.6.4.0'
-  Visible = False
+  LCLVersion = '2.0.2.0'
   object ProgressBar: TProgressBar
     Left = 0
     Height = 20
-    Top = 353
+    Top = 369
     Width = 802
     Align = alBottom
+    Max = 0
     TabOrder = 0
     BarShowText = True
   end
@@ -36,7 +36,7 @@ object MainForm: TMainForm
     Images = ImageList
     TabOrder = 1
     object ButtonRead: TToolButton
-      Left = 83
+      Left = 81
       Hint = 'Прочитать'
       Top = 2
       ImageIndex = 1
@@ -45,7 +45,7 @@ object MainForm: TMainForm
       ShowHint = True
     end
     object ButtonWrite: TToolButton
-      Left = 119
+      Left = 117
       Hint = 'Записать'
       Top = 2
       DropdownMenu = DropDownMenu
@@ -56,7 +56,7 @@ object MainForm: TMainForm
       Style = tbsDropDown
     end
     object ButtonErase: TToolButton
-      Left = 167
+      Left = 165
       Hint = 'Стереть'
       Top = 2
       ImageIndex = 5
@@ -66,7 +66,7 @@ object MainForm: TMainForm
       ShowHint = True
     end
     object ButtonVerify: TToolButton
-      Left = 203
+      Left = 201
       Hint = 'Сравнить содержимое'
       Top = 2
       DropdownMenu = BlankCheckDropDownMenu
@@ -77,15 +77,14 @@ object MainForm: TMainForm
       Style = tbsDropDown
     end
     object ToolButton1: TToolButton
-      Left = 251
+      Left = 249
       Height = 32
       Top = 2
-      Width = 10
       Caption = 'ToolButton1'
       Style = tbsSeparator
     end
     object ButtonReadID: TToolButton
-      Left = 261
+      Left = 257
       Hint = 'Прочитать индификатор'
       Top = 2
       ImageIndex = 2
@@ -94,7 +93,7 @@ object MainForm: TMainForm
       ShowHint = True
     end
     object ButtonBlock: TToolButton
-      Left = 297
+      Left = 293
       Hint = 'Снять защиту'
       Top = 2
       DropdownMenu = DropdownMenuLock
@@ -109,12 +108,11 @@ object MainForm: TMainForm
       Left = 73
       Height = 32
       Top = 2
-      Width = 10
       Caption = 'ToolButton3'
       Style = tbsSeparator
     end
     object RadioSPI: TRadioButton
-      Left = 401
+      Left = 393
       Height = 19
       Top = 2
       Width = 36
@@ -125,7 +123,7 @@ object MainForm: TMainForm
       TabStop = True
     end
     object RadioI2C: TRadioButton
-      Left = 437
+      Left = 429
       Height = 19
       Top = 2
       Width = 37
@@ -134,7 +132,7 @@ object MainForm: TMainForm
       TabOrder = 1
     end
     object RadioMw: TRadioButton
-      Left = 474
+      Left = 466
       Height = 19
       Top = 2
       Width = 107
@@ -143,10 +141,9 @@ object MainForm: TMainForm
       TabOrder = 2
     end
     object ToolButton2: TToolButton
-      Left = 345
+      Left = 341
       Height = 32
       Top = 2
-      Width = 10
       Caption = 'ToolButton2'
       Style = tbsSeparator
     end
@@ -171,7 +168,7 @@ object MainForm: TMainForm
       ShowHint = True
     end
     object ButtonCancel: TToolButton
-      Left = 355
+      Left = 349
       Hint = 'Прервать текущею операцию'
       Top = 2
       ImageIndex = 8
@@ -180,18 +177,16 @@ object MainForm: TMainForm
       ShowHint = True
     end
     object ToolButton5: TToolButton
-      Left = 391
+      Left = 385
       Height = 32
       Top = 2
-      Width = 10
       Caption = 'ToolButton5'
       Style = tbsSeparator
     end
     object ToolButton4: TToolButton
-      Left = 581
+      Left = 573
       Height = 32
       Top = 2
-      Width = 10
       Caption = 'ToolButton4'
       Style = tbsSeparator
     end
@@ -476,7 +471,7 @@ object MainForm: TMainForm
   object MPHexEditorEx: TMPHexEditorEx
     Cursor = crIBeam
     Left = 0
-    Height = 237
+    Height = 253
     Top = 93
     Width = 802
     CreateBackup = False
@@ -588,7 +583,7 @@ object MainForm: TMainForm
   object StatusBar: TStatusBar
     Left = 0
     Height = 23
-    Top = 330
+    Top = 346
     Width = 802
     Panels = <    
       item
@@ -603,25 +598,21 @@ object MainForm: TMainForm
     SimplePanel = False
     SizeGrip = False
   end
-  object Log: TRichMemo
+  object Log: TMemo
     Left = 0
-    Height = 106
-    Top = 373
+    Height = 90
+    Top = 389
     Width = 802
     Align = alBottom
-    Font.Height = -12
-    HideSelection = False
     Lines.Strings = (
-      'Программатор SPI, I2C, Microwire FLASH/EEPROM v1.4.0'
+      'Программатор SPI, I2C, Microwire FLASH/EEPROM v2.0.0'
       'http://forum.easyelectronics.ru/viewtopic.php?f=17&t=10947'
-      'tifa@nm.ru'
+      'asprogrammer@inbox.ru'
     )
-    ParentFont = False
     PopupMenu = LogPopupMenu
     ReadOnly = True
     ScrollBars = ssVertical
     TabOrder = 5
-    ZoomFactor = 1
   end
   object OpenDialog: TOpenDialog
     Filter = '*.*|*.*'

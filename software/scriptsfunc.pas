@@ -1,12 +1,11 @@
 unit scriptsfunc;
 
 {$mode objfpc}{$H+}
-
 interface
 
 uses
-  Classes, SysUtils, Variants, Dialogs, graphics,
-  usbasp25, msgstr, PasCalc;
+  Classes, SysUtils, Variants, Dialogs, graphics, BaseHW,
+  spi25, msgstr, PasCalc;
 
 procedure SetScriptFunctions(PC : TPasCalc);
 procedure SetScriptVars();
@@ -78,13 +77,13 @@ begin
   begin
     if not ScriptEditForm.Visible then
     begin
-      LogPrint(ScriptEngine.ErrMsg, clRed);
-      LogPrint(ScriptEngine.ErrLine, clRed);
+      LogPrint(ScriptEngine.ErrMsg);
+      LogPrint(ScriptEngine.ErrLine);
     end
     else
     begin
-      ScriptLogPrint(ScriptEngine.ErrMsg, clRed);
-      ScriptLogPrint(ScriptEngine.ErrLine, clRed);
+      ScriptLogPrint(ScriptEngine.ErrMsg);
+      ScriptLogPrint(ScriptEngine.ErrLine);
     end;
   end;
 
@@ -133,23 +132,18 @@ begin
   Result := true;
 end;
 
-{Script LogPrint(text, color);
+{Script LogPrint(text);
  Выводит сообщение в лог
  Параметры:
-   text текст сообщения
-   необязательный параметр color цвет bgr}
+   text текст сообщения}
 function Script_LogPrint(Sender:TObject; var A:TVarList) : boolean;
 var
   s: string;
-  color: TColor;
 begin
   if A.Count < 1 then Exit(false);
 
-  color := 0;
-  if A.Count > 1 then color := TPVar(A.Items[1])^.Value;
-
   s := TPVar(A.Items[0])^.Value;
-  LogPrint('Script: ' + s, color);
+  LogPrint('Script: ' + s);
   Result := true;
 end;
 
@@ -190,31 +184,23 @@ begin
   Result := true;
 end;
 
-{Script SPISetSpeed(speed): boolean;
- Устанавливает частоту SPI
+{Script SPIEnterProgMode(speed): boolean;
+ Инициализирует состояние пинов для SPI и устанавливает частоту SPI
  Если частота не установлена возвращает false
  Игнорируется для CH341}
-function Script_SPISetSpeed(Sender:TObject; var A:TVarList; var R:TVar) : boolean;
+function Script_SPIEnterProgMode(Sender:TObject; var A:TVarList; var R:TVar) : boolean;
 var speed: byte;
 begin
   if A.Count < 1 then Exit(false);
 
   speed := TPVar(A.Items[0])^.Value;
   if speed = _SPI_SPEED_MAX then
-    if Current_HW = AVRISP then speed := 0
+    if AsProgrammer.Current_HW = CHW_AVRISP then speed := 0
       else speed := 13;
-  if UsbAsp_SetISPSpeed(hUSBDev, speed) <> 0 then
-    R.Value := False
+  if EnterProgMode25(SetSPISpeed(speed)) then
+    R.Value := True
   else
-    R.Value := True;
-  Result := true;
-end;
-
-{Script SPIEnterProgMode();
- Инициализирует состояние пинов для SPI и устанавливает скорость}
-function Script_SPIEnterProgMode(Sender:TObject; var A:TVarList) : boolean;
-begin
-  EnterProgMode25(hUSBdev);
+    R.Value := False;
   Result := true;
 end;
 
@@ -222,7 +208,7 @@ end;
  Отключает пины SPI}
 function Script_SPIExitProgMode(Sender:TObject; var A:TVarList) : boolean;
 begin
-  ExitProgMode25(hUSBdev);
+  ExitProgMode25;
   Result := true;
 end;
 
@@ -268,7 +254,7 @@ begin
 
   SetLength(DataArr, size);
 
-  R.Value := SPIRead(hUSBdev, cs, size, DataArr[0]);
+  R.Value := SPIRead(cs, size, DataArr[0]);
 
   //Если buffer массив
   if (VarIsArray(TPVar(A.Items[2])^.Value)) then
@@ -316,7 +302,7 @@ begin
     DataArr[i] := TPVar(A.Items[i+2])^.Value;
   end;
 
-  R.Value := SPIWrite(hUSBdev, cs, size, DataArr);
+  R.Value := SPIWrite(cs, size, DataArr);
   Result := true;
 end;
 
@@ -337,7 +323,7 @@ begin
   BufferLen := TPVar(A.Items[1])^.Value;
   SetLength(DataArr, BufferLen);
 
-  R.Value := SPIRead(hUSBdev, TPVar(A.Items[0])^.Value, BufferLen, DataArr[0]);
+  R.Value := SPIRead(TPVar(A.Items[0])^.Value, BufferLen, DataArr[0]);
 
   RomF.WriteBuffer(DataArr[0], BufferLen);
   RomF.Position := 0;
@@ -368,7 +354,7 @@ begin
   RomF.Position := TPVar(A.Items[2])^.Value;
   RomF.ReadBuffer(DataArr[0], BufferLen);
 
-  R.Value := SPIWrite(hUSBdev, TPVar(A.Items[0])^.Value, BufferLen, DataArr);
+  R.Value := SPIWrite(TPVar(A.Items[0])^.Value, BufferLen, DataArr);
 
   Result := true;
 end;
@@ -385,7 +371,6 @@ begin
   PC.SetFunction('GetArrayItem', @Script_GetArrayItem);
   PC.SetFunction('SetArrayItem', @Script_SetArrayItem);
 
-  PC.SetFunction('SPISetSpeed', @Script_SPISetSpeed);
   PC.SetFunction('SPIEnterProgMode', @Script_SPIEnterProgMode);
   PC.SetFunction('SPIExitProgMode', @Script_SPIExitProgMode);
   PC.SetFunction('SPIRead', @Script_SPIRead);

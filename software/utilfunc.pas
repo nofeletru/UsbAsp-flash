@@ -12,6 +12,7 @@ function ClearBit(const value: byte; const BitNum: byte): byte;
 function IsBitSet(const value: DWORD; const BitNum : byte): boolean;
 procedure BitSet(bit_val: byte; var val: byte; bit_num: byte);
 function BitNum(value: cardinal): integer;
+function ByteNum(value: cardinal): integer;
 
 function IsNumber(strSource: string): boolean;
 
@@ -59,6 +60,12 @@ begin
   result := i;
 end;
 
+//Сколько байт нужно для хранение количества бит
+function ByteNum(value: cardinal): integer;
+begin
+  result := value div 8;
+  if (Frac(value /8) > 0) then Inc(result);
+end;
 
 function IsNumber(strSource: string): boolean;
 begin
