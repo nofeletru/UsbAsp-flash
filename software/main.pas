@@ -243,6 +243,16 @@ begin
       CurrentICParam.Size := 0;
 end;
 
+function UserCancel(): boolean;
+begin
+  Result := false;
+  if MainForm.ButtonCancel.Tag <> 0 then
+  begin
+    LogPrint(STR_USER_CANCEL);
+    Result := true;
+  end;
+end;
+
 procedure LoadXML;
 var
   RootNode: TDOMNode;
@@ -513,11 +523,7 @@ begin
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 2;
     Application.ProcessMessages;
 
-    if MainForm.ButtonCancel.Tag <> 0 then
-    begin
-      LogPrint(STR_USER_CANCEL);
-      Break;
-    end;
+    if UserCancel then Break;
   end;
 
   if BytesRead <> ChipSize then
@@ -563,6 +569,8 @@ begin
 
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + ChunkSize;
     Application.ProcessMessages;
+
+    if UserCancel then Break;
   end;
 
   if BytesWrite <> ChipSize then
@@ -638,11 +646,7 @@ begin
       while UsbAsp25_Busy() do
       begin
         Application.ProcessMessages;
-        if MainForm.ButtonCancel.Tag <> 0 then
-        begin
-          LogPrint(STR_USER_CANCEL);
-          Exit;
-        end;
+        if UserCancel then Exit;
       end;
 
     if (MainForm.MenuAutoCheck.Checked) and (WriteType = WT_PAGE) then
@@ -665,6 +669,8 @@ begin
     Inc(Address, PageSize);
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
+
+    if UserCancel then Break;
   end;
 
   if WriteSize > FLASH_SIZE_128MBIT then UsbAsp25_EX4B();
@@ -712,11 +718,7 @@ begin
       while UsbAsp25_Busy() do
       begin
         Application.ProcessMessages;
-        if MainForm.ButtonCancel.Tag <> 0 then
-        begin
-          LogPrint(STR_USER_CANCEL);
-          Exit;
-        end;
+        if UserCancel then Exit;
       end;
 
     if MainForm.MenuAutoCheck.Checked then
@@ -734,6 +736,7 @@ begin
     Inc(Address, PageSize);
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
+    if UserCancel then Break;
   end;
 
   if BytesWrite <> WriteSize then
@@ -775,11 +778,7 @@ begin
       while UsbAsp25_Busy() do
       begin
         Application.ProcessMessages;
-        if MainForm.ButtonCancel.Tag <> 0 then
-        begin
-          LogPrint(STR_USER_CANCEL);
-          Exit;
-        end;
+        if UserCancel then Exit;
       end;
 
     if MainForm.MenuAutoCheck.Checked then
@@ -797,6 +796,8 @@ begin
     Inc(Address, PageSize);
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
+
+    if UserCancel then Break;
   end;
 
   if BytesWrite <> WriteSize then
@@ -857,12 +858,8 @@ begin
 
     Inc(Address, 1);
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
-    if MainForm.ButtonCancel.Tag <> 0 then
-    begin
-      LogPrint(STR_USER_CANCEL);
-      Exit;
-    end;
     Application.ProcessMessages;
+    if UserCancel then Exit;
   end;
 
   if BytesWrite <> WriteSize then
@@ -905,11 +902,7 @@ begin
     while UsbAsp45_Busy() do
     begin
       Application.ProcessMessages;
-      if MainForm.ButtonCancel.Tag <> 0 then
-      begin
-        LogPrint(STR_USER_CANCEL);
-        Exit;
-      end;
+      if UserCancel then Exit;
     end;
 
     if MainForm.MenuAutoCheck.Checked then
@@ -926,6 +919,7 @@ begin
     Inc(PageAddress, 1);
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
+    if UserCancel then Break;
   end;
 
   if BytesWrite <> ChipSize then
@@ -978,11 +972,7 @@ begin
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
 
-    if MainForm.ButtonCancel.Tag <> 0 then
-    begin
-      LogPrint(STR_USER_CANCEL);
-      Break;
-    end;
+    if UserCancel then Break;
   end;
 
   if ChipSize > FLASH_SIZE_128MBIT then UsbAsp25_EX4B();
@@ -1029,11 +1019,7 @@ begin
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
 
-    if MainForm.ButtonCancel.Tag <> 0 then
-    begin
-      LogPrint(STR_USER_CANCEL);
-      Break;
-    end;
+    if UserCancel then Break;
   end;
 
   if BytesRead <> ChipSize then
@@ -1078,11 +1064,7 @@ begin
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
 
-    if MainForm.ButtonCancel.Tag <> 0 then
-    begin
-      LogPrint(STR_USER_CANCEL);
-      Break;
-    end;
+    if UserCancel then Break;
   end;
 
   if BytesRead <> ChipSize then
@@ -1130,11 +1112,7 @@ begin
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
 
-    if MainForm.ButtonCancel.Tag <> 0 then
-    begin
-      LogPrint(STR_USER_CANCEL);
-      Break;
-    end;
+    if UserCancel then Break;
   end;
 
   if BytesRead <> ChipSize then
@@ -1196,11 +1174,7 @@ begin
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
 
-    if MainForm.ButtonCancel.Tag <> 0 then
-    begin
-      LogPrint(STR_USER_CANCEL);
-      Break;
-    end;
+    if UserCancel then Break;
   end;
 
   if DataSize > FLASH_SIZE_128MBIT then UsbAsp25_EX4B();
@@ -1255,11 +1229,7 @@ begin
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
 
-    if MainForm.ButtonCancel.Tag <> 0 then
-    begin
-      LogPrint(STR_USER_CANCEL);
-      Break;
-    end;
+    if UserCancel then Break;
   end;
 
   if (BytesRead <> DataSize) then
@@ -1312,11 +1282,7 @@ begin
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
 
-    if MainForm.ButtonCancel.Tag <> 0 then
-    begin
-      LogPrint(STR_USER_CANCEL);
-      Break;
-    end;
+    if UserCancel then Break;
   end;
 
   if (BytesRead <> ChipSize) then
@@ -1366,6 +1332,7 @@ begin
 
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 2;
     Application.ProcessMessages;
+    if UserCancel then Break;
   end;
 
   if (BytesRead <> ChipSize) then
@@ -1422,11 +1389,7 @@ begin
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
 
-    if MainForm.ButtonCancel.Tag <> 0 then
-    begin
-      LogPrint(STR_USER_CANCEL);
-      Break;
-    end;
+    if UserCancel then Break;
   end;
 
   if BytesRead <> ChipSize then
@@ -1470,6 +1433,7 @@ begin
 
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
+    if UserCancel then Break;
   end;
 
   if BytesRead <> ChipSize then
@@ -1508,6 +1472,7 @@ begin
 
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
+    if UserCancel then Break;
   end;
 
   if BytesWrite <> WriteSize then
@@ -1546,6 +1511,7 @@ begin
 
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
+    if UserCancel then Break;
   end;
 
   if BytesWrite <> WriteSize then
@@ -1597,6 +1563,7 @@ begin
 
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
+    if UserCancel then Break;
   end;
 
   if (BytesRead <> DataSize) then
@@ -1768,6 +1735,7 @@ var
   timeval: integer;
   ms, sec, d: word;
 begin
+  ButtonCancel.Tag := 0;
   if not OpenDevice() then exit;
   EnterProgMode25(SetSPISpeed(0));
   LockControl();
@@ -1786,11 +1754,7 @@ begin
     UsbAsp25_Read(0, 0, buffer, sizeof(buffer));
     Application.ProcessMessages;
 
-    if MainForm.ButtonCancel.Tag <> 0 then
-      begin
-        LogPrint(STR_USER_CANCEL);
-        Break;
-      end;
+    if UserCancel then Break;
   end;
 
   t :=  Time() - TimeCounter;
@@ -1811,11 +1775,7 @@ begin
     UsbAsp25_Write(0, 0, buffer, sizeof(buffer));
     Application.ProcessMessages;
 
-    if MainForm.ButtonCancel.Tag <> 0 then
-      begin
-        LogPrint(STR_USER_CANCEL);
-        Break;
-      end;
+    if UserCancel then Break;
   end;
 
   t :=  Time() - TimeCounter;
