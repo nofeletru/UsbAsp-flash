@@ -194,9 +194,7 @@ begin
   if A.Count < 1 then Exit(false);
 
   speed := TPVar(A.Items[0])^.Value;
-  if speed = _SPI_SPEED_MAX then
-    if AsProgrammer.Current_HW = CHW_AVRISP then speed := 0
-      else speed := 13;
+  if speed = _SPI_SPEED_MAX then speed := 13;
   if EnterProgMode25(SetSPISpeed(speed)) then
     R.Value := True
   else
@@ -359,6 +357,166 @@ begin
   Result := true;
 end;
 
+//I2C---------------------------------------------------------------------------
+
+{Script I2CEnterProgMode;
+ Инициализирует состояние пинов}
+function Script_I2CEnterProgMode(Sender:TObject; var A:TVarList) : boolean;
+begin
+  Asprogrammer.Programmer.I2CInit;
+  Result := true;
+end;
+
+{Script I2cExitProgMode();
+ Отключает пины}
+function Script_I2CExitProgMode(Sender:TObject; var A:TVarList) : boolean;
+begin
+  Asprogrammer.Programmer.I2CDeinit;
+  Result := true;
+end;
+
+{Script I2CReadWrite(DevAddr, wsize, rsize, wbuffer.., rbuffer...): integer;
+ Записывает данные из буфера
+ Параметры:
+   DevAddr адрес устройства
+   size размер данных в байтах
+   buffer переменные для хранения данных или массив созданный CreateByteArray
+ Возвращает количество записанных + прочитанных байт}
+function Script_I2CReadWrite(Sender:TObject; var A:TVarList; var R: TVar) : boolean;
+var
+  i, rsize, wsize: integer;
+  WDataArr, RDataArr: array of byte;
+  DevAddr: byte;
+begin
+
+  if A.Count < 4 then Exit(false);
+
+  DevAddr := TPVar(A.Items[0])^.Value;
+  wsize := TPVar(A.Items[1])^.Value;
+  if wsize < 1 then Exit(false);
+  rsize := TPVar(A.Items[2])^.Value;
+  SetLength(WDataArr, wsize);
+  SetLength(RDataArr, rsize);
+
+  //Если wbuffer массив
+  if (VarIsArray(TPVar(A.Items[3])^.Value)) then
+  for i := 0 to wsize-1 do
+  begin
+    WDataArr[i] := TPVar(A.Items[3])^.Value[i];
+  end
+  else
+  for i := 0 to wsize-1 do
+  begin
+    WDataArr[i] := TPVar(A.Items[i+3])^.Value;
+  end;
+
+  R.Value := AsProgrammer.Programmer.I2CReadWrite(DevAddr, wsize, WDataArr, rsize, RDataArr);
+
+  if rsize < 1 then Exit(true);
+
+  if (VarIsArray(TPVar(A.Items[3])^.Value)) then wsize := 1;
+  //Если rbuffer массив
+  if (VarIsArray(TPVar(A.Items[wsize+3])^.Value)) then
+  for i := 0 to rsize-1 do
+  begin
+    TPVar(A.Items[wsize+3])^.Value[i] := RDataArr[i];
+  end
+  else
+  for i := 0 to rsize-1 do
+  begin
+    TPVar(A.Items[i+wsize+3])^.Value := RDataArr[i];
+  end;
+
+  Result := true;
+end;
+
+{Script ReadToEditor(size, buffer...);
+ Записывает данные из буфера в редактор
+ Параметры:
+   size размер данных в байтах
+   buffer переменные для хранения данных или массив созданный CreateByteArray}
+function Script_ReadToEditor(Sender:TObject; var A:TVarList) : boolean;
+var
+  DataArr: array of byte;
+  size, i: integer;
+begin
+
+  if A.Count < 2 then Exit(false);
+
+  size := TPVar(A.Items[0])^.Value;
+  if size < 1 then Exit(false);
+  SetLength(DataArr, size);
+
+  //Если buffer массив
+  if (VarIsArray(TPVar(A.Items[1])^.Value)) then
+  for i := 0 to size-1 do
+  begin
+    DataArr[i] := TPVar(A.Items[1])^.Value[i];
+  end
+  else
+  for i := 0 to size-1 do
+  begin
+    DataArr[i] := TPVar(A.Items[i+1])^.Value;
+  end;
+
+  RomF.WriteBuffer(DataArr[0], size);
+  RomF.Position := 0;
+  MainForm.MPHexEditorEx.LoadFromStream(RomF);
+
+  Result := true;
+end;
+
+{Script WriteFromEditor(size, position, buffer...);
+ Записывает данные из редактора размером size с позиции position
+ Параметры:
+   size размер данных в байтах
+   position позиция в редакторе
+   buffer переменные для хранения данных или массив созданный CreateByteArray}
+function Script_WriteFromEditor(Sender:TObject; var A:TVarList) : boolean;
+var
+  DataArr: array of byte;
+  size, i: integer;
+begin
+
+  if A.Count < 3 then Exit(false);
+
+  size := TPVar(A.Items[0])^.Value;
+   if size < 1 then Exit(false);
+  SetLength(DataArr, size);
+
+  RomF.Clear;
+  MainForm.MPHexEditorEx.SaveToStream(RomF);
+  RomF.Position := TPVar(A.Items[1])^.Value;
+  RomF.ReadBuffer(DataArr[0], size);
+
+  //Если buffer массив
+  if (VarIsArray(TPVar(A.Items[2])^.Value)) then
+  for i := 0 to size-1 do
+  begin
+    TPVar(A.Items[2])^.Value[i] := DataArr[i];
+  end
+  else
+  for i := 0 to size-1 do
+  begin
+    TPVar(A.Items[i+2])^.Value := DataArr[i];
+  end;
+
+  Result := true;
+end;
+
+{Script I2CIsBusy(DevAddr): boolean;
+ Возвращает состаяние линии
+ Параметры:
+   DevAddr адрес устройства
+   Возвращает состаяние линии}
+function Script_I2CIsBusy(Sender:TObject; var A:TVarList; var R: TVar) : boolean;
+begin
+  if A.Count < 1 then Exit(false);
+
+  R.Value := AsProgrammer.Programmer.I2CLineIsBusy(TPVar(A.Items[0])^.Value);
+  result := true;
+end;
+
 //------------------------------------------------------------------------------
 procedure SetScriptFunctions(PC : TPasCalc);
 begin
@@ -366,6 +524,9 @@ begin
   PC.SetFunction('LogPrint', @Script_LogPrint);
   PC.SetFunction('ProgressBar', @Script_ProgressBar);
   PC.SetFunction('IntToHex', @Script_IntToHex);
+
+  PC.SetFunction('ReadToEditor', @Script_ReadToEditor);
+  PC.SetFunction('WriteFromEditor', @Script_WriteFromEditor);
 
   PC.SetFunction('CreateByteArray', @Script_CreateByteArray);
   PC.SetFunction('GetArrayItem', @Script_GetArrayItem);
@@ -377,6 +538,11 @@ begin
   PC.SetFunction('SPIWrite', @Script_SPIWrite);
   PC.SetFunction('SPIReadToEditor', @Script_SPIReadToEditor);
   PC.SetFunction('SPIWriteFromEditor', @Script_SPIWriteFromEditor);
+
+  PC.SetFunction('I2CEnterProgMode', @Script_I2CEnterProgMode);
+  PC.SetFunction('I2CExitProgMode', @Script_I2CExitProgMode);
+  PC.SetFunction('I2CReadWrite', @Script_I2CReadWrite);
+  PC.SetFunction('I2CIsBusy', @Script_I2CIsBusy);
 
 end;
 
