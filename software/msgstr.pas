@@ -9,9 +9,7 @@ resourcestring
   STR_READING_FLASH      = 'Читаю флэшку...';
   STR_WRITING_FLASH      = 'Записываю флэшку...';
   STR_WRITING_FLASH_WCHK = 'Записываю флэшку с проверкой...';
-  STR_CONNECTION_ERROR   = 'Ошибка подключения к USBAsp';
-  STR_CONNECT_ERROR_CH   = 'Ошибка подключения к CH341';
-  STR_CONNECT_ERROR_AVR  = 'Ошибка подключения к AVRISP';
+  STR_CONNECTION_ERROR   = 'Ошибка подключения к ';
   STR_SET_SPEED_ERROR    = 'Ошибка установки скорости SPI';
   STR_WRONG_BYTES_READ   = 'Количество прочитанных байт не равно размеру флэшки';
   STR_WRONG_BYTES_WRITE  = 'Количество записанных байт не равно размеру флэшки';

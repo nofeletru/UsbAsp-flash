@@ -27,16 +27,8 @@ msgid "Чип будет стерт и перезаписан. Продолжи�
 msgstr "IC will be erased and programmed. Continue?"
 
 #: msgstr.str_connection_error
-msgid "Ошибка подключения к USBAsp"
-msgstr "Error connecting USBAsp"
-
-#: msgstr.str_connect_error_ch
-msgid "Ошибка подключения к CH341"
-msgstr "Error connecting CH341"
-
-#: msgstr.str_connect_error_avr
-msgid "Ошибка подключения к AVRISP"
-msgstr "Error connecting AVRISP"
+msgid "Ошибка подключения к "
+msgstr "Error connecting "
 
 #: msgstr.str_done
 msgid "Готово"

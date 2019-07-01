@@ -84,7 +84,7 @@ begin
 
     if err < 0 then
     begin
-      FStrError :=  STR_CONNECT_ERROR_CH+'('+IntToStr(err)+')';
+      FStrError :=  STR_CONNECTION_ERROR+ FHardwareName +'('+IntToStr(err)+')';
       FDevHandle := -1;
       FDevOpened := false;
       Exit(false);

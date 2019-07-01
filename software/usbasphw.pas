@@ -103,9 +103,9 @@ begin
   if err <> 0 then
   begin
     case err of
-    USBOPEN_ERR_ACCESS: FStrError := STR_CONNECTION_ERROR +'(Can''t access)';
-    USBOPEN_ERR_IO: FStrError := STR_CONNECTION_ERROR +'(I/O error)';
-    USBOPEN_ERR_NOTFOUND: FStrError := STR_CONNECTION_ERROR +'(Not found)';
+    USBOPEN_ERR_ACCESS: FStrError := STR_CONNECTION_ERROR+ FHardwareName +'(Can''t access)';
+    USBOPEN_ERR_IO: FStrError := STR_CONNECTION_ERROR+ FHardwareName +'(I/O error)';
+    USBOPEN_ERR_NOTFOUND: FStrError := STR_CONNECTION_ERROR+ FHardwareName +'(Not found)';
     end;
     Exit(false);
   end;
