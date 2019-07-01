@@ -2720,6 +2720,7 @@ end;
 
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
+  ButtonCancel.Tag := 1;
   ScriptEditForm.FormCloseQuery(Sender, CanClose);
 end;
 
@@ -2778,11 +2779,7 @@ try
       while UsbAsp25_Busy() do
       begin
         Application.ProcessMessages;
-        if MainForm.ButtonCancel.Tag <> 0 then
-        begin
-          LogPrint(STR_USER_CANCEL);
-          Exit;
-        end;
+        if UserCancel then Exit;
       end;
     end;
 
@@ -2804,11 +2801,7 @@ try
       while UsbAsp45_Busy() do
       begin
         Application.ProcessMessages;
-        if MainForm.ButtonCancel.Tag <> 0 then
-        begin
-          LogPrint(STR_USER_CANCEL);
-          Exit;
-        end;
+        if UserCancel then Exit;
       end;
     end;
 
@@ -2857,7 +2850,10 @@ try
     UsbAspMW_ChipErase(StrToInt(ComboMWBitLen.Text));
 
      while UsbAspMW_Busy do
+     begin
        Application.ProcessMessages;
+       if UserCancel then Exit;
+     end;
 
   end;
 
