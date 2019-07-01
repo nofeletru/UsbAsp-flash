@@ -1690,6 +1690,7 @@ begin
   ChipSearchForm.EditSearch.Text:= '';
   ChipSearchForm.ListBoxChips.Items.Clear;
   ChipSearchForm.Show;
+  ChipSearchForm.EditSearch.SetFocus;
 end;
 
 procedure TMainForm.MenuFindClick(Sender: TObject);
