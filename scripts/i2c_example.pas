@@ -9,7 +9,7 @@ begin
   I2CEnterProgMode;
 
   I2CReadWrite(DevAddr, 1, ChipSize, MemAddr, ReadBuff);
-  ReadToEditor(ChipSize, ReadBuff);
+  ReadToEditor(ChipSize, 0, ReadBuff);
 
   I2CExitProgMode;
 end

@@ -430,10 +430,11 @@ begin
   Result := true;
 end;
 
-{Script ReadToEditor(size, buffer...);
+{Script ReadToEditor(size, position, buffer...);
  Записывает данные из буфера в редактор
  Параметры:
    size размер данных в байтах
+   position позиция в редакторе
    buffer переменные для хранения данных или массив созданный CreateByteArray}
 function Script_ReadToEditor(Sender:TObject; var A:TVarList) : boolean;
 var
@@ -441,25 +442,30 @@ var
   size, i: integer;
 begin
 
-  if A.Count < 2 then Exit(false);
+  if A.Count < 3 then Exit(false);
 
   size := TPVar(A.Items[0])^.Value;
   if size < 1 then Exit(false);
+  if TPVar(A.Items[1])^.Value < 0 then Exit(false);
   SetLength(DataArr, size);
 
   //Если buffer массив
-  if (VarIsArray(TPVar(A.Items[1])^.Value)) then
+  if (VarIsArray(TPVar(A.Items[2])^.Value)) then
   for i := 0 to size-1 do
   begin
-    DataArr[i] := TPVar(A.Items[1])^.Value[i];
+    DataArr[i] := TPVar(A.Items[2])^.Value[i];
   end
   else
   for i := 0 to size-1 do
   begin
-    DataArr[i] := TPVar(A.Items[i+1])^.Value;
+    DataArr[i] := TPVar(A.Items[i+2])^.Value;
   end;
 
+  MainForm.MPHexEditorEx.SaveToStream(RomF);
+  RomF.Position := TPVar(A.Items[1])^.Value;
+
   RomF.WriteBuffer(DataArr[0], size);
+
   RomF.Position := 0;
   MainForm.MPHexEditorEx.LoadFromStream(RomF);
 
@@ -517,6 +523,16 @@ begin
   result := true;
 end;
 
+{Script GetEditorDataSize: Longword;
+ Возвращает размер данных в редакторе
+ }
+function Script_GetEditorDataSize(Sender:TObject; var A:TVarList; var R: TVar) : boolean;
+begin
+  R.Value := MainForm.MPHexEditorEx.DataSize;
+  result := true;
+end;
+
+
 //------------------------------------------------------------------------------
 procedure SetScriptFunctions(PC : TPasCalc);
 begin
@@ -527,6 +543,7 @@ begin
 
   PC.SetFunction('ReadToEditor', @Script_ReadToEditor);
   PC.SetFunction('WriteFromEditor', @Script_WriteFromEditor);
+  PC.SetFunction('GetEditorDataSize', @Script_GetEditorDataSize);
 
   PC.SetFunction('CreateByteArray', @Script_CreateByteArray);
   PC.SetFunction('GetArrayItem', @Script_GetArrayItem);

@@ -1,7 +1,7 @@
 <html lang="ru"> 
 <head> <meta http-equiv="Content-Type" content="text/html; charset=utf-8"> <meta http-equiv="Content-Language" content="ru"> </head>
 
-<table border="1" cellpadding="5" cellspacing="0" style="width: 0px; height: 0px">
+<table border="1" cellpadding="5" cellspacing="0">
 	<tbody>
 		<tr>
 			<td colspan="2" style="text-align: center;"><font size="5"><b>Секции</b></font></td>
@@ -84,7 +84,7 @@
 		<tr>
 			<td style="text-align: center;"><b>CreateByteArray(<font color="#0000FF">size</font>): variant;</b></td>
 			<td style="text-align: center;">
-				<p align="left">&nbsp;Создает массив с типом элементов varbyte</p>
+				<p align="left">Создает массив с типом элементов varbyte</p>
 			</td>
 		</tr>
 		<tr>
@@ -100,15 +100,21 @@
 			</td>
 		</tr>
 		<tr>
-			<td style="text-align: center;"><b>ReadToEditor(<font color="#0000FF">size</font>, <font color="#0000FF">buffer, ...</font>);</b></td>
+			<td style="text-align: center;"><b>ReadToEditor(<font color="#0000FF">size</font>, <font color="#0000FF">position</font>, <font color="#0000FF">buffer, ...</font>);</b></td>
 			<td style="text-align: center;">
-				<p align="left">Записывает данные из буфера в редактор</p>
+				<p align="left">Записывает данные из буфера в редактор размером size в позицию position</p>
 			</td>
 		</tr>
 		<tr>
 			<td style="text-align: center;"><b>WriteFromEditor(<font color="#0000FF">size</font>, <font color="#0000FF">position</font>, <font color="#0000FF">buffer, ...</font>);</b></td>
 			<td style="text-align: center;">
 				<p align="left">Записывает данные из редактора размером size с позиции position</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>GetEditorDataSize: longword;</b></td>
+			<td style="text-align: center;">
+				<p align="left">Возвращает размер данных в редакторе</p>
 			</td>
 		</tr>
 		<tr>
