@@ -565,7 +565,10 @@ begin
     Inc(Address, ChunkSize div 2);
 
     while UsbAspMW_Busy do
+    begin
        Application.ProcessMessages;
+       if UserCancel then Exit;
+    end; 
 
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + ChunkSize;
     Application.ProcessMessages;
@@ -1468,7 +1471,10 @@ begin
     Inc(Address, PageSize);
 
     while UsbAspI2C_BUSY(DevAddr) do
+    begin
       Application.ProcessMessages;
+      if UserCancel then Exit;
+    end; 
 
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
@@ -1507,7 +1513,10 @@ begin
     Inc(Address, PageSize);
 
     while UsbAspI2C_BUSY(DevAddr) do
+    begin
       Application.ProcessMessages;
+      if UserCancel then Exit;
+    end; 
 
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
@@ -1823,11 +1832,7 @@ begin
     while UsbAsp25_Busy() do
     begin
       Application.ProcessMessages;
-      if MainForm.ButtonCancel.Tag <> 0 then
-      begin
-        LogPrint(STR_USER_CANCEL);
-        Exit;
-      end;
+      if UserCancel then Exit;
     end;
 
     LogPrint(STR_NEW_SREG+IntToBin(sreg, 8));
@@ -1846,11 +1851,7 @@ begin
     while UsbAsp25_Busy() do
     begin
       Application.ProcessMessages;
-      if MainForm.ButtonCancel.Tag <> 0 then
-      begin
-        LogPrint(STR_USER_CANCEL);
-        Exit;
-      end;
+      if UserCancel then Exit;
     end;
 
     LogPrint(STR_NEW_SREG+IntToBin(sreg, 8));
@@ -2332,11 +2333,7 @@ try
     while UsbAsp25_Busy() do
     begin
       Application.ProcessMessages;
-      if MainForm.ButtonCancel.Tag <> 0 then
-      begin
-        LogPrint(STR_USER_CANCEL);
-        Exit;
-      end;
+      if UserCancel then Exit;
     end;
 
     UsbAsp25_WREN();
@@ -2346,11 +2343,7 @@ try
     while UsbAsp25_Busy() do
     begin
       Application.ProcessMessages;
-      if MainForm.ButtonCancel.Tag <> 0 then
-      begin
-        LogPrint(STR_USER_CANCEL);
-        Exit;
-      end;
+      if UserCancel then Exit;
     end;
 
     UsbAsp25_ReadSR(sreg); //Читаем регистр
@@ -2372,11 +2365,7 @@ try
     while UsbAsp25_Busy() do
     begin
       Application.ProcessMessages;
-      if MainForm.ButtonCancel.Tag <> 0 then
-      begin
-        LogPrint(STR_USER_CANCEL);
-        Exit;
-      end;
+      if UserCancel then Exit;
     end;
 
     UsbAsp95_ReadSR(sreg); //Читаем регистр
