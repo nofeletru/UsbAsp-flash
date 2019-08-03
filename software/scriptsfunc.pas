@@ -132,6 +132,17 @@ begin
   Result := true;
 end;
 
+{Script InputBox(Captiontext, Prompttext, Defaulttext): value;
+ Аналог InputBox}
+function Script_InputBox(Sender:TObject; var A:TVarList; var R:TVar) : boolean;
+begin
+  if A.Count < 3 then Exit(false);
+
+  R.Value := InputBox(TPVar(A.Items[0])^.Value, TPVar(A.Items[1])^.Value, TPVar(A.Items[2])^.Value);
+
+  Result := true;
+end;
+
 {Script LogPrint(text);
  Выводит сообщение в лог
  Параметры:
@@ -537,6 +548,7 @@ end;
 procedure SetScriptFunctions(PC : TPasCalc);
 begin
   PC.SetFunction('ShowMessage', @Script_ShowMessage);
+  PC.SetFunction('InputBox', @Script_InputBox);
   PC.SetFunction('LogPrint', @Script_LogPrint);
   PC.SetFunction('ProgressBar', @Script_ProgressBar);
   PC.SetFunction('IntToHex', @Script_IntToHex);
