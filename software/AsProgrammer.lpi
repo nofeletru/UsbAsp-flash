@@ -22,9 +22,8 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
-      <MajorVersionNr Value="1"/>
-      <MinorVersionNr Value="4"/>
-      <BuildNr Value="8"/>
+      <MajorVersionNr Value="2"/>
+      <BuildNr Value="10"/>
       <Language Value="0419"/>
     </VersionInfo>
     <MacroValues Count="2">

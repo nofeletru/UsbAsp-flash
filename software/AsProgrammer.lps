@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="11"/>
     <BuildModes Active="Release"/>
-    <Units Count="37">
+    <Units Count="40">
       <Unit0>
         <Filename Value="AsProgrammer.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -19,52 +19,47 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <IsVisibleTab Value="True"/>
-        <CursorPos X="35" Y="14"/>
+        <TopLine Value="3037"/>
+        <CursorPos X="11" Y="3062"/>
         <UsageCount Value="204"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
-        <Filename Value="usbaspmulti.pas"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="9"/>
-        <UsageCount Value="203"/>
-      </Unit2>
-      <Unit3>
         <Filename Value="msgstr.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="11"/>
+        <EditorIndex Value="12"/>
         <CursorPos X="3" Y="12"/>
         <UsageCount Value="281"/>
         <Loaded Value="True"/>
-      </Unit3>
-      <Unit4>
+      </Unit2>
+      <Unit3>
         <Filename Value="search.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="SearchForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="10"/>
+        <EditorIndex Value="11"/>
         <TopLine Value="82"/>
         <CursorPos X="30" Y="54"/>
         <UsageCount Value="277"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
-      </Unit4>
-      <Unit5>
+      </Unit3>
+      <Unit4>
         <Filename Value="sregedit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="sregeditForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="9"/>
+        <EditorIndex Value="10"/>
         <TopLine Value="46"/>
         <CursorPos X="17" Y="70"/>
         <UsageCount Value="269"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
-      </Unit5>
-      <Unit6>
+      </Unit4>
+      <Unit5>
         <Filename Value="scriptedit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ScriptEditForm"/>
@@ -77,56 +72,62 @@
         <UsageCount Value="264"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
-      </Unit6>
-      <Unit7>
+      </Unit5>
+      <Unit6>
         <Filename Value="spi25.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="12"/>
+        <EditorIndex Value="13"/>
         <TopLine Value="13"/>
         <CursorPos X="14" Y="30"/>
         <UsageCount Value="206"/>
         <Loaded Value="True"/>
-      </Unit7>
-      <Unit8>
+      </Unit6>
+      <Unit7>
         <Filename Value="i2c.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="13"/>
+        <EditorIndex Value="14"/>
         <CursorPos Y="11"/>
         <UsageCount Value="213"/>
         <Loaded Value="True"/>
-      </Unit8>
-      <Unit9>
+      </Unit7>
+      <Unit8>
         <Filename Value="microwire.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="14"/>
+        <EditorIndex Value="15"/>
         <CursorPos X="31" Y="8"/>
-        <UsageCount Value="171"/>
+        <UsageCount Value="176"/>
+        <Loaded Value="True"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="spi95.pas"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="16"/>
+        <CursorPos X="22" Y="8"/>
+        <UsageCount Value="176"/>
         <Loaded Value="True"/>
       </Unit9>
       <Unit10>
-        <Filename Value="spi95.pas"/>
+        <Filename Value="spi45.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="15"/>
-        <CursorPos X="22" Y="8"/>
-        <UsageCount Value="171"/>
+        <EditorIndex Value="17"/>
+        <CursorPos X="29" Y="8"/>
+        <UsageCount Value="176"/>
         <Loaded Value="True"/>
       </Unit10>
       <Unit11>
-        <Filename Value="spi45.pas"/>
-        <IsPartOfProject Value="True"/>
-        <EditorIndex Value="16"/>
-        <CursorPos X="29" Y="8"/>
-        <UsageCount Value="171"/>
-        <Loaded Value="True"/>
-      </Unit11>
-      <Unit12>
         <Filename Value="avrisphw.pas"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="2"/>
         <TopLine Value="159"/>
         <CursorPos X="50" Y="176"/>
-        <UsageCount Value="171"/>
+        <UsageCount Value="176"/>
         <Loaded Value="True"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="usbaspmulti.pas"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="9"/>
+        <UsageCount Value="203"/>
       </Unit12>
       <Unit13>
         <Filename Value="usbaspi2c.pas"/>
@@ -162,14 +163,14 @@
       </Unit17>
       <Unit18>
         <Filename Value="LibUSB.pas"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="9"/>
         <CursorPos X="115" Y="13"/>
         <UsageCount Value="102"/>
         <Loaded Value="True"/>
       </Unit18>
       <Unit19>
         <Filename Value="usbhid.pas"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="8"/>
         <CursorPos Y="146"/>
         <UsageCount Value="107"/>
         <Loaded Value="True"/>
@@ -205,7 +206,7 @@
       <Unit24>
         <Filename Value="usbasphw.pas"/>
         <UnitName Value="UsbAspHW"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="6"/>
         <CursorPos X="29" Y="203"/>
         <UsageCount Value="131"/>
         <Loaded Value="True"/>
@@ -213,8 +214,8 @@
       <Unit25>
         <Filename Value="basehw.pas"/>
         <UnitName Value="BaseHW"/>
-        <EditorIndex Value="6"/>
-        <CursorPos X="12" Y="46"/>
+        <EditorIndex Value="7"/>
+        <CursorPos X="74" Y="13"/>
         <UsageCount Value="131"/>
         <Loaded Value="True"/>
       </Unit25>
@@ -227,7 +228,7 @@
       </Unit26>
       <Unit27>
         <Filename Value="ch341hw.pas"/>
-        <EditorIndex Value="17"/>
+        <EditorIndex Value="18"/>
         <CursorPos X="24" Y="239"/>
         <UsageCount Value="100"/>
         <Loaded Value="True"/>
@@ -235,7 +236,7 @@
       <Unit28>
         <Filename Value="ch341dll.pas"/>
         <UnitName Value="CH341DLL"/>
-        <EditorIndex Value="19"/>
+        <EditorIndex Value="20"/>
         <TopLine Value="479"/>
         <CursorPos X="38" Y="501"/>
         <UsageCount Value="110"/>
@@ -243,7 +244,7 @@
       </Unit28>
       <Unit29>
         <Filename Value="utilfunc.pas"/>
-        <EditorIndex Value="18"/>
+        <EditorIndex Value="19"/>
         <TopLine Value="47"/>
         <CursorPos X="17" Y="64"/>
         <UsageCount Value="212"/>
@@ -295,130 +296,155 @@
         <EditorIndex Value="1"/>
         <TopLine Value="122"/>
         <CursorPos X="10" Y="139"/>
-        <UsageCount Value="13"/>
+        <UsageCount Value="15"/>
         <Loaded Value="True"/>
       </Unit36>
+      <Unit37>
+        <Filename Value="main.lfm"/>
+        <ComponentName Value="MainForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="64"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit37>
+      <Unit38>
+        <Filename Value="arduinohw.pas"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="365"/>
+        <CursorPos X="21" Y="397"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit38>
+      <Unit39>
+        <Filename Value="synautil.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="35"/>
+        <CursorPos X="2" Y="52"/>
+        <UsageCount Value="10"/>
+      </Unit39>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="main.pas"/>
-        <Caret Line="518" Column="33" TopLine="500"/>
+        <Caret Line="1744" Column="8" TopLine="1719"/>
       </Position1>
       <Position2>
         <Filename Value="main.pas"/>
-        <Caret Line="566" Column="36" TopLine="539"/>
+        <Caret Line="1583" Column="63" TopLine="1566"/>
       </Position2>
       <Position3>
         <Filename Value="main.pas"/>
-        <Caret Line="569" Column="33" TopLine="541"/>
+        <Caret Line="2882" Column="11" TopLine="2873"/>
       </Position3>
       <Position4>
         <Filename Value="main.pas"/>
-        <Caret Line="644" Column="37" TopLine="657"/>
+        <Caret Line="2883" Column="11" TopLine="2874"/>
       </Position4>
       <Position5>
         <Filename Value="main.pas"/>
-        <Caret Line="671" Column="33" TopLine="658"/>
+        <Caret Line="2884" Column="11" TopLine="2875"/>
       </Position5>
       <Position6>
         <Filename Value="main.pas"/>
-        <Caret Line="718" Column="37" TopLine="691"/>
+        <Caret Line="2885" Column="11" TopLine="2876"/>
       </Position6>
       <Position7>
         <Filename Value="main.pas"/>
-        <Caret Line="740" Column="33" TopLine="712"/>
+        <Caret Line="2886" Column="11" TopLine="2877"/>
       </Position7>
       <Position8>
         <Filename Value="main.pas"/>
-        <Caret Line="781" Column="37" TopLine="754"/>
+        <Caret Line="2885" Column="113" TopLine="2878"/>
       </Position8>
       <Position9>
         <Filename Value="main.pas"/>
-        <Caret Line="803" Column="33" TopLine="775"/>
+        <Caret Line="1589" Column="60" TopLine="1566"/>
       </Position9>
       <Position10>
         <Filename Value="main.pas"/>
-        <Caret Line="869" Column="33" TopLine="841"/>
+        <Caret Line="1582" Column="14" TopLine="1566"/>
       </Position10>
       <Position11>
         <Filename Value="main.pas"/>
-        <Caret Line="911" Column="35" TopLine="884"/>
+        <Caret Line="1593" Column="161" TopLine="1565"/>
       </Position11>
       <Position12>
         <Filename Value="main.pas"/>
-        <Caret Line="932" Column="33" TopLine="904"/>
+        <Caret Line="1628" Column="45" TopLine="1596"/>
       </Position12>
       <Position13>
         <Filename Value="main.pas"/>
-        <Caret Line="983" Column="33" TopLine="955"/>
+        <Caret Line="452" Column="85" TopLine="437"/>
       </Position13>
       <Position14>
         <Filename Value="main.pas"/>
-        <Caret Line="1034" Column="33" TopLine="1007"/>
+        <Caret Line="3026" Column="33" TopLine="2998"/>
       </Position14>
       <Position15>
         <Filename Value="main.pas"/>
-        <Caret Line="1083" Column="33" TopLine="1056"/>
+        <Caret Line="222" Column="38" TopLine="195"/>
       </Position15>
       <Position16>
         <Filename Value="main.pas"/>
-        <Caret Line="1135" Column="33" TopLine="1107"/>
+        <Caret Line="204" Column="104" TopLine="196"/>
       </Position16>
       <Position17>
         <Filename Value="main.pas"/>
-        <Caret Line="1201" Column="33" TopLine="1173"/>
+        <Caret Line="3047" Column="10" TopLine="3022"/>
       </Position17>
       <Position18>
         <Filename Value="main.pas"/>
-        <Caret Line="1260" Column="33" TopLine="1232"/>
+        <Caret Line="3051" Column="74" TopLine="3027"/>
       </Position18>
       <Position19>
         <Filename Value="main.pas"/>
-        <Caret Line="1317" Column="33" TopLine="1289"/>
+        <Caret Line="1725" Column="48" TopLine="1708"/>
       </Position19>
       <Position20>
         <Filename Value="main.pas"/>
-        <Caret Line="1372" Column="33" TopLine="1344"/>
+        <Caret Line="1726" Column="3" TopLine="1708"/>
       </Position20>
       <Position21>
         <Filename Value="main.pas"/>
-        <Caret Line="1427" Column="33" TopLine="1399"/>
+        <Caret Line="3052" Column="75" TopLine="3027"/>
       </Position21>
       <Position22>
         <Filename Value="main.pas"/>
-        <Caret Line="1476" Column="33" TopLine="1455"/>
+        <Caret Line="1726" Column="77" TopLine="1722"/>
       </Position22>
       <Position23>
         <Filename Value="main.pas"/>
-        <Caret Line="1511" Column="29" TopLine="1490"/>
+        <Caret Line="3053" Column="37" TopLine="3027"/>
       </Position23>
       <Position24>
         <Filename Value="main.pas"/>
-        <Caret Line="1510" Column="18" TopLine="1453"/>
+        <Caret Line="1612" Column="43" TopLine="1595"/>
       </Position24>
       <Position25>
         <Filename Value="main.pas"/>
-        <Caret Line="15" Column="3"/>
+        <Caret Line="1637" Column="46" TopLine="196"/>
       </Position25>
       <Position26>
         <Filename Value="main.pas"/>
-        <Caret Line="207" Column="30" TopLine="91"/>
+        <Caret Line="2967" Column="78" TopLine="2943"/>
       </Position26>
       <Position27>
         <Filename Value="main.pas"/>
-        <Caret Line="377" TopLine="361"/>
+        <Caret Line="3061" Column="45" TopLine="3036"/>
       </Position27>
       <Position28>
-        <Filename Value="main.pas"/>
-        <Caret Line="427" Column="4" TopLine="438"/>
+        <Filename Value="arduinohw.pas"/>
+        <Caret Line="112" Column="20" TopLine="98"/>
       </Position28>
       <Position29>
-        <Filename Value="utilfunc.pas"/>
-        <Caret Line="64" Column="17" TopLine="47"/>
+        <Filename Value="arduinohw.pas"/>
+        <Caret Line="321" Column="9" TopLine="311"/>
       </Position29>
       <Position30>
-        <Filename Value="main.pas"/>
-        <Caret Line="14" Column="35"/>
+        <Filename Value="arduinohw.pas"/>
+        <Caret Line="354" Column="21" TopLine="334"/>
       </Position30>
     </JumpHistory>
     <RunParams>

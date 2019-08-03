@@ -10,7 +10,7 @@ uses
 type
 
 //List of devices
-THardwareList = (CHW_NONE, CHW_CH341, CHW_AVRISP, CHW_USBASP);
+THardwareList = (CHW_NONE, CHW_CH341, CHW_AVRISP, CHW_USBASP, CHW_ARDUINO);
 
 //Base class for hardware
 TBaseHardware = class

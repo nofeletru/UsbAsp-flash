@@ -15,7 +15,7 @@ uses
   XMLRead, XMLWrite, DOM, msgstr, Translations, LCLProc, LCLType, LCLTranslator,
   LResources, MPHexEditorEx, MPHexEditor, search, sregedit,
   utilfunc, findchip, DateUtils, lazUTF8,
-  pascalc, ScriptsFunc, ScriptEdit, baseHW, UsbAspHW, ch341hw, avrisphw;
+  pascalc, ScriptsFunc, ScriptEdit, baseHW, UsbAspHW, ch341hw, avrisphw, arduinohw;
 
 type
 
@@ -74,6 +74,13 @@ type
     LangMenuItem: TMenuItem;
     BlankCheckMenuItem: TMenuItem;
     AllowInsertItem: TMenuItem;
+    MenuHWARDUINO: TMenuItem;
+    MenuArduinoSPIClock: TMenuItem;
+    MenuArduinoISP8MHz: TMenuItem;
+    MenuArduinoISP4MHz: TMenuItem;
+    MenuArduinoISP2MHz: TMenuItem;
+    MenuArduinoISP1MHz: TMenuItem;
+    MenuArduinoCOMPort: TMenuItem;
     MPHexEditorEx: TMPHexEditorEx;
     ScriptsMenuItem: TMenuItem;
     MenuItemHardware: TMenuItem;
@@ -136,6 +143,8 @@ type
     procedure ChipClick(Sender: TObject);
     procedure ChangeLang(Sender: TObject);
     procedure ComboItem1Click(Sender: TObject);
+    procedure MenuArduinoCOMPortClick(Sender: TObject);
+    procedure MenuHWARDUINOClick(Sender: TObject);
     procedure MenuHWAVRISPClick(Sender: TObject);
     procedure MenuCopyToClipClick(Sender: TObject);
     procedure MenuFindChipClick(Sender: TObject);
@@ -210,6 +219,9 @@ var
   RomF: TMemoryStream;
 
   AsProgrammer: TAsProgrammer;
+
+  Arduino_COMPort: string;
+  Arduino_BaudRate: integer = 1000000;
 
 implementation
 
@@ -437,6 +449,13 @@ function SetSPISpeed(OverrideSpeed: byte): integer;
 var
   Speed: byte;
 begin
+  if AsProgrammer.Current_HW = CHW_ARDUINO then
+  begin
+    if MainForm.MenuArduinoISP8Mhz.Checked then Speed := MainForm.MenuArduinoISP8Mhz.Tag;
+    if MainForm.MenuArduinoISP4Mhz.Checked then Speed := MainForm.MenuArduinoISP4Mhz.Tag;
+    if MainForm.MenuArduinoISP2Mhz.Checked then Speed := MainForm.MenuArduinoISP2Mhz.Tag;
+    if MainForm.MenuArduinoISP1Mhz.Checked then Speed := MainForm.MenuArduinoISP1Mhz.Tag;
+  end;
 
   if AsProgrammer.Current_HW = CHW_AVRISP then
   begin
@@ -1589,6 +1608,7 @@ begin
   begin
     MainForm.MenuSPIClock.Visible:= true;
     MainForm.MenuAVRISPSPIClock.Visible:= false;
+    MainForm.MenuArduinoSPIClock.Visible:= false;
     MainForm.MenuMicrowire.Enabled:= true;
     AsProgrammer.Current_HW := CHW_USBASP;
   end;
@@ -1597,6 +1617,7 @@ begin
   begin
     MainForm.MenuSPIClock.Visible:= false;
     MainForm.MenuAVRISPSPIClock.Visible:= false;
+    MainForm.MenuArduinoSPIClock.Visible:= false;
     MainForm.MenuMicrowire.Enabled:= false;
     AsProgrammer.Current_HW := CHW_CH341;
   end;
@@ -1605,8 +1626,18 @@ begin
   begin
     MainForm.MenuSPIClock.Visible:= false;
     MainForm.MenuAVRISPSPIClock.Visible:= true;
+    MainForm.MenuArduinoSPIClock.Visible:= false;
     MainForm.MenuMicrowire.Enabled:= false;
     AsProgrammer.Current_HW := CHW_AVRISP;
+  end;
+
+  if programmer = CHW_ARDUINO then
+  begin
+    MainForm.MenuSPIClock.Visible:= false;
+    MainForm.MenuAVRISPSPIClock.Visible:= false;
+    MainForm.MenuArduinoSPIClock.Visible:= true;
+    MainForm.MenuMicrowire.Enabled:= false;
+    AsProgrammer.Current_HW := CHW_ARDUINO;
   end;
 
 end;
@@ -1689,6 +1720,12 @@ begin
   MenuAutoCheck.Checked := CheckTemp;
 end;
 
+procedure TMainForm.MenuArduinoCOMPortClick(Sender: TObject);
+begin
+  Arduino_COMPort := InputBox('Arduino COMPort','',Arduino_COMPort);
+  MainForm.MenuArduinoCOMPort.Caption := 'Arduino COMPort: '+Arduino_COMPort;
+end;
+
 procedure TMainForm.MenuCopyToClipClick(Sender: TObject);
 begin
     MainForm.MPHexEditorEx.CBCopy;
@@ -1735,6 +1772,11 @@ end;
 procedure TMainForm.MenuHWAVRISPClick(Sender: TObject);
 begin
   SelectHW(CHW_AVRISP);
+end;
+
+procedure TMainForm.MenuHWARDUINOClick(Sender: TObject);
+begin
+  SelectHW(CHW_ARDUINO);
 end;
 
 procedure TMainForm.MenuItemBenchmarkClick(Sender: TObject);
@@ -2561,6 +2603,7 @@ begin
   AsProgrammer.AddHW(TUsbAspHardware.Create);
   AsProgrammer.AddHW(TCH341Hardware.Create);
   AsProgrammer.AddHW(TAvrispHardware.Create);
+  AsProgrammer.AddHW(TArduinoHardware.Create);
 
   LoadChipList(ChipListFile);
   RomF := TMemoryStream.Create;
@@ -2917,6 +2960,11 @@ begin
       TDOMElement(ParentNode).SetAttribute('hw', 'ch341a');
     if MainForm.MenuHWAVRISP.Checked then
       TDOMElement(ParentNode).SetAttribute('hw', 'avrisp');
+    if MainForm.MenuHWARDUINO.Checked then
+      TDOMElement(ParentNode).SetAttribute('hw', 'arduino');
+
+    TDOMElement(ParentNode).SetAttribute('arduino_comport', Arduino_COMPort);
+    TDOMElement(ParentNode).SetAttribute('arduino_baudrate', IntToStr(Arduino_BaudRate));
 
     Node.Appendchild(parentNode);
 
@@ -2989,6 +3037,28 @@ begin
           SelectHW(CHW_AVRISP);
         end;
 
+        if OptVal = 'arduino' then
+        begin
+          MainForm.MenuHWArduino.Checked := true;
+          SelectHW(CHW_ARDUINO);
+        end;
+
+
+      end;
+
+      if  Node.Attributes.GetNamedItem('arduino_comport') <> nil then
+      begin
+        OptVal := UTF16ToUTF8(Node.Attributes.GetNamedItem('arduino_comport').NodeValue);
+
+        Arduino_COMPort := OptVal;
+        MainForm.MenuArduinoCOMPort.Caption := 'Arduino COMPort: '+ Arduino_COMPort;
+      end;
+
+      if  Node.Attributes.GetNamedItem('arduino_baudrate') <> nil then
+      begin
+        OptVal := UTF16ToUTF8(Node.Attributes.GetNamedItem('arduino_baudrate').NodeValue);
+
+        Arduino_BaudRate := StrToInt(OptVal);
       end;
 
     end;
