@@ -5,7 +5,7 @@ interface
 
 uses
   Classes, SysUtils, Variants, Dialogs, graphics, BaseHW,
-  spi25, msgstr, PasCalc;
+  spi25, msgstr, PasCalc, pasfunc;
 
 procedure SetScriptFunctions(PC : TPasCalc);
 procedure SetScriptVars();
@@ -573,6 +573,7 @@ begin
   PC.SetFunction('I2CReadWrite', @Script_I2CReadWrite);
   PC.SetFunction('I2CIsBusy', @Script_I2CIsBusy);
 
+  SetFunctions(PC);
 end;
 
 procedure SetScriptVars();
