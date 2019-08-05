@@ -5,7 +5,7 @@ unit UsbAspHW;
 interface
 
 uses
-  Classes, SysUtils, basehw, libusb, usbhid, msgstr;
+  Classes, SysUtils, basehw, libusb, usbhid, msgstr, utilfunc;
 
 type
 
@@ -258,9 +258,13 @@ begin
 end;
 
 function TUsbAspHardware.MWWrite(CS: byte; BitsWrite: byte; buffer: array of byte): integer;
+var
+  bytes: byte;
 begin
   if not FDevOpened then Exit(-1);
-  result := USBSendControlMessage(FDevHandle, PC2USB, USBASP_FUNC_MW_WRITE, CS, BitsWrite, 2, buffer);
+  bytes := ByteNum(BitsWrite);
+  result := USBSendControlMessage(FDevHandle, PC2USB, USBASP_FUNC_MW_WRITE, CS, BitsWrite, bytes, buffer);
+  if result = bytes then result := BitsWrite;
 end;
 
 function TUsbAspHardware.MWIsBusy: boolean;

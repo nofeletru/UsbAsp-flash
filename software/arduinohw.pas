@@ -5,7 +5,7 @@ unit arduinohw;
 interface
 
 uses
-  Classes, SysUtils, basehw, msgstr, Synaser, dialogs;
+  Classes, SysUtils, basehw, msgstr, Synaser, utilfunc;
 
 type
 
@@ -523,16 +523,19 @@ end;
 
 function TArduinoHardware.MWWrite(CS: byte; BitsWrite: byte; buffer: array of byte): integer;
 var buff: byte;
+    bytes: byte;
 const chunk = 32;
 begin
   if not FDevOpened then Exit(-1);
   result := 0;
 
+  bytes := ByteNum(BitsWrite);
+
   FSerial.SendByte(FUNC_MW_WRITE);
   FSerial.SendByte(CS);
   FSerial.SendByte(BitsWrite);
   FSerial.SendByte(0);
-  FSerial.SendByte(2);
+  FSerial.SendByte(bytes);
   FSerial.Flush;
 
   buff := FSerial.RecvByte(TIMEOUT);
@@ -544,7 +547,7 @@ begin
   end;
 
   //Максимум 32 байта
-  result := FSerial.SendBuffer(@buffer[0], 2);
+  result := FSerial.SendBuffer(@buffer[0], bytes);
 
   buff := FSerial.RecvByte(TIMEOUT);
 
@@ -553,6 +556,8 @@ begin
     LogPrint(SrtErr_CmdNoAck + IntToStr(buff));
     Exit(-1);
   end;
+
+  if result = bytes then result := BitsWrite;
 end;
 
 function TArduinoHardware.MWIsBusy: boolean;

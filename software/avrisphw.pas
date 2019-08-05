@@ -5,7 +5,7 @@ unit avrisphw;
 interface
 
 uses
-  Classes, SysUtils, basehw, libusb, usbhid, msgstr;
+  Classes, SysUtils, basehw, libusb, usbhid, msgstr, utilfunc;
 
 type
 
@@ -370,20 +370,24 @@ const
   HEADER_SIZE = 5;
 var
   buff: array of byte;
+  bytes: byte;
 begin
   if not FDevOpened then Exit(-1);
 
   SetLength(buff, 2+HEADER_SIZE);
 
+  bytes := ByteNum(BitsWrite);
+
   buff[0] := CMD_MW_WRITE;
-  buff[1] := 2;
+  buff[1] := bytes;
   buff[2] := 0;
   buff[3] := CS;
   buff[4] := BitsWrite;
 
   Move(buffer, buff[HEADER_SIZE], 2);
 
-  result := usb_bulk_write(FDevHandle, OUT_EP, buff[0], 2+HEADER_SIZE, STREAM_TIMEOUT_MS)-HEADER_SIZE;
+  result := usb_bulk_write(FDevHandle, OUT_EP, buff[0], bytes+HEADER_SIZE, STREAM_TIMEOUT_MS)-HEADER_SIZE;
+  if result = bytes+HEADER_SIZE then result := BitsWrite;
 end;
 
 function TAvrispHardware.MWIsBusy: boolean;
