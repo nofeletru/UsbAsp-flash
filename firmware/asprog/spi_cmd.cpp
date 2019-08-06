@@ -31,6 +31,7 @@ void spi_cmd_init() {
 
   SPI.begin();
   SPI.beginTransaction(SPISettings(spi_speed, MSBFIRST, SPI_MODE0));
+  pinMode(CSPin, OUTPUT);
 
   Serial.write(FUNC_SPI_INIT); //Подтверждаем команду
   Serial.flush();
@@ -39,6 +40,8 @@ void spi_cmd_init() {
 void spi_cmd_deinit() {
   SPI.endTransaction();
   SPI.end();
+  pinMode(CSPin, INPUT);
+  
   Serial.write(FUNC_SPI_DEINIT); //Подтверждаем команду
   Serial.flush();
 }
