@@ -1,20 +1,17 @@
 #include <arduino.h>
-#include <util/delay.h>
+#include "defines.h"
 #include "microwire.h"
-
-#define CS_LOW()  ISP_OUT &= ~(1 << ISP_RST); /* RST low */
-#define CS_HI()   ISP_OUT |= (1 << ISP_RST); /* RST high */
 
 void mwStart()
 {
 	// set CS to 0
-    ISP_OUT &= ~(1 <<ISP_RST);
+  digitalWrite(ISP_RST, LOW);
 	// set CLK to 0
-    ISP_OUT &= ~(1 << ISP_SCK);
-	_delay_us(15);
+  digitalWrite(ISP_SCK, LOW);
+	delayMicroseconds(MW_DELAY);
 
 	// set CS to 1
-    ISP_OUT |= (1 << ISP_RST);
+  digitalWrite(ISP_RST, HIGH);
 }
 
 void mwSendData(unsigned int data,byte n)
@@ -23,17 +20,17 @@ void mwSendData(unsigned int data,byte n)
 	{
 		if ((data >> (n-1)) & 1)
 		{
-			ISP_OUT |= (1 << ISP_MOSI);
+      digitalWrite(ISP_MOSI, HIGH);
 		}
 		else
 		{
-			ISP_OUT &= ~(1 << ISP_MOSI);
+			digitalWrite(ISP_MOSI, LOW);
 		}
-		
-		ISP_OUT |= (1 << ISP_SCK);
-		_delay_us(15);
-        ISP_OUT &= ~(1 << ISP_SCK);
-		_delay_us(15);
+
+    digitalWrite(ISP_SCK, HIGH);
+		delayMicroseconds(MW_DELAY);
+    digitalWrite(ISP_SCK, LOW);
+		delayMicroseconds(MW_DELAY);
 		n--;
 	}
 }
@@ -47,12 +44,12 @@ byte mwReadByte()
 	for(i=0;i<8;i++)
 	{
 		dd = dd<<1;
-		ISP_OUT |= (1 << ISP_SCK);
-		_delay_us(15);
-		ISP_OUT &= ~(1 << ISP_SCK);
-		_delay_us(15);
+    digitalWrite(ISP_SCK, HIGH);
+		delayMicroseconds(MW_DELAY);
+		digitalWrite(ISP_SCK, LOW);
+		delayMicroseconds(MW_DELAY);
 
-		if ((ISP_IN & (1 << ISP_MISO)) != 0)
+		if (digitalRead(ISP_MISO) != 0)
 		{
 				dd++;
 		}
@@ -64,34 +61,38 @@ byte mwReadByte()
 void mwEnd()
 {
 	// set CS to 0
-    ISP_OUT &= ~(1 <<ISP_RST);
+  digitalWrite(ISP_RST, LOW);
 	// set CLK to 0
-                ISP_OUT &= ~(1 << ISP_SCK);
-	_delay_us(15);
+  digitalWrite(ISP_SCK, LOW); 
+	delayMicroseconds(MW_DELAY);
 }
 
 byte mwBusy()
 {
-	CS_HI();
-	_delay_us(25);
-	if ((ISP_IN & (1 << ISP_MISO)) != 0)
+	digitalWrite(ISP_RST, HIGH);
+	delayMicroseconds(25);
+  
+	if (digitalRead(ISP_MISO) != 0)
 	{
-		CS_LOW();
+		digitalWrite(ISP_RST, LOW);
 		return(0);
 	}
 	else
 	{
-		CS_LOW();
+		digitalWrite(ISP_RST, LOW);
 		return(1); 
 	};
 }
 
 void mwInitPins() {
-  ISP_DDR |= (1 << ISP_RST) | (1 << ISP_SCK) | (1 << ISP_MOSI);
-  CS_LOW();  
+  pinMode(ISP_RST, OUTPUT);
+  pinMode(ISP_SCK, OUTPUT);
+  pinMode(ISP_MOSI, OUTPUT);
+  digitalWrite(ISP_RST, LOW);  
 }
 
 void mwDeinitPins()  {
-  ISP_DDR &= ~((1 << ISP_RST) | (1 << ISP_SCK) | (1 << ISP_MOSI));
-  ISP_OUT &= ~((1 << ISP_RST) | (1 << ISP_SCK) | (1 << ISP_MOSI));   
+  pinMode(ISP_RST, INPUT);
+  pinMode(ISP_SCK, INPUT);
+  pinMode(ISP_MOSI, INPUT);  
 }

@@ -1,4 +1,4 @@
-#include <Wire.h>
+#include <arduino.h>
 #include "commands.h"
 
 #define UART_SPEED 1000000 

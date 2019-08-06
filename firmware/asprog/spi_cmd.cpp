@@ -1,5 +1,6 @@
+#include <arduino.h>
 #include <SPI.h>
-#include <Wire.h>
+#include "defines.h"
 #include "spi_cmd.h"
 #include "commands.h"
 
@@ -31,7 +32,7 @@ void spi_cmd_init() {
 
   SPI.begin();
   SPI.beginTransaction(SPISettings(spi_speed, MSBFIRST, SPI_MODE0));
-  pinMode(CSPin, OUTPUT);
+  pinMode(ISP_RST, OUTPUT);
 
   Serial.write(FUNC_SPI_INIT); //Подтверждаем команду
   Serial.flush();
@@ -40,7 +41,7 @@ void spi_cmd_init() {
 void spi_cmd_deinit() {
   SPI.endTransaction();
   SPI.end();
-  pinMode(CSPin, INPUT);
+  pinMode(ISP_RST, INPUT);
   
   Serial.write(FUNC_SPI_DEINIT); //Подтверждаем команду
   Serial.flush();
@@ -59,7 +60,7 @@ void spi_cmd_read() {
     return;
   }
 
-  digitalWrite(CSPin, LOW);
+  digitalWrite(ISP_RST, LOW);
 
   spi_cs_hi = buff[0];
 
@@ -84,12 +85,12 @@ void spi_cmd_read() {
 
     bytesread = Serial.readBytes(buff, 1);
       if ((bytesread == 0) || (buff[0] != ACK)) {
-      digitalWrite(CSPin, HIGH);
+      digitalWrite(ISP_RST, HIGH);
       return;
       }
   }
 
-  if (spi_cs_hi) digitalWrite(CSPin, HIGH);
+  if (spi_cs_hi) digitalWrite(ISP_RST, HIGH);
 
 }
 
@@ -107,7 +108,7 @@ void spi_cmd_write() {
     return;
   }
 
-  digitalWrite(CSPin, LOW);
+  digitalWrite(ISP_RST, LOW);
 
   spi_cs_hi = buff[0];
 
@@ -131,7 +132,7 @@ void spi_cmd_write() {
     }
     
     if (bytesread == 0) {
-      digitalWrite(CSPin, HIGH);
+      digitalWrite(ISP_RST, HIGH);
       return;
     }
     
@@ -141,5 +142,5 @@ void spi_cmd_write() {
     Serial.flush();
   }
 
-  if (spi_cs_hi) digitalWrite(CSPin, HIGH);
+  if (spi_cs_hi) digitalWrite(ISP_RST, HIGH);
 }
