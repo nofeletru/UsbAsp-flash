@@ -2,6 +2,7 @@
 #include "mw_cmd.h"
 #include "microwire.h"
 #include "commands.h"
+#include "defines.h"
 
 extern byte buff[256];
 
@@ -40,8 +41,6 @@ void mw_cmd_read() {
     Serial.flush();
     return;
   }
-
-  mwStart();
 
   mw_cs_lo = buff[0];
 
@@ -92,7 +91,7 @@ void mw_cmd_write() {
     return;
   }
 
-  mwStart();
+  digitalWrite(ISP_RST, HIGH);
 
   mw_cs_lo = buff[0];
   mw_bitnum = buff[1];

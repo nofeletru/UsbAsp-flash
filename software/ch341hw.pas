@@ -262,7 +262,7 @@ begin
     CH341Set_D5_D0(FDevHandle, %00101001, 1); //cs hi
 
     SetLength(bit_buffer, BitsWrite);
-    FillByte(bit_buffer, Length(bit_buffer), 1); //cs hi
+    FillByte(bit_buffer[0], Length(bit_buffer), 1); //cs hi
 
     for i:=0 to ByteNum(BitsWrite)-1 do
     begin

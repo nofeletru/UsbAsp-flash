@@ -2,23 +2,11 @@
 #include "defines.h"
 #include "microwire.h"
 
-void mwStart()
+void mwSendData(byte data, byte n)
 {
-	// set CS to 0
-  digitalWrite(ISP_RST, LOW);
-	// set CLK to 0
-  digitalWrite(ISP_SCK, LOW);
-	delayMicroseconds(MW_DELAY);
-
-	// set CS to 1
-  digitalWrite(ISP_RST, HIGH);
-}
-
-void mwSendData(unsigned int data,byte n)
-{
-	while(n !=0)
+	for(unsigned char i=0; i < n; i++)
 	{
-		if ((data >> (n-1)) & 1)
+		if ((data >> (7-i)) & 1)
 		{
       digitalWrite(ISP_MOSI, HIGH);
 		}
@@ -31,7 +19,6 @@ void mwSendData(unsigned int data,byte n)
 		delayMicroseconds(MW_DELAY);
     digitalWrite(ISP_SCK, LOW);
 		delayMicroseconds(MW_DELAY);
-		n--;
 	}
 }
 
