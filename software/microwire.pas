@@ -35,7 +35,7 @@ begin
   op := 1; //Start bit
   op := (op shl 2) or 2; //Опкод
   op := (op shl AddrBitLen) or Addr; //Адрес
-  op := op shl 32-AddrBitLen-3;
+  op := op shl (32-AddrBitLen-3);
 
   //AddrBitLen+3; //Сколько бит слать
   writebuff[0] := hi(hi(op));
@@ -58,9 +58,9 @@ begin
 
   //Собираем пакет
   op := 1; //Start bit
-  op := (op shl 2) or 2; //Опкод
+  op := (op shl 2) or 1; //Опкод
   op := (op shl AddrBitLen) or Addr; //Адрес
-  op := op shl 32-AddrBitLen-3;
+  op := op shl (32-AddrBitLen-3);
 
   writebuff[0] := hi(hi(op));
   writebuff[1] := lo(hi(op));
@@ -68,7 +68,8 @@ begin
   writebuff[3] := lo(lo(op));
 
   AsProgrammer.Programmer.MWWrite(0, AddrBitLen+3, writebuff);
-  result := ByteNum(AsProgrammer.Programmer.MWWrite(1, bufflen, buffer));
+
+  result := ByteNum(AsProgrammer.Programmer.MWWrite(1, bufflen*8, buffer));
 end;
 
 function UsbAspMW_ChipErase(AddrBitLen: byte): integer;
@@ -78,7 +79,7 @@ var
 begin
   op := 1; //Start bit
   op := (op shl 4) or 2; //Опкод 0010
-  op := op shl 32-AddrBitLen-5;
+  op := op shl (32-(AddrBitLen-2)-1);
 
   writebuff[0] := hi(hi(op));
   writebuff[1] := lo(hi(op));
@@ -95,7 +96,7 @@ var
 begin
   op := 1; //Start bit
   op := (op shl 4) or 3; //Опкод 0011
-  op := op shl 32-AddrBitLen-5;
+  op := op shl (32-(AddrBitLen-2)-1);
 
   writebuff[0] := hi(hi(op));
   writebuff[1] := lo(hi(op));

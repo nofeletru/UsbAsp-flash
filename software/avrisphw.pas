@@ -48,6 +48,7 @@ public
 end;
 
 implementation
+uses main;
 
 const
 
@@ -75,6 +76,7 @@ const
    CMD_MW_READ		        = $38;
    CMD_MW_WRITE	                = $39;
    CMD_MW_BUSY		        = $40;
+   CMD_MW_INIT	                = $41;
 
    CMD_SET_PARAMETER             = $02;
    CMD_GET_PARAMETER             = $03;
@@ -332,10 +334,8 @@ begin
   end;
 
   //spi init
-  buffer[0]:= CMD_ENTER_PROGMODE_SPI25;
+  buffer[0]:= CMD_MW_INIT;
   if usb_bulk_write(FDevHandle, OUT_EP, buffer, 1, STREAM_TIMEOUT_MS) <> 1 then result := false;
-  if usb_bulk_read(FDevHandle, IN_EP, buffer, 2, STREAM_TIMEOUT_MS) <> 2 then result := false;
-  if buffer[1] <> 0 then result := false;
 end;
 
 procedure TAvrispHardware.MWDeInit;
@@ -387,7 +387,8 @@ begin
   Move(buffer, buff[HEADER_SIZE], 2);
 
   result := usb_bulk_write(FDevHandle, OUT_EP, buff[0], bytes+HEADER_SIZE, STREAM_TIMEOUT_MS)-HEADER_SIZE;
-  if result = bytes+HEADER_SIZE then result := BitsWrite;
+  if result = bytes then result := BitsWrite;
+  logprint(inttostr(result));
 end;
 
 function TAvrispHardware.MWIsBusy: boolean;

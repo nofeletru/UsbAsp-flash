@@ -2176,7 +2176,7 @@ try
       Exit;
     end;
 
-    EnterProgMode25(SetSPISpeed(0));
+    AsProgrammer.Programmer.MWInit(SetSPISpeed(0));
     TimeCounter := Time();
 
     RomF.Position := 0;
@@ -2317,7 +2317,7 @@ try
       Exit;
     end;
 
-    EnterProgMode25(SetSPISpeed(0));
+    AsProgrammer.Programmer.MWInit(SetSPISpeed(0));
     TimeCounter := Time();
 
     RomF.Clear;
@@ -2713,7 +2713,7 @@ try
       Exit;
     end;
 
-    EnterProgMode25(SetSPISpeed(0));
+    AsProgrammer.Programmer.MWInit(SetSPISpeed(0));
     TimeCounter := Time();
     ReadFlashMW(RomF, StrToInt(ComboMWBitLen.Text), 0, StrToInt(ComboChipSize.Text));
 
@@ -2876,7 +2876,7 @@ try
       Exit;
     end;
 
-    EnterProgMode25(SetSPISpeed(0));
+    AsProgrammer.Programmer.MWInit(SetSPISpeed(0));
     TimeCounter := Time();
     LogPrint(STR_ERASING_FLASH);
     UsbAspMW_Ewen(StrToInt(ComboMWBitLen.Text));

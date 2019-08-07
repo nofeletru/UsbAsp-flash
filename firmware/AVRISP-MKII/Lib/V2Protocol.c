@@ -133,6 +133,9 @@ void V2Protocol_ProcessCommand(void)
 			break;
 		case CMD_MW_BUSY:
 			mw_busy();
+			break;
+		case CMD_MW_INIT:
+			mw_init();
 			break;			
 		case CMD_FIRMWARE_VER:
 			give_firmware_ver();

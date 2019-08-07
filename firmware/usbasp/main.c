@@ -124,7 +124,7 @@ usbMsgLen_t usbFunctionSetup(uchar data[8]) {
 //microwire 93xx ---------------------------------------------------------		
 
 	} else if (data[1] == USBASP_FUNC_MW_WRITE) {
-		mwStart();
+		CS_HI();
 		mw_cs_lo = data[2];
 		
 		//data[4] lo(index)= сколько бит передавать
@@ -135,7 +135,6 @@ usbMsgLen_t usbFunctionSetup(uchar data[8]) {
 		len = USB_NO_MSG;
 		
 	} else if (data[1] == USBASP_FUNC_MW_READ) {
-		mwStart();
 		mw_cs_lo = data[2];
 		
 		prog_nbytes = (data[7] << 8) | data[6]; //Размер куска данных

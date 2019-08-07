@@ -12,10 +12,10 @@
 #define CMD_MW_READ		0x38
 #define CMD_MW_WRITE	0x39
 #define CMD_MW_BUSY		0x40
+#define CMD_MW_INIT		0x41
 
 //Functions for sw microwire interface
-void mwStart(void);
-void mwSendData(unsigned int data,unsigned char n);
+void mwSendData(unsigned char data,unsigned char n);
 unsigned char mwReadByte(void);
 void mwEnd(void);
 unsigned char mwBusy(void);
@@ -23,3 +23,4 @@ unsigned char mwBusy(void);
 void mw_read(void);
 void mw_write(void);
 void mw_busy(void);
+void mw_init(void);
