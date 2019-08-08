@@ -359,6 +359,10 @@ msgstr "Find IC"
 msgid "Маркировка содержит:"
 msgstr "IC мarking contain:"
 
+#: tchipsearchform.ChipSearchSelectButton.caption
+msgid "Выбрать микросхему"
+msgstr "Select IC"
+
 #: tmainform.blankcheckmenuitem.caption
 msgid "Проверка на чистоту"
 msgstr "Blank check"

@@ -14,9 +14,11 @@ type
 
   TChipSearchForm = class(TForm)
     Bevel1: TBevel;
+    ChipSearchSelectButton: TButton;
     EditSearch: TEdit;
     Label1: TLabel;
     ListBoxChips: TListBox;
+    procedure ChipSearchSelectButtonClick(Sender: TObject);
     procedure EditSearchChange(Sender: TObject);
     procedure ListBoxChipsDblClick(Sender: TObject);
   private
@@ -223,6 +225,12 @@ procedure TChipSearchForm.EditSearchChange(Sender: TObject);
 begin
   ListBoxChips.Clear;
   FindChip(chiplistfile, EditSearch.Text);
+end;
+
+procedure TChipSearchForm.ChipSearchSelectButtonClick(Sender: TObject);
+begin
+  ChipSearchForm.ListBoxChipsDblClick(Sender);
+  ChipSearchForm.Hide;
 end;
 
 procedure TChipSearchForm.ListBoxChipsDblClick(Sender: TObject);

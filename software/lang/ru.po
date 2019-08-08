@@ -149,6 +149,9 @@ msgstr "Поиск микросхемы"
 #: tchipsearchform.label1.caption
 msgstr "Маркировка содержит:"
 
+#: tchipsearchform.ChipSearchSelectButton.caption
+msgstr "Выбрать микросхему"
+
 #: tmainform.blankcheckmenuitem.caption
 msgstr "Проверка на чистоту"
 
