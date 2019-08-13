@@ -2330,7 +2330,7 @@ try
       MPHexEditorEx.SaveToStream(RomF);
     RomF.Position :=0;
 
-    VerifyFlashMW(RomF, StrToInt(ComboMWBitLen.Text), 0, StrToInt(ComboChipSize.Text));
+    VerifyFlashMW(RomF, StrToInt(ComboMWBitLen.Text), 0, RomF.Size);
   end;
 
   LogPrint(STR_TIME + TimeToStr(Time() - TimeCounter));
