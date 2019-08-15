@@ -44,7 +44,7 @@ begin
 end;
 
 //Возвращает сколько байт прочитали
-function UsbAspI2C_Read(DevAddr, AddrType: byte; Address: longword;var buffer: array of byte; bufflen: integer): integer;
+function UsbAspI2C_Read(DevAddr, AddrType: byte; Address: longword; var buffer: array of byte; bufflen: integer): integer;
 var
   value, index: Integer;
   wBuffer: array of byte;
@@ -128,8 +128,8 @@ begin
     value := DevAddr;
     index := Word(Address);
     SetLength(wBuffer, 2);
-    wBuffer[0] := hi(index);
-    wBuffer[1] := lo(index);
+    wBuffer[0] := hi(word(index));
+    wBuffer[1] := lo(word(index));
   end;
 
   if (AddrType = I2C_ADDR_TYPE_2BYTE_1BIT) then
@@ -142,12 +142,12 @@ begin
     value := DevAddr;
     index := Word(Address);
     SetLength(wBuffer, 2);
-    wBuffer[0] := hi(index);
-    wBuffer[1] := lo(index);
+    wBuffer[0] := hi(word(index));
+    wBuffer[1] := lo(word(index));
   end;
 
-  //value hi=сколько байт слать lo= адрес устройства
-  //index hi=1 байт адреса памяти lo=второй
+  //value адрес устройства
+  //index адреса памяти
   result := AsProgrammer.Programmer.I2CReadWrite(value, Length(wBuffer), wBuffer, bufflen, buffer)-Length(wBuffer);
 end;
 
@@ -158,8 +158,7 @@ var
   wBuffer: array of byte;
   dummy: byte;
 begin
-  //Low(value) = 2; Адрес устройства
-  //Hi(value)  = 3; Посылать ли первый(lo) или второй(hi) байт
+  //value Адрес устройства
   //Lo(index)  = 4; Lo адрес
   //Hi(index)  = 5; Hi адрес
 
@@ -239,8 +238,8 @@ begin
     value := DevAddr;
     index := Word(Address);
     SetLength(wBuffer, 2);
-    wBuffer[0] := hi(index);
-    wBuffer[1] := lo(index);
+    wBuffer[0] := hi(word(index));
+    wBuffer[1] := lo(word(index));
   end;
 
   if AddrType = I2C_ADDR_TYPE_2BYTE_1BIT then
@@ -253,8 +252,8 @@ begin
     value := DevAddr;
     index := Word(Address);
     SetLength(wBuffer, 2);
-    wBuffer[0] := hi(index);
-    wBuffer[1] := lo(index);
+    wBuffer[0] := hi(word(index));
+    wBuffer[1] := lo(word(index));
   end;
 
   address_size := Length(wBuffer);
