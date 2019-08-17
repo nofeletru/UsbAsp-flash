@@ -79,7 +79,8 @@ var
 begin
   op := 1; //Start bit
   op := (op shl 4) or 2; //Опкод 0010
-  op := op shl (32-(AddrBitLen-2)-1);
+  op := op shl (AddrBitLen-2);
+  op := op shl (32-AddrBitLen-3);
 
   writebuff[0] := hi(hi(op));
   writebuff[1] := lo(hi(op));
@@ -96,7 +97,8 @@ var
 begin
   op := 1; //Start bit
   op := (op shl 4) or 3; //Опкод 0011
-  op := op shl (32-(AddrBitLen-2)-1);
+  op := op shl (AddrBitLen-2);
+  op := op shl (32-AddrBitLen-3);
 
   writebuff[0] := hi(hi(op));
   writebuff[1] := lo(hi(op));
