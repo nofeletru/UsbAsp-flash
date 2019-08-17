@@ -261,7 +261,7 @@ begin
   begin
     CH341Set_D5_D0(FDevHandle, %00101001, 1); //cs hi
 
-    SetLength(bit_buffer, BitsWrite);
+    SetLength(bit_buffer, ByteNum(BitsWrite)*8);
     FillByte(bit_buffer[0], Length(bit_buffer), 1); //cs hi
 
     for i:=0 to ByteNum(BitsWrite)-1 do
@@ -276,7 +276,7 @@ begin
     end;
 
     //Отсылаем биты
-    if CH341BitStreamSPI(FDevHandle, Length(bit_buffer), @bit_buffer[0]) then result := BitsWrite else result := -1;
+    if CH341BitStreamSPI(FDevHandle, BitsWrite, @bit_buffer[0]) then result := BitsWrite else result := -1;
 
     if Boolean(CS) then CH341Set_D5_D0(FDevHandle, %00101001, 0);
   end;
