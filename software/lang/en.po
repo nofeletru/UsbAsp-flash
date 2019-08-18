@@ -194,10 +194,6 @@ msgstr "Type of addressing"
 msgid "Размер чипа в байтах"
 msgstr "IC size in bytes"
 
-#: tmainform.combochipsize.text
-msgid "Chip size"
-msgstr ""
-
 #: tmainform.comboitem1.caption
 msgid "Снять защиту -> стереть -> записать -> проверить"
 msgstr "Unprotect -> erase -> programm -> verify"
@@ -206,17 +202,9 @@ msgstr "Unprotect -> erase -> programm -> verify"
 msgid "Длинна адреса в битах"
 msgstr "Lenght of address in bits"
 
-#: tmainform.combomwbitlen.text
-msgid "MW addr len"
-msgstr ""
-
 #: tmainform.combopagesize.hint
 msgid "Размер страницы"
 msgstr "Page size"
-
-#: tmainform.combopagesize.text
-msgid "Page size"
-msgstr ""
 
 #: tmainform.copylogmenuitem.caption
 msgctxt "TMAINFORM.COPYLOGMENUITEM.CAPTION"
