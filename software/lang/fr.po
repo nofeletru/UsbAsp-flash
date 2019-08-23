@@ -142,6 +142,10 @@ msgstr "Le nombre d'octets écrits n'est pas égal à la taille de la puce"
 msgid "Размер файла больше размера чипа"
 msgstr "Taille de fichier supérieure à la taille de la puce"
 
+#: tmainform.allowinsertitem.caption
+msgid "Разрешить режим вставки"
+msgstr "Insert mode"
+
 #: tmainform.menuitemhardware.caption
 msgid "Программатор"
 msgstr "Hardware"

@@ -142,6 +142,10 @@ msgstr "Number of bytes written not equal IC size"
 msgid "Размер файла больше размера чипа"
 msgstr "File size larger than IC size"
 
+#: tmainform.allowinsertitem.caption
+msgid "Разрешить режим вставки"
+msgstr "Insert mode"
+
 #: tmainform.menuitemhardware.caption
 msgid "Программатор"
 msgstr "Hardware"

@@ -53,6 +53,9 @@ msgstr "Размер страницы"
 #: tmainform.copylogmenuitem.caption
 msgstr "Копировать"
 
+#: tmainform.allowinsertitem.caption
+msgstr "Разрешить режим вставки"
+
 #: tmainform.label1.caption
 msgstr "Страница"
 
