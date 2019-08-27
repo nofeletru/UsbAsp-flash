@@ -265,6 +265,7 @@ function UsbAsp25_EN4B(): integer;
 var
   buff: byte;
 begin
+  UsbAsp25_Wren;
   buff:= $B7;
   result := SPIWrite(1, 1, buff);
 end;
@@ -274,6 +275,7 @@ function UsbAsp25_EX4B(): integer;
 var
   buff: byte;
 begin
+  UsbAsp25_Wren;
   buff:= $E9;
   result := SPIWrite(1, 1, buff);
 end;
