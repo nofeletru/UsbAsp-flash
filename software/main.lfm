@@ -776,6 +776,10 @@ object MainForm: TMainForm
           AutoCheck = True
           Caption = 'Не проверять Busy бит'
         end
+        object MenuSkipFF: TMenuItem
+          AutoCheck = True
+          Caption = 'Не писать FF'
+        end
         object MenuItemBenchmark: TMenuItem
           Caption = 'Benchmark'
           OnClick = MenuItemBenchmarkClick

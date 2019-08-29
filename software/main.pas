@@ -81,6 +81,7 @@ type
     MenuArduinoISP2MHz: TMenuItem;
     MenuArduinoISP1MHz: TMenuItem;
     MenuArduinoCOMPort: TMenuItem;
+    MenuSkipFF: TMenuItem;
     MPHexEditorEx: TMPHexEditorEx;
     ScriptsMenuItem: TMenuItem;
     MenuItemHardware: TMenuItem;
@@ -614,7 +615,7 @@ var
   DataChunk2: array[0..2047] of byte;
   Address, BytesWrite: cardinal;
   i: integer;
-  sreg: byte;
+  SkipPage: boolean = false;
 begin
   if (StartAddress >= WriteSize) or (WriteSize = 0) {or (PageSize > WriteSize)} then
   begin
@@ -658,16 +659,31 @@ begin
 
     if WriteType = WT_PAGE then
     begin
-      if WriteSize > FLASH_SIZE_128MBIT then //Память больше 128Мбит
+      //Если страница вся FF то не пишем ее
+      if MainForm.MenuSkipFF.Checked then
       begin
-        //4 байтная адресация
-        BytesWrite := BytesWrite + UsbAsp25_Write32bitAddr($02, Address, datachunk, PageSize)
-      end
-      else //Память в пределах 128Мбит
-        BytesWrite := BytesWrite + UsbAsp25_Write($02, Address, datachunk, PageSize);
+        SkipPage := True;
+        for i:=0 to PageSize-1 do
+          if DataChunk[i] <> $FF then
+          begin
+            SkipPage := False;
+            Break;
+          end;
+      end;
+
+      if not SkipPage then
+      begin
+        if WriteSize > FLASH_SIZE_128MBIT then //Память больше 128Мбит
+        begin
+          //4 байтная адресация
+          BytesWrite := BytesWrite + UsbAsp25_Write32bitAddr($02, Address, datachunk, PageSize)
+        end
+        else //Память в пределах 128Мбит
+          BytesWrite := BytesWrite + UsbAsp25_Write($02, Address, datachunk, PageSize);
+      end else BytesWrite := BytesWrite + PageSize;
     end;
 
-    if not MainForm.MenuIgnoreBusyBit.Checked then  //Игнорировать проверку
+    if (not MainForm.MenuIgnoreBusyBit.Checked) and (not SkipPage) then  //Игнорировать проверку
       while UsbAsp25_Busy() do
       begin
         Application.ProcessMessages;
@@ -2948,6 +2964,10 @@ begin
       TDOMElement(ParentNode).SetAttribute('verify', '1') else
         TDOMElement(ParentNode).SetAttribute('verify', '0');
 
+    if MainForm.MenuSkipFF.Checked then
+      TDOMElement(ParentNode).SetAttribute('skipff', '1') else
+        TDOMElement(ParentNode).SetAttribute('skipff', '0');
+
     if MainForm.Menu3Mhz.Checked then
       TDOMElement(ParentNode).SetAttribute('spi_speed', '3Mhz');
     if MainForm.Menu1_5Mhz.Checked then
@@ -3006,6 +3026,12 @@ begin
       begin
         if Node.Attributes.GetNamedItem('verify').NodeValue = '1' then
           MainForm.MenuAutoCheck.Checked := true;
+      end;
+
+      if  Node.Attributes.GetNamedItem('skipff') <> nil then
+      begin
+        if Node.Attributes.GetNamedItem('skipff').NodeValue = '1' then
+          MainForm.MenuSkipFF.Checked := true;
       end;
 
       if  Node.Attributes.GetNamedItem('spi_speed') <> nil then
