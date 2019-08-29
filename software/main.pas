@@ -113,6 +113,7 @@ type
     RadioMw: TRadioButton;
     RadioSPI: TRadioButton;
     SaveDialog: TSaveDialog;
+    Splitter1: TSplitter;
     StatusBar: TStatusBar;
     CheckBox_I2C_DevA7: TToggleBox;
     ToolBar: TToolBar;
