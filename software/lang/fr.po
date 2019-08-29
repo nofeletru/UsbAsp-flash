@@ -305,6 +305,10 @@ msgstr "Frequence"
 msgid "Поиск"
 msgstr "Recherche"
 
+#: tmainform.menuskipff.caption
+msgid "Не писать FF"
+msgstr "Do not write FF"
+
 #: tsearchform.casesensecheckbox.caption
 msgid "Учитывать регистр"
 msgstr "Sensible à la case"

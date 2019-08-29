@@ -89,6 +89,9 @@ msgstr "Поиск"
 #: tmainform.menufindchip.caption
 msgstr "Поиск"
 
+#: tmainform.menuskipff.caption
+msgstr "Не писать FF"
+
 #: tmainform.menugotooffset.caption
 msgstr "Перейти по адресу"
 

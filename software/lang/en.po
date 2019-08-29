@@ -267,6 +267,10 @@ msgctxt "tmainform.menufindchip.caption"
 msgid "Поиск"
 msgstr "Search"
 
+#: tmainform.menuskipff.caption
+msgid "Не писать FF"
+msgstr "Do not write FF"
+
 #: tmainform.menugotooffset.caption
 msgid "Перейти по адресу"
 msgstr "Goto address"
