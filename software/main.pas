@@ -2633,6 +2633,7 @@ procedure TMainForm.ButtonReadClick(Sender: TObject);
 var
   I2C_DevAddr: byte;
   I2C_ChunkSize: word = 65535;
+  CRC32: Cardinal;
 begin
 try
   ButtonCancel.Tag := 0;
@@ -2726,6 +2727,9 @@ try
   end;
 
   LogPrint(STR_TIME + TimeToStr(Time() - TimeCounter));
+
+  CRC32 := UpdateCRC32($FFFFFFFF, Romf.Memory, Romf.Size);
+  LogPrint('CRC32 = 0x'+IntToHex(CRC32, 8));
 
 finally
   ExitProgMode25;
