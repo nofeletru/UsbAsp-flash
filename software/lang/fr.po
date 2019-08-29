@@ -142,6 +142,10 @@ msgstr "Le nombre d'octets écrits n'est pas égal à la taille de la puce"
 msgid "Размер файла больше размера чипа"
 msgstr "Taille de fichier supérieure à la taille de la puce"
 
+#: msgstr.str_erase_notice
+msgid "Процесс может длиться больше минуты на больших флешках!"
+msgstr "The process can take more than a minute on large flash!"
+
 #: tmainform.allowinsertitem.caption
 msgid "Разрешить режим вставки"
 msgstr "Insert mode"

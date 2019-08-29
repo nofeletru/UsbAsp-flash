@@ -261,6 +261,8 @@ begin
   if MainForm.ButtonCancel.Tag <> 0 then
   begin
     LogPrint(STR_USER_CANCEL);
+    MainForm.ProgressBar.Style := pbstNormal;
+     MainForm.ProgressBar.Position:= 0;
     Result := true;
   end;
 end;
@@ -2809,11 +2811,20 @@ try
       UsbAsp25_WREN();
       UsbAsp25_ChipErase();
 
+      ProgressBar.Style:= pbstMarquee;
+      ProgressBar.Max:= 1;
+      ProgressBar.Position:= 1;
+
+      LogPrint(STR_ERASE_NOTICE);
+
       while UsbAsp25_Busy() do
       begin
         Application.ProcessMessages;
         if UserCancel then Exit;
       end;
+
+      ProgressBar.Style:= pbstNormal;
+      ProgressBar.Position:= 0;
     end;
 
     if ComboSPICMD.ItemIndex = SPI_CMD_95 then

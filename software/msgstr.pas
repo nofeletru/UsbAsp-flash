@@ -46,6 +46,7 @@ resourcestring
   STR_SCRIPT_NO_SECTION  = 'Нет секции: ';
   STR_SCRIPT_SEL_SECTION = 'Выберите секцию';
   STR_SCRIPT_RUN_SECTION = 'Выполняется секция: ';
+  STR_ERASE_NOTICE       = 'Процесс может длиться больше минуты на больших флешках!';
 
 implementation
 

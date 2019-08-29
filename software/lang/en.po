@@ -142,6 +142,10 @@ msgstr "Number of bytes written not equal IC size"
 msgid "Размер файла больше размера чипа"
 msgstr "File size larger than IC size"
 
+#: msgstr.str_erase_notice
+msgid "Процесс может длиться больше минуты на больших флешках!"
+msgstr "The process can take more than a minute on large flash!"
+
 #: tmainform.allowinsertitem.caption
 msgid "Разрешить режим вставки"
 msgstr "Insert mode"
