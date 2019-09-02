@@ -37,7 +37,7 @@ public
   function I2CReadWrite(DevAddr: byte;
                         WBufferLen: integer; WBuffer: array of byte;
                         RBufferLen: integer; var RBuffer: array of byte): integer; override;
-  function I2CLineIsBusy(DevAddr: byte): boolean; override;
+  function I2CSendAddress(DevAddr: byte): boolean; override;
 
   //MICROWIRE
   function MWInit(speed: integer): boolean; override;
@@ -298,7 +298,7 @@ begin
 end;
 
 
-function TAvrispHardware.I2CLineIsBusy(DevAddr: byte): boolean;
+function TAvrispHardware.I2CSendAddress(DevAddr: byte): boolean;
 var
   buff: array[0..1] of byte;
   status: byte = 1;

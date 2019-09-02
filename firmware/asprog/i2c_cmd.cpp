@@ -30,7 +30,10 @@ void i2c_cmd_ack() {
   Serial.flush();
 
   i2c_start();
-  ack = i2c_address(addr[0], I2C_WRITE);
+  if( (addr[0] & 1) )
+    ack = i2c_address(addr[0], I2C_READ);
+  else  
+    ack = i2c_address(addr[0], I2C_WRITE);
   i2c_stop();
 
   Serial.write(ack);

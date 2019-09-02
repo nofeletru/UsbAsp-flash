@@ -223,7 +223,10 @@ void i2c_ack(void)
 	
 	i2c_init();
 	i2c_start();
-	Endpoint_Write_8(i2c_address(dev_address, I2C_WRITE));
+	if( (dev_address & 1) )
+        Endpoint_Write_8(i2c_address(dev_address, I2C_READ));
+    else  
+        Endpoint_Write_8(i2c_address(dev_address, I2C_WRITE));
 	i2c_stop();
 	Endpoint_ClearIN();
 }

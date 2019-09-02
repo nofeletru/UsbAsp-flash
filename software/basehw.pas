@@ -36,7 +36,8 @@ public
   function I2CReadWrite(DevAddr: byte;
                         WBufferLen: integer; WBuffer: array of byte;
                         RBufferLen: integer; var RBuffer: array of byte): integer; virtual; abstract;
-  function I2CLineIsBusy(DevAddr: byte): boolean; virtual; abstract;
+  //Send address and return ack/nack
+  function I2CSendAddress(DevAddr: byte): boolean; virtual; abstract;
 
   //MICROWIRE
   function MWInit(speed: integer): boolean; virtual; abstract;

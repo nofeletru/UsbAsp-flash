@@ -103,7 +103,11 @@ usbMsgLen_t usbFunctionSetup(uchar data[8]) {
 	} else if (data[1] == USBASP_FUNC_I2C_ACK) {
 		
 		i2c_start();
-		replyBuffer[0] = i2c_address(data[2], I2C_WRITE);
+		
+		if( (data[2] & 1) )
+          replyBuffer[0] = i2c_address(data[2], I2C_READ);
+        else  
+          replyBuffer[0] = i2c_address(data[2], I2C_WRITE);
 		i2c_stop();
 		len = 1;
 			

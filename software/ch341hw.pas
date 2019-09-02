@@ -36,7 +36,7 @@ public
   function I2CReadWrite(DevAddr: byte;
                         WBufferLen: integer; WBuffer: array of byte;
                         RBufferLen: integer; var RBuffer: array of byte): integer; override;
-  function I2CLineIsBusy(DevAddr: byte): boolean; override;
+  function I2CSendAddress(DevAddr: byte): boolean; override;
 
   //MICROWIRE
   function MWInit(speed: integer): boolean; override;
@@ -167,7 +167,7 @@ begin
 end;
 
 
-function TCH341Hardware.I2CLineIsBusy(DevAddr: byte): boolean;
+function TCH341Hardware.I2CSendAddress(DevAddr: byte): boolean;
 procedure SendBit(bit: byte);
 begin
   if boolean(bit) then
@@ -188,23 +188,27 @@ var
 begin
   if not FDevOpened then Exit;
 
+  //start
+  CH341SetOutput(FDevHandle, $10, 0, $C0000); //scl/sda hi
   CH341SetOutput(FDevHandle, $10, 0, $40000); //sda low(start)
 
-  for i:=7 downto 1 do
+  for i:=7 downto 0 do
   begin
     if IsBitSet(DevAddr, i) then SendBit(1) else SendBit(0);
   end;
 
-  //rw
-  SendBit(0);
-  //ack
-  SendBit(1);
+  //generate pulse for ack
+  CH341SetOutput(FDevHandle, $10, 0, $80000); //scl low
+  CH341SetOutput(FDevHandle, $10, 0, $C0000); //scl hi
+
+  //read ack
   CH341GetStatus(FDevHandle, @pins);
   Result := IsBitSet(pins, 23);
-  //stop
-  SendBit(0);
 
+  //stop
+  CH341SetOutput(FDevHandle, $10, 0, $40000); //scl hi sda lo
   CH341SetOutput(FDevHandle, $10, 0, $C0000); //sda hi
+
 end;
 
 //MICROWIRE_____________________________________________________________________
