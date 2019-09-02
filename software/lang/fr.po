@@ -144,11 +144,11 @@ msgstr "Taille de fichier supérieure à la taille de la puce"
 
 #: msgstr.str_erase_notice
 msgid "Процесс может длиться больше минуты на больших флешках!"
-msgstr "The process can take more than a minute on large flash!"
+msgstr "Le processus peut prendre plus d'une minute sur une mémoire de grande taille!"
 
 #: tmainform.allowinsertitem.caption
 msgid "Разрешить режим вставки"
-msgstr "Insert mode"
+msgstr "Mode insertion"
 
 #: tmainform.menuitemhardware.caption
 msgid "Программатор"
@@ -307,7 +307,7 @@ msgstr "Recherche"
 
 #: tmainform.menuskipff.caption
 msgid "Не писать FF"
-msgstr "Do not write FF"
+msgstr "Ne pas écrire les FF"
 
 #: tsearchform.casesensecheckbox.caption
 msgid "Учитывать регистр"
@@ -315,11 +315,11 @@ msgstr "Sensible à la case"
 
 #: tsearchform.findbutton.caption
 msgid "Найти"
-msgstr "Trouvé"
+msgstr "Trouver"
 
 #: tsearchform.frombeginingcheckbox.caption
 msgid "Искать сначала"
-msgstr "Rechercher en premier"
+msgstr "Du début"
 
 #: tsearchform.hexcheckbox.caption
 msgid "Искать HEX значение"
