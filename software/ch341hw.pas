@@ -96,7 +96,7 @@ end;
 
 procedure TCH341Hardware.DevClose;
 begin
-  if FDevHandle > 0 then
+  if FDevHandle >= 0 then
   begin
     CH341CloseDevice(FDevHandle);
     FDevHandle := -1;
