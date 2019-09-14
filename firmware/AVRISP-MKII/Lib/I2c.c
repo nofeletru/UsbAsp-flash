@@ -21,13 +21,7 @@ void i2c_init(void)
   I2C_SCL_HIGH;
 }
 
-void i2c_start(void) 
-{
-  I2C_SDA_LOW;
-  _delay_us(I2C_DELAY);
-}
-
-void i2c_start_rep(void)
+void i2c_start(void)
 {
   I2C_SCL_LOW;
   _delay_us(I2C_DELAY);
@@ -206,27 +200,43 @@ void i2c_write(void)
 	}
 	
 	if(i2c_stop_aw == 1) i2c_stop();
-	else i2c_start_rep();
+	else i2c_start();
 	
 	Endpoint_ClearOUT();
 }
 
-void i2c_ack(void)
+void i2c_writebyte(void)
 {
-	uint8_t dev_address;
+	uint8_t data;
 	
-	dev_address = Endpoint_Read_8();
+	data = Endpoint_Read_8();
 	
 	Endpoint_ClearOUT();
 	Endpoint_SelectEndpoint(AVRISP_DATA_IN_EPADDR);
 	Endpoint_SetEndpointDirection(ENDPOINT_DIR_IN);
 	
-	i2c_init();
-	i2c_start();
-	if( (dev_address & 1) )
-        Endpoint_Write_8(i2c_address(dev_address, I2C_READ));
-    else  
-        Endpoint_Write_8(i2c_address(dev_address, I2C_WRITE));
-	i2c_stop();
+	//i2c_init();
+	//i2c_start();
+	Endpoint_Write_8(i2c_send_byte(data));
+    
+	//i2c_stop();
 	Endpoint_ClearIN();
+}
+
+void i2c_readbyte(void)
+{
+	uint8_t ack;
+	
+	ack = Endpoint_Read_8();
+	
+	Endpoint_ClearOUT();
+	Endpoint_SelectEndpoint(AVRISP_DATA_IN_EPADDR);
+	Endpoint_SetEndpointDirection(ENDPOINT_DIR_IN);
+	
+	//i2c_init();
+	//i2c_start();
+	Endpoint_Write_8(i2c_read_byte(ack));
+    
+	//i2c_stop();
+	Endpoint_ClearIN(); 
 }

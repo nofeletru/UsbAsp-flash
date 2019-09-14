@@ -39,7 +39,11 @@ public
   function I2CReadWrite(DevAddr: byte;
                         WBufferLen: integer; WBuffer: array of byte;
                         RBufferLen: integer; var RBuffer: array of byte): integer; override;
-  function I2CSendAddress(DevAddr: byte): boolean; override;
+
+  procedure I2CStart; override;
+  procedure I2CStop; override;
+  function I2CReadByte(ack: boolean): byte; override;
+  function I2CWriteByte(data: byte): boolean; override; //return ack
 
   //MICROWIRE
   function MWInit(speed: integer): boolean; override;
@@ -63,7 +67,10 @@ const
  USBASP_FUNC_I2C_INIT		= 70;
  USBASP_FUNC_I2C_READ		= 71;
  USBASP_FUNC_I2C_WRITE		= 72;
- USBASP_FUNC_I2C_ACK 		= 73;
+ USBASP_FUNC_I2C_START 		= 73;
+ USBASP_FUNC_I2C_STOP 		= 74;
+ USBASP_FUNC_I2C_READBYTE	= 75;
+ USBASP_FUNC_I2C_WRITEBYTE      = 76;
 
  USBASP_FUNC_MW_READ            = 92;
  USBASP_FUNC_MW_WRITE	        = 93;
@@ -216,15 +223,39 @@ begin
     Result := Result + USBSendControlMessage(FDevHandle, USB2PC, USBASP_FUNC_I2C_READ, DevAddr, 0, RBufferLen, RBuffer);
 end;
 
-
-function TUsbAspHardware.I2CSendAddress(DevAddr: byte): boolean;
-var
-  Status: byte;
+procedure TUsbAspHardware.I2CStop;
+var dummy: byte;
 begin
-  Status := 1;
   if not FDevOpened then Exit;
-  USBSendControlMessage(FDevHandle, USB2PC, USBASP_FUNC_I2C_ACK, DevAddr, 0, 1, Status);
-  Result := not Boolean(Status);
+  USBSendControlMessage(FDevHandle, USB2PC, USBASP_FUNC_I2C_STOP, 0, 0, 0, dummy);
+end;
+
+procedure TUsbAspHardware.I2CStart;
+var dummy: byte;
+begin
+  if not FDevOpened then Exit;
+  USBSendControlMessage(FDevHandle, USB2PC, USBASP_FUNC_I2C_START, 0, 0, 0, dummy);
+end;
+
+function TUsbAspHardware.I2CWriteByte(data: byte): boolean;
+var
+  ack: byte;
+begin
+  ack := 0;
+  if not FDevOpened then Exit;
+  USBSendControlMessage(FDevHandle, USB2PC, USBASP_FUNC_I2C_WRITEBYTE, data, 0, 1, ack);
+  Result := Boolean(ack);
+end;
+
+function TUsbAspHardware.I2CReadByte(ack: boolean): byte;
+var
+  data: byte;
+  acknack: byte = 1;
+begin
+  if not FDevOpened then Exit;
+  if ack then acknack := 0;
+  USBSendControlMessage(FDevHandle, USB2PC, USBASP_FUNC_I2C_READBYTE, acknack, 0, 1, data);
+  Result := data;
 end;
 
 //MICROWIRE_____________________________________________________________________

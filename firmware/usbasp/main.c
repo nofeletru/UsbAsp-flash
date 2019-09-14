@@ -100,17 +100,20 @@ usbMsgLen_t usbFunctionSetup(uchar data[8]) {
 		ledRedOn();
 		i2c_init();
 		
-	} else if (data[1] == USBASP_FUNC_I2C_ACK) {
-		
+	} else if (data[1] == USBASP_FUNC_I2C_START) {
 		i2c_start();
 		
-		if( (data[2] & 1) )
-          replyBuffer[0] = i2c_address(data[2], I2C_READ);
-        else  
-          replyBuffer[0] = i2c_address(data[2], I2C_WRITE);
+	} else if (data[1] == USBASP_FUNC_I2C_STOP) {
 		i2c_stop();
+		
+	} else if (data[1] == USBASP_FUNC_I2C_WRITEBYTE) {
+		replyBuffer[0] = i2c_send_byte(data[2]);
 		len = 1;
-			
+		
+	} else if (data[1] == USBASP_FUNC_I2C_READBYTE) {
+		replyBuffer[0] = i2c_read_byte(data[2]);
+		len = 1;
+		
 	} else if (data[1] == USBASP_FUNC_I2C_READ) {
 		i2c_address(data[2], I2C_READ);
 		prog_nbytes = (data[7] << 8) | data[6]; //Размер куска данных
@@ -451,7 +454,7 @@ uchar usbFunctionWrite(uchar *data, uchar len) {
 		if(prog_nbytes <= 0)
 		{
 			if(i2c_stop_aw == 1) i2c_stop();
-			  else i2c_start_rep();
+			  else i2c_start();
 			  
 			prog_state = PROG_STATE_IDLE;
 			return 1;

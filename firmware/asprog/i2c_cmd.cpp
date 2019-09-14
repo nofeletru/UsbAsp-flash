@@ -13,12 +13,12 @@ void i2c_cmd_init() {
   Serial.flush();
 }
 
-void i2c_cmd_ack() {
-  byte addr[1];
+void i2c_cmd_writebyte() {
+  byte data[1];
   int bytesread;
   byte ack;
 
-  bytesread = Serial.readBytes(addr, 1);
+  bytesread = Serial.readBytes(data, 1);
 
   if (bytesread == 0) {
     Serial.write(ERROR_RECV); //Ошибка
@@ -26,17 +26,43 @@ void i2c_cmd_ack() {
     return;
   }
 
-  Serial.write(FUNC_I2C_ACK); //Подтверждаем команду
+  Serial.write(FUNC_I2C_WRITEBYTE); //Подтверждаем команду
   Serial.flush();
 
-  i2c_start();
-  if( (addr[0] & 1) )
-    ack = i2c_address(addr[0], I2C_READ);
-  else  
-    ack = i2c_address(addr[0], I2C_WRITE);
-  i2c_stop();
+  //i2c_start();
+  
+  ack = i2c_send_byte(data[0]);
+  
+  //i2c_stop();
 
   Serial.write(ack);
+  Serial.flush();
+
+}
+
+void i2c_cmd_readbyte() {
+  byte data[1];
+  int bytesread;
+  byte ack[1];
+
+  bytesread = Serial.readBytes(ack, 1);
+
+  if (bytesread == 0) {
+    Serial.write(ERROR_RECV); //Ошибка
+    Serial.flush();
+    return;
+  }
+
+  Serial.write(FUNC_I2C_READBYTE); //Подтверждаем команду
+  Serial.flush();
+
+  //i2c_start();
+  
+  data[0] = i2c_read_byte(ack[0]);
+  
+  //i2c_stop();
+
+  Serial.write(data[0]);
   Serial.flush();
 
 }
@@ -149,5 +175,5 @@ void i2c_cmd_write() {
   }
 
   if(stop_aw == 1) i2c_stop();
-    else i2c_start_rep();
+    else i2c_start();
 }

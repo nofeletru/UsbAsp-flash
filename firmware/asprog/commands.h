@@ -6,10 +6,13 @@
 #define FUNC_SPI_READ 10
 #define FUNC_SPI_WRITE 11
 
-#define FUNC_I2C_INIT     20
-#define FUNC_I2C_READ     21
-#define FUNC_I2C_WRITE    22
-#define FUNC_I2C_ACK      23
+#define FUNC_I2C_INIT      20
+#define FUNC_I2C_READ      21
+#define FUNC_I2C_WRITE     22
+#define FUNC_I2C_START     23
+#define FUNC_I2C_STOP      24
+#define FUNC_I2C_READBYTE  25
+#define FUNC_I2C_WRITEBYTE 26
 
 #define FUNC_MW_READ      30
 #define FUNC_MW_WRITE     31

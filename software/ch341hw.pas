@@ -16,6 +16,7 @@ private
   FDevOpened: boolean;
   FDevHandle: Longint;
   FStrError: string;
+  procedure SetI2CPins(scl, sda: cardinal);
 public
   constructor Create;
   destructor Destroy; override;
@@ -36,7 +37,10 @@ public
   function I2CReadWrite(DevAddr: byte;
                         WBufferLen: integer; WBuffer: array of byte;
                         RBufferLen: integer; var RBuffer: array of byte): integer; override;
-  function I2CSendAddress(DevAddr: byte): boolean; override;
+  procedure I2CStart; override;
+  procedure I2CStop; override;
+  function I2CReadByte(ack: boolean): byte; override;
+  function I2CWriteByte(data: byte): boolean; override; //return ack
 
   //MICROWIRE
   function MWInit(speed: integer): boolean; override;
@@ -47,7 +51,17 @@ public
 end;
 
 implementation
+uses main;
+procedure TCH341Hardware.SetI2CPins(scl, sda: cardinal);
+var pins: cardinal;
+begin
+  if scl > 0 then scl := $40000;
+  if sda > 0 then sda := $80000;
 
+  pins := 0;
+  pins := pins or scl or sda;
+  CH341SetOutput(FDevHandle, $10, 0, pins);
+end;
 
 constructor TCH341Hardware.Create;
 begin
@@ -143,12 +157,14 @@ procedure TCH341Hardware.I2CInit;
 begin
   if not FDevOpened then Exit;
   CH341SetStream(FDevHandle, %10000001);
+  SetI2CPins(1,1);
 end;
 
 procedure TCH341Hardware.I2CDeinit;
 begin
   if not FDevOpened then Exit;
   CH341Set_D5_D0(FDevHandle, 0, 0);
+  SetI2CPins(1,1);
 end;
 
 function TCH341Hardware.I2CReadWrite(DevAddr: byte;
@@ -166,21 +182,78 @@ begin
   if not CH341StreamI2C(FDevHandle, WBufferLen+1, @full_buff[0], RBufferLen, @RBuffer) then result := -1 else result := WBufferLen+RBufferLen;
 end;
 
+procedure TCH341Hardware.I2CStart;
+begin
+  if not FDevOpened then Exit;
+  //start
+  SetI2CPins(0,0);
+  SetI2CPins(1,1);
+  SetI2CPins(1,0);
+end;
 
-function TCH341Hardware.I2CSendAddress(DevAddr: byte): boolean;
+procedure TCH341Hardware.I2CStop;
+begin
+  if not FDevOpened then Exit;
+  //stop
+  SetI2CPins(1,0);
+  SetI2CPins(1,1);
+end;
+
+function TCH341Hardware.I2CReadByte(ack: boolean): byte;
+function ReadBit(): byte;
+var
+  pins: cardinal;
+begin
+  SetI2CPins(0,1); //scl low
+  SetI2CPins(1,1); //scl/sda hi
+  CH341GetStatus(FDevHandle, @pins);
+  if IsBitSet(pins, 23) then Result := 1
+    else
+      Result := 0;
+end;
+
+var i: integer;
+    data: byte;
+begin
+  if not FDevOpened then Exit;
+  data := 0;
+
+  for i:=7 downto 0 do
+  begin
+    if (ReadBit = 1) then data := SetBit(data, i);
+  end;
+
+  //generate pulse for ack
+  if not ack then
+  begin
+    SetI2CPins(0,1); //scl low
+    SetI2CPins(0,1); //1
+    SetI2CPins(1,1); //scl hi
+  end
+  else
+  begin
+    SetI2CPins(0,1); //scl low
+    SetI2CPins(0,0); //0
+    SetI2CPins(1,0);
+  end;
+
+  result := data;
+end;
+
+function TCH341Hardware.I2CWriteByte(data: byte): boolean;
 procedure SendBit(bit: byte);
 begin
   if boolean(bit) then
   begin
-    CH341SetOutput(FDevHandle, $10, 0, $0); //scl low
-    CH341SetOutput(FDevHandle, $10, 0, $80000); //1
-    CH341SetOutput(FDevHandle, $10, 0, $C0000); //scl hi
+    SetI2CPins(0,0); //scl low
+    SetI2CPins(0,1);
+    SetI2CPins(1,1);
   end
   else
   begin
-    CH341SetOutput(FDevHandle, $10, 0, $0); //scl low
-    CH341SetOutput(FDevHandle, $10, 0, $0); //0
-    CH341SetOutput(FDevHandle, $10, 0, $40000); //scl hi
+    SetI2CPins(0,0);
+    SetI2CPins(0,0);
+    SetI2CPins(1,0);
   end;
 end;
 var
@@ -188,40 +261,30 @@ var
 begin
   if not FDevOpened then Exit;
 
-  //start
-  CH341SetOutput(FDevHandle, $10, 0, $C0000); //scl/sda hi
-  CH341SetOutput(FDevHandle, $10, 0, $40000); //sda low(start)
-
   for i:=7 downto 0 do
   begin
-    if IsBitSet(DevAddr, i) then SendBit(1) else SendBit(0);
+    if IsBitSet(data, i) then SendBit(1) else SendBit(0);
   end;
 
   //generate pulse for ack
-  CH341SetOutput(FDevHandle, $10, 0, $80000); //scl low
-  CH341SetOutput(FDevHandle, $10, 0, $C0000); //scl hi
+  SetI2CPins(0,1); //scl low
+  SetI2CPins(1,1); //scl hi
 
   //read ack
   CH341GetStatus(FDevHandle, @pins);
-  Result := IsBitSet(pins, 23);
-
-  //stop
-  CH341SetOutput(FDevHandle, $10, 0, $40000); //scl hi sda lo
-  CH341SetOutput(FDevHandle, $10, 0, $C0000); //sda hi
+  Result := not IsBitSet(pins, 23);
 
 end;
 
 //MICROWIRE_____________________________________________________________________
 
 function TCH341Hardware.MWInit(speed: integer): boolean;
-var buff: byte;
 begin
     if not FDevOpened then Exit(false);
     Result := CH341SetStream(FDevHandle, %10000001);
 end;
 
 procedure TCH341Hardware.MWDeInit;
-var buff: byte;
 begin
   if not FDevOpened then Exit;
   CH341Set_D5_D0(FDevHandle, 0, 0);

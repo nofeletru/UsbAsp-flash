@@ -9,7 +9,6 @@
 
 void i2c_init();
 void i2c_start();
-void i2c_start_rep();
 void i2c_stop();
 unsigned char  i2c_send_byte(unsigned char  byte);
 unsigned char  i2c_read_byte(unsigned char  ack);

@@ -36,8 +36,11 @@ public
   function I2CReadWrite(DevAddr: byte;
                         WBufferLen: integer; WBuffer: array of byte;
                         RBufferLen: integer; var RBuffer: array of byte): integer; virtual; abstract;
-  //Send address and return ack/nack
-  function I2CSendAddress(DevAddr: byte): boolean; virtual; abstract;
+  //
+  procedure I2CStart; virtual; abstract;
+  procedure I2CStop; virtual; abstract;
+  function I2CReadByte(ack: boolean): byte; virtual; abstract;
+  function I2CWriteByte(data: byte): boolean; virtual; abstract; //return ack
 
   //MICROWIRE
   function MWInit(speed: integer): boolean; virtual; abstract;

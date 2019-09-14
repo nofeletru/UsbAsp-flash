@@ -37,7 +37,10 @@ public
   function I2CReadWrite(DevAddr: byte;
                         WBufferLen: integer; WBuffer: array of byte;
                         RBufferLen: integer; var RBuffer: array of byte): integer; override;
-  function I2CSendAddress(DevAddr: byte): boolean; override;
+  procedure I2CStart; override;
+  procedure I2CStop; override;
+  function I2CReadByte(ack: boolean): byte; override;
+  function I2CWriteByte(data: byte): boolean; override; //return ack
 
   //MICROWIRE
   function MWInit(speed: integer): boolean; override;
@@ -66,7 +69,10 @@ FUNC_SPI_WRITE                   = 11;
 FUNC_I2C_INIT                    = 20;
 FUNC_I2C_READ                    = 21;
 FUNC_I2C_WRITE                   = 22;
-FUNC_I2C_ACK                     = 23;
+FUNC_I2C_START                   = 23;
+FUNC_I2C_STOP                    = 24;
+FUNC_I2C_READBYTE                = 25;
+FUNC_I2C_WRITEBYTE               = 26;
 
 FUNC_MW_READ                     = 30;
 FUNC_MW_WRITE                    = 31;
@@ -413,21 +419,60 @@ begin
 
 end;
 
+procedure TArduinoHardware.I2CStart;
+begin
+  if not FDevOpened then Exit;
 
-function TArduinoHardware.I2CSendAddress(DevAddr: byte): boolean;
+  FSerial.SendByte(FUNC_I2C_START);
+  FSerial.Flush;
+end;
+
+procedure TArduinoHardware.I2CStop;
+begin
+  if not FDevOpened then Exit;
+
+  FSerial.SendByte(FUNC_I2C_STOP);
+  FSerial.Flush;
+end;
+
+function TArduinoHardware.I2CReadByte(ack: boolean): byte;
+var
+  Status: byte;
+begin
+  if not FDevOpened then Exit;
+
+  FSerial.SendByte(FUNC_I2C_READBYTE);
+  FSerial.SendByte(Byte(ack));
+  FSerial.Flush;
+
+  Status := FSerial.RecvByte(TIMEOUT);
+
+  if Status <> FUNC_I2C_READBYTE then
+  begin
+    LogPrint(StrErr_CmdErr + IntToStr(Status));
+    Exit;
+  end;
+
+  Status := FSerial.RecvByte(TIMEOUT);
+
+  Result := Status;
+
+end;
+
+function TArduinoHardware.I2CWriteByte(data: byte): boolean;
 var
   Status: byte;
 begin
   Status := 1;
   if not FDevOpened then Exit;
 
-  FSerial.SendByte(FUNC_I2C_ACK);
-  FSerial.SendByte(DevAddr);
+  FSerial.SendByte(FUNC_I2C_WRITEBYTE);
+  FSerial.SendByte(data);
   FSerial.Flush;
 
   Status := FSerial.RecvByte(TIMEOUT);
 
-  if Status <> FUNC_I2C_ACK then
+  if Status <> FUNC_I2C_WRITEBYTE then
   begin
     LogPrint(StrErr_CmdErr + IntToStr(Status));
     Exit(false);
@@ -435,7 +480,7 @@ begin
 
   Status := FSerial.RecvByte(TIMEOUT);
 
-  Result := not Boolean(Status);
+  Result := Boolean(Status);
 end;
 
 //MICROWIRE_____________________________________________________________________

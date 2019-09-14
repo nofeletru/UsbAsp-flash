@@ -29,18 +29,16 @@ implementation
 uses main;
 
 procedure EnterProgModeI2C();
-var
-  dummy: byte;
 begin
   AsProgrammer.Programmer.I2CInit;
   sleep(50);
 end;
 
 function UsbAspI2C_BUSY(Address: byte): Boolean;
-var
-  Status: byte;
 begin
-  Result := AsProgrammer.Programmer.I2CLineIsBusy(Address);
+  AsProgrammer.Programmer.I2CStart;
+  Result := not AsProgrammer.Programmer.I2CWriteByte(Address);
+  AsProgrammer.Programmer.I2CStop;
 end;
 
 //Возвращает сколько байт прочитали

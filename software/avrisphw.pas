@@ -37,7 +37,10 @@ public
   function I2CReadWrite(DevAddr: byte;
                         WBufferLen: integer; WBuffer: array of byte;
                         RBufferLen: integer; var RBuffer: array of byte): integer; override;
-  function I2CSendAddress(DevAddr: byte): boolean; override;
+  procedure I2CStart; override;
+  procedure I2CStop; override;
+  function I2CReadByte(ack: boolean): byte; override;
+  function I2CWriteByte(data: byte): boolean; override; //return ack
 
   //MICROWIRE
   function MWInit(speed: integer): boolean; override;
@@ -70,8 +73,12 @@ const
    CMD_FIRMWARE_VER              = $34;
    //I2C
    CMD_I2C_READ	                = $35;
-   CMD_I2C_WRITE	                = $36;
-   CMD_I2C_ACK                   = $37;
+   CMD_I2C_WRITE	        = $36;
+   CMD_I2C_START  		= $37;
+   CMD_I2C_STOP  		= $55;
+   CMD_I2C_READBYTE	        = $56;
+   CMD_I2C_WRITEBYTE	        = $57;
+   CMD_I2C_INIT    	        = $58;
    //MW
    CMD_MW_READ		        = $38;
    CMD_MW_WRITE	                = $39;
@@ -240,8 +247,13 @@ end;
 //i2c___________________________________________________________________________
 
 procedure TAvrispHardware.I2CInit;
+var
+  buffer: byte;
 begin
   if not FDevOpened then Exit;
+
+  buffer:= CMD_I2C_INIT;
+  usb_bulk_write(FDevHandle, OUT_EP, buffer, 1, STREAM_TIMEOUT_MS);
 end;
 
 procedure TAvrispHardware.I2CDeinit;
@@ -297,18 +309,54 @@ begin
 
 end;
 
+procedure TAvrispHardware.I2CStart;
+var
+  buffer: byte;
+begin
+  if not FDevOpened then Exit;
 
-function TAvrispHardware.I2CSendAddress(DevAddr: byte): boolean;
+  buffer:= CMD_I2C_START;
+  usb_bulk_write(FDevHandle, OUT_EP, buffer, 1, STREAM_TIMEOUT_MS);
+end;
+
+procedure TAvrispHardware.I2CStop;
+var
+  buffer: byte;
+begin
+  if not FDevOpened then Exit;
+
+  buffer:= CMD_I2C_STOP;
+  usb_bulk_write(FDevHandle, OUT_EP, buffer, 1, STREAM_TIMEOUT_MS);
+end;
+
+function TAvrispHardware.I2CReadByte(ack: boolean): byte;
+var
+  buff: array[0..1] of byte;
+  data: byte;
+begin
+  if not FDevOpened then Exit;
+
+  buff[0] := CMD_I2C_READBYTE;
+  if ack then buff[1] := 0 else buff[1] := 1;
+
+  usb_bulk_write(FDevHandle, OUT_EP, buff, SizeOf(buff), STREAM_TIMEOUT_MS);
+  usb_bulk_read(FDevHandle, IN_EP, data, 1, STREAM_TIMEOUT_MS);
+  Result := data;
+end;
+
+function TAvrispHardware.I2CWriteByte(data: byte): boolean;
 var
   buff: array[0..1] of byte;
   status: byte = 1;
 begin
-  buff[0] := CMD_I2C_ACK;
-  buff[1] := DevAddr;
+  if not FDevOpened then Exit;
+
+  buff[0] := CMD_I2C_WRITEBYTE;
+  buff[1] := data;
 
   usb_bulk_write(FDevHandle, OUT_EP, buff, SizeOf(buff), STREAM_TIMEOUT_MS);
   usb_bulk_read(FDevHandle, IN_EP, status, 1, STREAM_TIMEOUT_MS);
-  Result := not Boolean(Status);
+  Result := Boolean(Status);
 end;
 
 //MICROWIRE_____________________________________________________________________

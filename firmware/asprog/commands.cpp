@@ -1,9 +1,9 @@
+#include <arduino.h>
 #include "commands.h"
 #include "spi_cmd.h"
 #include "i2c_cmd.h"
+#include "i2c.h"
 #include "mw_cmd.h"
-
-#include <arduino.h>
 
 byte buff[256];
 
@@ -25,8 +25,17 @@ void ParseCommand(char cmd) {
   } else if (cmd == FUNC_I2C_INIT) {
     i2c_cmd_init(); 
  
-  } else if (cmd == FUNC_I2C_ACK) {
-    i2c_cmd_ack();  
+  } else if (cmd == FUNC_I2C_START) {
+    i2c_start();
+    
+  } else if (cmd == FUNC_I2C_STOP) {
+    i2c_stop();
+    
+  } else if (cmd == FUNC_I2C_READBYTE) {
+    i2c_cmd_readbyte();
+
+  } else if (cmd == FUNC_I2C_WRITEBYTE) {
+    i2c_cmd_writebyte();  
  
   } else if (cmd == FUNC_I2C_READ) {
     i2c_cmd_read();  

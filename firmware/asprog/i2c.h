@@ -6,7 +6,6 @@
 
 void i2c_init();
 void i2c_start();
-void i2c_start_rep();
 void i2c_stop();
 byte i2c_send_byte(byte  sbyte);
 byte i2c_read_byte(byte  ack);

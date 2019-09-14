@@ -530,7 +530,7 @@ function Script_I2CIsBusy(Sender:TObject; var A:TVarList; var R: TVar) : boolean
 begin
   if A.Count < 1 then Exit(false);
 
-  R.Value := AsProgrammer.Programmer.I2CLineIsBusy(TPVar(A.Items[0])^.Value);
+  R.Value := AsProgrammer.Programmer.I2CWriteByte(TPVar(A.Items[0])^.Value);
   result := true;
 end;
 

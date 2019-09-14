@@ -15,13 +15,7 @@ void i2c_init()
   I2C_SCL_HIGH;
 }
 
-void i2c_start() 
-{
-  I2C_SDA_LOW;
-  delayMicroseconds(I2C_DELAY);
-}
-
-void i2c_start_rep()
+void i2c_start()
 {
   I2C_SCL_LOW;
   delayMicroseconds(I2C_DELAY);
