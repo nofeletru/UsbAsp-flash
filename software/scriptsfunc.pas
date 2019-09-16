@@ -441,6 +441,50 @@ begin
   Result := true;
 end;
 
+{Script I2CStart;
+  Используется вместе с I2CWriteByte, I2CReadByte
+ }
+function Script_I2CStart(Sender:TObject) : boolean;
+begin
+  AsProgrammer.Programmer.I2CStart;
+  result := true;
+end;
+
+{Script I2CStop;
+  Используется вместе с I2CWriteByte, I2CReadByte
+ }
+function Script_I2CStop(Sender:TObject) : boolean;
+begin
+  AsProgrammer.Programmer.I2CStop;
+  result := true;
+end;
+
+{Script I2CWriteByte(data): boolean;
+ Возвращает ack/nack
+ Параметры:
+   data байт данных для записи
+   Возвращает ack/nack}
+function Script_I2CWriteByte(Sender:TObject; var A:TVarList; var R: TVar) : boolean;
+begin
+  if A.Count < 1 then Exit(false);
+
+  R.Value := AsProgrammer.Programmer.I2CWriteByte(TPVar(A.Items[0])^.Value);
+  result := true;
+end;
+
+{Script I2CReadByte(ack: boolean): data;
+ Возвращает байт данных
+ Параметры:
+   ack ack/nack
+   Возвращает байт прочитаных данных}
+function Script_I2CReadByte(Sender:TObject; var A:TVarList; var R: TVar) : boolean;
+begin
+  if A.Count < 1 then Exit(false);
+
+  R.Value := AsProgrammer.Programmer.I2CReadByte(TPVar(A.Items[0])^.Value);
+  result := true;
+end;
+
 {Script ReadToEditor(size, position, buffer...);
  Записывает данные из буфера в редактор
  Параметры:
@@ -521,19 +565,6 @@ begin
   Result := true;
 end;
 
-{Script I2CIsBusy(DevAddr): boolean;
- Возвращает состаяние линии
- Параметры:
-   DevAddr адрес устройства
-   Возвращает состаяние линии}
-function Script_I2CIsBusy(Sender:TObject; var A:TVarList; var R: TVar) : boolean;
-begin
-  if A.Count < 1 then Exit(false);
-
-  R.Value := AsProgrammer.Programmer.I2CWriteByte(TPVar(A.Items[0])^.Value);
-  result := true;
-end;
-
 {Script GetEditorDataSize: Longword;
  Возвращает размер данных в редакторе
  }
@@ -571,7 +602,10 @@ begin
   PC.SetFunction('I2CEnterProgMode', @Script_I2CEnterProgMode);
   PC.SetFunction('I2CExitProgMode', @Script_I2CExitProgMode);
   PC.SetFunction('I2CReadWrite', @Script_I2CReadWrite);
-  PC.SetFunction('I2CIsBusy', @Script_I2CIsBusy);
+  PC.SetFunction('I2CStart', @Script_I2CStart);
+  PC.SetFunction('I2CStop', @Script_I2CStop);
+  PC.SetFunction('I2CWriteByte', @Script_I2CWriteByte);
+  PC.SetFunction('I2CReadByte', @Script_I2CReadByte);
 
   SetFunctions(PC);
 end;

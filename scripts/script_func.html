@@ -205,13 +205,35 @@
 					&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#0000FF">DevAddr</font></b> адрес устройства&nbsp;&nbsp;<br>
 					&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#0000FF">size </font></b>размер данных в байтах&nbsp;&nbsp;<br>
 					&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#0000FF">buffer </font></b>переменные с&nbsp;данными&nbsp;или массив созданный <b>CreateByteArray&nbsp;&nbsp;</b><br>
-					&nbsp;&nbsp; Возвращает количество записанных + прочитанных байт</p>
+					&nbsp;&nbsp; Возвращает количество записанных + прочитанных байт<br>
+					&nbsp;&nbsp; *Если <b><font color="#0000FF">rsize</font></b>=0 можно опустить параметр <b><font color="#0000FF">rbuffer</font></b></p>
 			</td>
 		</tr>
 		<tr>
-			<td style="text-align: center;"><b>I2CIsBusy(<font color="#0000FF">DevAddr</font>);</b></td>
+			<td style="text-align: center;"><b>I2CStart();</b></td>
 				<td style="text-align: center;">
-				<p align="left">&nbsp;Возвращает состаяние линии</p>
+				<p align="left">Используется вместе с I2CReadByte и I2CWriteByte</p>
+			    </td>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>I2CStop();</b></td>
+				<td style="text-align: center;">
+				<p align="left">Используется вместе с I2CReadByte и I2CWriteByte</p>
+			    </td>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>I2CReadByte(<font color="#0000FF">ack</font>: boolean): byte;</b></td>
+				<td style="text-align: center;">
+				<p align="left">Читает байт данных и отправляет ack/nack</p>
+			    </td>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>I2CWriteByte(<font color="#0000FF">data</font>): boolean;</b></td>
+				<td style="text-align: center;">
+				<p align="left">Записывает байт данных и возвращает ack/nack</p>
 			    </td>
 			</td>
 		</tr>

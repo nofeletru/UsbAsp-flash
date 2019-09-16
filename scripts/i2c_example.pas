@@ -15,12 +15,19 @@ begin
 end
 
 {$write}
+function I2CIsBusy(DevAdr): boolean;
+begin
+  I2CStart;
+  Result := not I2CWriteByte(DevAdr);
+  I2CStop;
+end;
 //writing 24c08
 begin
   ChipSize := 1024;
   MemAddr := 0;
   WriteByte := 0;
   DevAddr := $A0;
+  ProgressBar(0, _IC_SIZE-1, 0);
 
   I2CEnterProgMode;
 
@@ -33,7 +40,9 @@ begin
     if MemAddr = 256 then DevAddr := $A2;
     if MemAddr = 512 then DevAddr := $A4;
     if MemAddr = 768 then DevAddr := $A6;
+    ProgressBar(1);
   end;
 
   I2CExitProgMode;
+  ProgressBar(0, 0, 0);
 end
