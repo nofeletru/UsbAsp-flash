@@ -187,6 +187,7 @@ type
   function OpenDevice: boolean;
   function SetSPISpeed(OverrideSpeed: byte): integer;
   procedure SyncUI_ICParam();
+  function UserCancel(): boolean;
 
 const
   SPI_CMD_25             = 0;
@@ -849,13 +850,39 @@ begin
   MainForm.ProgressBar.Position := 0;
 end;
 
-//write size in pages
+function EraseFlashKB(chipsize: longword; pagesize: word): integer;
+var
+  i: integer;
+  busy: boolean;
+begin
+  MainForm.ProgressBar.Max := chipsize div pagesize;
+
+  UsbAspMulti_EnableEDI();
+  UsbAspMulti_WriteReg($FEA7, $A4); //en write
+
+  for i:= 0 to (chipsize div pagesize)-1 do
+  begin
+    UsbAspMulti_ErasePage(i * pagesize);
+    //busy
+    repeat
+      if UserCancel then Exit;
+      busy := UsbAspMulti_Busy();
+    until busy = false;
+
+    MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
+  end;
+
+  MainForm.ProgressBar.Position := 0;
+end;
+
 procedure WriteFlashKB(var RomStream: TMemoryStream; StartAddress, WriteSize: cardinal; PageSize: word);
 var
   DataChunk: array[0..2047] of byte;
   DataChunk2: array[0..2047] of byte;
   Address, BytesWrite: cardinal;
   i: integer;
+  busy: boolean;
+  SkipPage: boolean = false;
 begin
   if (StartAddress >= WriteSize) or (WriteSize = 0) {or (PageSize > WriteSize)} then
   begin
@@ -869,35 +896,56 @@ begin
 
   BytesWrite := 0;
   Address := StartAddress;
-  MainForm.ProgressBar.Max := WriteSize;
+  MainForm.ProgressBar.Max := WriteSize div PageSize;
 
   UsbAspMulti_EnableEDI();
-  UsbAspMulti_WriteReg($FEAD, $08); //en flash
   UsbAspMulti_WriteReg($FEA7, $A4); //en write
 
   while Address < WriteSize do
   begin
 
-
     //if (WriteSize - Address) < PageSize then PageSize := (WriteSize - Address);
     RomStream.ReadBuffer(DataChunk, PageSize);
 
-    UsbAspMulti_WritePage(Address, datachunk);
-    BytesWrite := BytesWrite + 1;
 
-     { if (MainForm.MenuAutoCheck.Checked) then
+    //Если страница вся 00 то не пишем ее
+    if MainForm.MenuSkipFF.Checked then
+    begin
+      SkipPage := True;
+      for i:=0 to PageSize-1 do
+        if DataChunk[i] <> $00 then
+        begin
+          SkipPage := False;
+          Break;
+        end;
+    end;
+
+    if not SkipPage then
+      UsbAspMulti_WritePage(Address, datachunk);
+
+    //busy
+    repeat
+      if UserCancel then Exit;
+      busy := UsbAspMulti_Busy();
+    until busy = false;
+
+    BytesWrite := BytesWrite + PageSize;
+
+     if (MainForm.MenuAutoCheck.Checked) then
       begin
-        UsbAsp25_Read(hUSBDev, $03, Address, datachunk2, PageSize);
         for i:=0 to PageSize-1 do
-          if DataChunk2[i] <> DataChunk[i] then
+        begin
+          UsbAspMulti_Read(Address+i, DataChunk2[0]);
+          if DataChunk2[0] <> DataChunk[i] then
           begin
-            LogPrint(STR_VERIFY_ERROR+IntToHex(Address+i, 8), clRed);
+            LogPrint(STR_VERIFY_ERROR+IntToHex(Address+i, 8));
             MainForm.ProgressBar.Position := 0;
             Exit;
           end;
-      end; }
+        end;
+      end;
 
-    Inc(Address, 1);
+    Inc(Address, PageSize);
     MainForm.ProgressBar.Position := MainForm.ProgressBar.Position + 1;
     Application.ProcessMessages;
     if UserCancel then Exit;
@@ -1138,7 +1186,6 @@ begin
   MainForm.ProgressBar.Max := ChipSize div ChunkSize;
 
   UsbAspMulti_EnableEDI();
-  UsbAspMulti_WriteReg($FEAD, $08); //en flash
 
   RomStream.Clear;
 
@@ -1409,7 +1456,7 @@ begin
   UsbAspMulti_EnableEDI();
   UsbAspMulti_WriteReg($FEAD, $08); //en flash
 
-  RomStream.Clear;
+  //RomStream.Clear;
 
   while Address < ChipSize do
   begin
@@ -1689,17 +1736,11 @@ begin
 
   if MainForm.RadioSPI.Checked then
   begin
-    if (MainForm.ComboSPICMD.ItemIndex <> SPI_CMD_KB) then
-    begin
-      MainForm.ButtonReadID.Enabled := True;
-      MainForm.ButtonBlock.Enabled := True;
-    end
+    MainForm.ButtonReadID.Enabled := True;
+    if MainForm.ComboSPICMD.ItemIndex = SPI_CMD_KB then
+      MainForm.ButtonBlock.Enabled := False
     else
-    begin
-      MainForm.ButtonErase.Enabled := False;
       MainForm.ButtonBlock.Enabled := True;
-    end;
-
   end;
 end;
 
@@ -2012,6 +2053,8 @@ begin
 end;
 
 procedure TMainForm.RadioSPIChange(Sender: TObject);
+var
+  SkipFFLabel: string;
 begin
   Label1.Visible              := True;
   LabelSPICMD.Visible         := True;
@@ -2019,15 +2062,23 @@ begin
   ComboSPICMD.Visible         := True;
 
   ButtonErase.Enabled         := True;
+  ButtonReadID.Enabled        := True;
 
-  if (ComboSPICMD.ItemIndex <> SPI_CMD_KB) then
+  if ComboSPICMD.ItemIndex = SPI_CMD_KB then
   begin
-    ButtonReadID.Enabled        := True;
-    ButtonBlock.Enabled         := True;
-  end else
+    ButtonBlock.Enabled := False;
+
+    SkipFFLabel := MenuSkipFF.Caption;
+    Delete(SkipFFLabel, Length(SkipFFLabel)-1 ,2);
+    MenuSkipFF.Caption := SkipFFLabel + '00';
+  end
+  else
   begin
-    ButtonReadID.Enabled        := False;
-    ButtonErase.Enabled         := False;
+    ButtonBlock.Enabled := True;
+
+    SkipFFLabel := MenuSkipFF.Caption;
+    Delete(SkipFFLabel, Length(SkipFFLabel)-1 ,2);
+    MenuSkipFF.Caption := SkipFFLabel + 'FF'
   end;
 
   ComboMWBitLen.Visible       := False;
@@ -2121,7 +2172,7 @@ try
     if ComboSPICMD.ItemIndex = SPI_CMD_45 then
       WriteFlash45(RomF, 0, MPHexEditorEx.DataSize, PageSize, WriteType);
     if ComboSPICMD.ItemIndex = SPI_CMD_KB then
-      WriteFlashKB(RomF, 0, (MPHexEditorEx.DataSize div PageSize), PageSize);
+      WriteFlashKB(RomF, 0, MPHexEditorEx.DataSize, PageSize);
 
     if (MenuAutoCheck.Checked) and (WriteType <> WT_PAGE) then
     begin
@@ -2234,6 +2285,7 @@ var
   I2C_DevAddr: byte;
   I2C_ChunkSize: Word = 65535;
   i: Longword;
+  BlankByte: byte;
 begin
 try
   ButtonCancel.Tag := 0;
@@ -2263,14 +2315,19 @@ try
     RomF.Clear;
     if BlankCheck then
     begin
+      if ComboSPICMD.ItemIndex = SPI_CMD_KB then
+        BlankByte := $00
+      else
+        BlankByte := $FF;
+
       for i:=1 to StrToInt(ComboChipSize.Text) do
-        RomF.WriteByte($FF);
+        RomF.WriteByte(BlankByte);
     end
     else
       MPHexEditorEx.SaveToStream(RomF);
     RomF.Position :=0;
 
-    if  ComboSPICMD.ItemIndex = SPI_CMD_KB then
+    if ComboSPICMD.ItemIndex = SPI_CMD_KB then
       VerifyFlashKB(RomF, 0, RomF.Size);
 
     if ComboSPICMD.ItemIndex = SPI_CMD_25 then
@@ -2473,12 +2530,25 @@ begin
   try
     if not OpenDevice() then exit;
     LockControl();
+
     FillByte(ID.ID9FH, 3, $FF);
     FillByte(ID.ID90H, 2, $FF);
     FillByte(ID.IDABH, 1, $FF);
     FillByte(ID.ID15H, 2, $FF);
 
     EnterProgMode25(SetSPISpeed(0));
+
+    if ComboSPICMD.ItemIndex = SPI_CMD_KB then
+    begin
+      UsbAspMulti_EnableEDI();
+      UsbAspMulti_EnableEDI();
+      UsbAspMulti_ReadReg($FF00, ID.IDABH); //read EC hardware version
+      LogPrint('KB9012 EC Hardware version: '+IntToHex(ID.IDABH, 2));
+      UsbAspMulti_ReadReg($FF24, ID.IDABH); //read EDI version
+      LogPrint('KB9012 EDI version: '+IntToHex(ID.IDABH, 2));
+      ExitProgMode25;
+      Exit;
+    end;
 
     UsbAsp25_ReadID(ID);
     ExitProgMode25;
@@ -2821,10 +2891,7 @@ try
         Exit;
       end;
 
-      UsbAspMulti_EnableEDI();
-      UsbAspMulti_WriteReg($FEAD, $08); //en flash
-      UsbAspMulti_WriteReg($FEA7, $A4); //en write
-      UsbAspMulti_Erase(StrToInt(ComboChipSize.Text), StrToInt(ComboPageSize.Text));
+      EraseFlashKB(StrToInt(ComboChipSize.Text), StrToInt(ComboPageSize.Text));
     end;
 
     if ComboSPICMD.ItemIndex = SPI_CMD_25 then

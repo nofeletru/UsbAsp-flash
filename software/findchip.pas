@@ -125,7 +125,6 @@ begin
 
                if  ChipNode.Attributes.GetNamedItem('spicmd') <> nil then
                begin
-                 MainForm.RadioSPI.Checked:= true;
                  if UpperCase(ChipNode.Attributes.GetNamedItem('spicmd').NodeValue) = 'KB'then
                    Main.CurrentICParam.SpiCmd:= SPI_CMD_KB;
                  if ChipNode.Attributes.GetNamedItem('spicmd').NodeValue = '45' then
@@ -134,13 +133,19 @@ begin
                    Main.CurrentICParam.SpiCmd:= SPI_CMD_25;
                  if ChipNode.Attributes.GetNamedItem('spicmd').NodeValue = '95' then
                    Main.CurrentICParam.SpiCmd:= SPI_CMD_95;
+
+                 MainForm.ComboSPICMD.ItemIndex := CurrentICParam.SpiCmd;
+                 MainForm.RadioSPI.Checked:= true;
+                 MainForm.RadioSPIChange(MainForm);
                end
                else //По дефолту spicmd25
                if (ChipNode.Attributes.GetNamedItem('addrtype') = nil) and
                      (ChipNode.Attributes.GetNamedItem('addrbitlen') = nil) then
                      begin
-                        MainForm.RadioSPI.Checked:= true;
                         Main.CurrentICParam.SpiCmd:= SPI_CMD_25;
+                        MainForm.ComboSPICMD.ItemIndex := CurrentICParam.SpiCmd;
+                        MainForm.RadioSPI.Checked:= true;
+                        MainForm.RadioSPIChange(MainForm);
                      end;
 
                if ChipNode.Attributes.GetNamedItem('addrbitlen') <> nil then
@@ -181,9 +186,7 @@ begin
                  Main.CurrentICParam.Script := '';
 
 
-
                 MainForm.LabelChipName.Caption := CurrentICParam.Name;
-                MainForm.ComboSPICMD.ItemIndex := CurrentICParam.SpiCmd;
 
                 if CurrentICParam.MWAddLen > 0 then
                   MainForm.ComboMWBitLen.Text := IntToStr(CurrentICParam.MWAddLen)

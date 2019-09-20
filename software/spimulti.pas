@@ -14,9 +14,8 @@ function UsbAspMulti_ReadReg(RegAddr: Word; var RegData: byte): integer;
 
 function UsbAspMulti_Read(Addr: longword; var Data: byte): integer;
 
-function UsbAspMulti_ErasePage(page: longword): integer;
-function UsbAspMulti_WritePage(page: longword; var Data: array of byte): integer;
-function UsbAspMulti_Erase(chipsize: longword; pagesize: word): integer;
+function UsbAspMulti_ErasePage(Addr: longword): integer;
+function UsbAspMulti_WritePage(Addr: longword; var Data: array of byte): integer;
 
 function UsbAspMulti_Busy(): boolean;
 
@@ -24,8 +23,9 @@ implementation
 
 uses Main;
 
+//Первая команда, после ресета, должна быть на частоте не более 8MHz
 
-
+//Write enable of EFCMD register,0xFEAC.
 function UsbAspMulti_EnableEDI(): integer;
 var
   Buff: array[0..4] of byte;
@@ -59,7 +59,7 @@ end;
 function UsbAspMulti_ReadReg(RegAddr: Word; var RegData: byte): integer;
 var
   Buff: array[0..4] of byte;
-  ReadyStat: byte;
+  ReadyStat: byte = 0;
 begin
   Buff[0] := $30;
   Buff[1] := 0;
@@ -72,7 +72,7 @@ begin
   //Ready
   repeat
     Application.ProcessMessages;
-    if MainForm.ButtonCancel.Tag <> 0 then Exit;
+    if UserCancel then Exit;
 
     AsProgrammer.Programmer.SPIRead(0, 1, ReadyStat);
   until (ReadyStat = $50);
@@ -94,66 +94,42 @@ begin
 end;
 
 //Page128
-function UsbAspMulti_WritePage(page: longword; var Data: array of byte): integer;
+function UsbAspMulti_WritePage(Addr: longword; var Data: array of byte): integer;
 var
   i: integer;
   busy: boolean;
 begin
-  //busy
-   repeat
-     busy := UsbAspMulti_Busy();
-   until busy = false;
-
-   UsbAspMulti_WriteReg($FEAA, lo(hi(page)) );
-   UsbAspMulti_WriteReg($FEA9, hi(lo(page)) );
-   UsbAspMulti_WriteReg($FEA8, lo(lo(page)) );
+   UsbAspMulti_WriteReg($FEAA, lo(hi(Addr)) );
+   UsbAspMulti_WriteReg($FEA9, hi(lo(Addr)) );
+   //UsbAspMulti_WriteReg($FEA8, lo(lo(page)) );
 
    UsbAspMulti_WriteReg($FEAC, $80); //clr buff
 
    for i:=0 to 127 do
    begin
-     UsbAspMulti_WriteReg($FEA8, lo(page) + i );
+     UsbAspMulti_WriteReg($FEA8, lo(lo(Addr)) + i );
      UsbAspMulti_WriteReg($FEAB, Data[i]);
-     UsbAspMulti_WriteReg($FEAC, $02);
+     UsbAspMulti_WriteReg($FEAC, $02); //latch page
    end;
 
-   UsbAspMulti_WriteReg($FEAC, $70);
+   UsbAspMulti_WriteReg($FEAC, $70); //prog page
 end;
 
-function UsbAspMulti_ErasePage(page: longword): integer;
-var
-  busy: boolean;
+function UsbAspMulti_ErasePage(Addr: longword): integer;
 begin
-  //busy
-   repeat
-     busy := UsbAspMulti_Busy();
-   until busy = false;
-
-   UsbAspMulti_WriteReg($FEAA, lo(hi(page)) );
-   UsbAspMulti_WriteReg($FEA9, hi(lo(page)) );
-   UsbAspMulti_WriteReg($FEA8, lo(lo(page)) );
+   UsbAspMulti_WriteReg($FEAA, lo(hi(Addr)) );
+   UsbAspMulti_WriteReg($FEA9, hi(lo(Addr)) );
+   UsbAspMulti_WriteReg($FEA8, lo(lo(Addr)) );
 
    result := UsbAspMulti_WriteReg($FEAC, $20);
 end;
 
-function UsbAspMulti_Erase(chipsize: longword; pagesize: word): integer;
-var
-  i: integer;
-begin
-
-  for i:= 0 to (chipsize div pagesize)-1 do UsbAspMulti_ErasePage(i * pagesize);
-
-end;
-
 function UsbAspMulti_Busy(): boolean;
 var
-  sreg: byte;
+  sreg: byte = $FF;
 begin
-    Application.ProcessMessages;
-    if MainForm.ButtonCancel.Tag <> 0 then Exit;
-
-    UsbAspMulti_ReadReg($FEAD, sreg);
-    if (sreg and 2) = 0 then Result := False else Result := True;
+  UsbAspMulti_ReadReg($FEAD, sreg);
+  if (sreg and 2) = 0 then Result := False else Result := True;
 end;
 
 end.
