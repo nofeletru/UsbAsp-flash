@@ -183,20 +183,32 @@ begin
 end;
 
 procedure TCH341Hardware.I2CStart;
+var
+  mLength: Cardinal;
+  mBuffer: array[0..mCH341_PACKET_LENGTH-1] of Byte;
 begin
   if not FDevOpened then Exit;
-  //start
-  SetI2CPins(0,0);
-  SetI2CPins(1,1);
-  SetI2CPins(1,0);
+
+  mBuffer[0] := mCH341A_CMD_I2C_STREAM;   // код команды
+  mBuffer[1] := mCH341A_CMD_I2C_STM_STA;  // код старт-бита
+  mBuffer[2] := mCH341A_CMD_I2C_STM_END;  // окончание пакета
+  mLength := 3;                           // длина пакета
+
+  CH341WriteData(FDevHandle, @mBuffer, @mLength); // запись блока данных
 end;
 
 procedure TCH341Hardware.I2CStop;
+var
+  mLength: Cardinal;
+  mBuffer: array[0..mCH341_PACKET_LENGTH-1] of Byte;
 begin
   if not FDevOpened then Exit;
-  //stop
-  SetI2CPins(1,0);
-  SetI2CPins(1,1);
+
+  mBuffer[0] := mCH341A_CMD_I2C_STREAM;   // код команды
+  mBuffer[1] := mCH341A_CMD_I2C_STM_STO;  // код стоп-бита
+  mBuffer[2] := mCH341A_CMD_I2C_STM_END;  // окончание пакета
+  mLength := 3;                           // длина пакета
+  CH341WriteData(FDevHandle, @mBuffer, @mLength); // запись блока данных
 end;
 
 function TCH341Hardware.I2CReadByte(ack: boolean): byte;
@@ -267,11 +279,14 @@ begin
   end;
 
   //generate pulse for ack
-  SetI2CPins(0,1); //scl low
+  SetI2CPins(0,0); //scl low
+  SetI2CPins(0,1);
   SetI2CPins(1,1); //scl hi
 
   //read ack
   CH341GetStatus(FDevHandle, @pins);
+  SetI2CPins(0,0);
+
   Result := not IsBitSet(pins, 23);
 
 end;
