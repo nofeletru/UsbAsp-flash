@@ -1,0 +1,434 @@
+#简体中文
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: msgstr.str_45page_powerof2
+msgid "Установлен размер страницы кратный двум!"
+msgstr "分页大小是2的n次幂!"
+
+#: msgstr.str_45page_std
+msgid "Установлен стандартный размер страницы"
+msgstr "设置为默认分页大小"
+
+#: msgstr.str_block_en
+msgid "Возможно включена защита на запись. Нажмите кнопку \"Снять защиту\" и сверьтесь с даташитом"
+msgstr "芯片可能处于写保护状态. 点击 \"去保护\" 按钮并查询 Datasheet"
+
+#: msgstr.str_changed
+msgid "Изменен"
+msgstr "修改过的"
+
+#: msgstr.str_check_settings
+msgid "Проверьте настройки"
+msgstr "检查设置"
+
+#: msgstr.str_combo_warn
+msgid "Чип будет стерт и перезаписан. Продолжить?"
+msgstr "芯片内容即将被全部擦除后重新写入（编程），是否继续？"
+
+#: msgstr.str_connection_error
+msgid "Ошибка подключения к USBAsp"
+msgstr "在连接至 USBAsp 时发生错误"
+
+#: msgstr.str_connect_error_ch
+msgid "Ошибка подключения к CH341"
+msgstr "在连接至 CH341 时发生错误"
+
+#: msgstr.str_connect_error_avr
+msgid "Ошибка подключения к AVRISP"
+msgstr "在连接至 AVRISP 时发生错误"
+
+#: msgstr.str_done
+msgid "Готово"
+msgstr "完成"
+
+#: msgstr.str_erasing_flash
+msgid "Стираю флэшку..."
+msgstr "正在擦除..."
+
+#: msgstr.str_goto_addr
+msgid "Перейти по адресу"
+msgstr "跳转到地址"
+
+#: msgstr.str_i2c_no_answer
+msgid "Микросхема не отвечает"
+msgstr "芯片未响应"
+
+#: msgstr.str_id_unknown
+msgid "(Неизвестно)"
+msgstr "(未知)"
+
+#: msgstr.str_mini_eeprom_support
+msgid "Данная версия прошивки не поддерживает I2C и MW!"
+msgstr "此固件不支持 I2C 和 MW!"
+
+#: msgstr.str_new_sreg
+msgid "Стало Sreg: "
+msgstr "新 SREG: "
+
+#: msgstr.str_curr_hw
+msgid "Используется программатор: "
+msgstr "当前编程器:"
+
+#: msgstr.str_not_found_hex
+msgid "Значение не найдено"
+msgstr "数值未找到"
+
+#: msgstr.str_no_eeprom_support
+msgid "Данная версия прошивки не поддерживается!"
+msgstr "此固件不支持存储器编程!"
+
+#: msgstr.str_old_sreg
+msgid "Было Sreg: "
+msgstr "旧 SREG: "
+
+#: msgstr.str_reading_flash
+msgid "Читаю флэшку..."
+msgstr "正在读取..."
+
+#: msgstr.str_search_hex
+msgid "Поиск HEX значения"
+msgstr "搜索十六进制"
+
+#: msgstr.str_set_speed_error
+msgid "Ошибка установки скорости SPI"
+msgstr "在设置 SPI 速度时发生错误"
+
+#: msgstr.str_size
+msgid "Размер: "
+msgstr "大小: "
+
+#: msgstr.str_specify_hex
+msgid "Укажите шестнадцатеричные числа"
+msgstr "使用十六进制"
+
+#: msgstr.str_start_erase
+msgid "Точно стереть чип?"
+msgstr "擦除芯片?"
+
+#: msgstr.str_start_write
+msgid "Начать запись?"
+msgstr "开始写入(编程)?"
+
+#: msgstr.str_time
+msgid "Время выполнения: "
+msgstr "执行时间: "
+
+#: msgstr.str_usb_timeout
+msgid "USB_control_msg отвалился по таймауту!"
+msgstr "USB_control_msg 超时!"
+
+#: msgstr.str_user_cancel
+msgid "Прервано пользователем"
+msgstr "操作被用户取消"
+
+#: msgstr.str_verify
+msgid "Проверяю флэшку..."
+msgstr "正在校验..."
+
+#: msgstr.str_verify_error
+msgid "Ошибка сравнения по адресу: "
+msgstr "在此地址处校验发生错误："
+
+#: msgstr.str_writing_flash
+msgid "Записываю флэшку..."
+msgstr "正在写入（编程）..."
+
+#: msgstr.str_writing_flash_wchk
+msgid "Записываю флэшку с проверкой..."
+msgstr "正在写入（编程）及校验..."
+
+#: msgstr.str_wrong_bytes_read
+msgid "Количество прочитанных байт не равно размеру флэшки"
+msgstr "读取出的数据大小与芯片大小不符"
+
+#: msgstr.str_wrong_bytes_write
+msgid "Количество записанных байт не равно размеру флэшки"
+msgstr "要写入的数据大小与芯片大小不符"
+
+#: msgstr.str_wrong_file_size
+msgid "Размер файла больше размера чипа"
+msgstr "文件大小超过芯片容量"
+
+#: tmainform.menuitemhardware.caption
+msgid "Программатор"
+msgstr "切换编程器"
+
+#: tmainform.buttonblock.hint
+msgid "Снять защиту"
+msgstr "去保护"
+
+#: tmainform.buttoncancel.hint
+msgid "Прервать текущею операцию"
+msgstr "取消操作"
+
+#: tmainform.buttonerase.hint
+msgid "Стереть"
+msgstr "擦除"
+
+#: tmainform.buttonopenhex.hint
+msgid "Загрузить прошивку в редактор"
+msgstr "打开"
+
+#: tmainform.buttonread.hint
+msgid "Прочитать"
+msgstr "读取"
+
+#: tmainform.buttonreadid.hint
+msgid "Прочитать индификатор"
+msgstr "检测FLASH型号"
+
+#: tmainform.buttonsavehex.hint
+msgid "Сохранить прошивку из редактора"
+msgstr "保存"
+
+#: tmainform.buttonverify.hint
+msgid "Сравнить содержимое"
+msgstr "校验"
+
+#: tmainform.buttonwrite.hint
+msgid "Записать"
+msgstr "写入（编程）"
+
+#: tmainform.clearlogmenuitem.caption
+msgid "Очистить"
+msgstr "清空"
+
+#: tmainform.comboaddrtype.hint
+msgid "Тип адресации к памяти"
+msgstr "地址类型"
+
+#: tmainform.combochipsize.hint
+msgid "Размер чипа в байтах"
+msgstr "芯片容量（字节）"
+
+#: tmainform.combochipsize.text
+msgid "Chip size"
+msgstr "芯片容量（字节）"
+
+#: tmainform.comboitem1.caption
+msgid "Снять защиту -> стереть -> записать -> проверить"
+msgstr "自动执行：去保护 -> 擦除 -> 写入（编程） -> 校验"
+
+#: tmainform.combomwbitlen.hint
+msgid "Длинна адреса в битах"
+msgstr "地址长度（bit）"
+
+#: tmainform.combomwbitlen.text
+msgid "MW addr len"
+msgstr "MW addr len"
+
+#: tmainform.combopagesize.hint
+msgid "Размер страницы"
+msgstr "分页大小"
+
+#: tmainform.combopagesize.text
+msgid "Page size"
+msgstr "分页大小"
+
+#: tmainform.copylogmenuitem.caption
+msgctxt "TMAINFORM.COPYLOGMENUITEM.CAPTION"
+msgid "Копировать"
+msgstr "复制"
+
+#: tmainform.label1.caption
+msgid "Страница"
+msgstr "分页"
+
+#: tmainform.label2.caption
+msgid "Размер"
+msgstr "容量"
+
+#: tmainform.label4.caption
+msgid "Тип адреса"
+msgstr "地址类型"
+
+#: tmainform.label5.caption
+msgid "Длина адреса"
+msgstr "地址长度"
+
+#: tmainform.label3.caption
+msgctxt "tmainform.label3.caption"
+msgid "Микросхема:"
+msgstr "FLASH型号："
+
+#: tmainform.labelspicmd.caption
+msgid "Команды SPI"
+msgstr "SPI 命令类型"
+
+#: tmainform.menuautocheck.caption
+msgid "Проверка записи"
+msgstr "校验"
+
+#: tmainform.menuchip.caption
+msgctxt "TMAINFORM.MENUCHIP.CAPTION"
+msgid "Микросхема"
+msgstr "FLASH型号设置"
+
+#: tmainform.menucopytoclip.caption
+msgctxt "tmainform.menucopytoclip.caption"
+msgid "Копировать"
+msgstr "复制"
+
+#: tmainform.menufind.caption
+msgid "Поиск"
+msgstr "查找"
+
+#: tmainform.menufindchip.caption
+msgctxt "tmainform.menufindchip.caption"
+msgid "Поиск"
+msgstr "查找"
+
+#: tmainform.menugotooffset.caption
+msgid "Перейти по адресу"
+msgstr "跳转到地址"
+
+#: tmainform.menuignorebusybit.caption
+msgid "Не проверять Busy бит"
+msgstr "不检查 Busy bit"
+
+#: tmainform.menuitemlockflash.caption
+msgid "Поставить защиту"
+msgstr "设置 Protection bits"
+
+#: tmainform.menuitemreadsreg.caption
+msgid "Прочитать SREG"
+msgstr "读取 SREG"
+
+#: tmainform.menuitemeditsreg.caption
+msgid "Изменить SREG"
+msgstr "修改 SREG"
+
+#: tmainform.menumwclock.caption
+msgctxt "TMAINFORM.MENUMWCLOCK.CAPTION"
+msgid "Частота"
+msgstr "频率"
+
+#: tmainform.menuoptions.caption
+msgid "Настройки"
+msgstr "选项"
+
+#: tmainform.menuspiclock.caption
+msgctxt "tmainform.menuspiclock.caption"
+msgid "Частота"
+msgstr "频率"
+
+#: tsearchform.caption
+msgid "Поиск"
+msgstr "查找"
+
+#: tsearchform.casesensecheckbox.caption
+msgid "Учитывать регистр"
+msgstr "区分大小写"
+
+#: tsearchform.findbutton.caption
+msgid "Найти"
+msgstr "查找"
+
+#: tsearchform.frombeginingcheckbox.caption
+msgid "Искать сначала"
+msgstr "从头开始"
+
+#: tsearchform.hexcheckbox.caption
+msgid "Искать HEX значение"
+msgstr "查找十六进制"
+
+#: tsearchform.replaceallcheckbox.caption
+msgid "Заменить все"
+msgstr "替换全部"
+
+#: tsearchform.replacecheckbox.caption
+msgid "Заменить"
+msgstr "替换"
+
+#: tsearchform.replacelabel.caption
+msgid "заменить на:"
+msgstr "替换为:"
+
+#: tsearchform.searchlabel.caption
+msgid "Искать"
+msgstr "查找"
+
+#: tsregeditform.buttonreadsreg.caption
+msgctxt "TSREGEDITFORM.BUTTONREADSREG.CAPTION"
+msgid "Прочитать"
+msgstr "读取"
+
+#: tsregeditform.buttonwritesreg.caption
+msgctxt "TSREGEDITFORM.BUTTONWRITESREG.CAPTION"
+msgid "Записать"
+msgstr "写入（编程）"
+
+#: tchipsearchform.caption
+msgid "Поиск микросхемы"
+msgstr "查找芯片"
+
+#: tchipsearchform.label1.caption
+msgid "Маркировка содержит:"
+msgstr "请输入FLASH型号（例如W25Q128）："
+
+#: tmainform.blankcheckmenuitem.caption
+msgid "Проверка на чистоту"
+msgstr "查空"
+
+#: tmainform.Label_I2C_DevAddr.caption
+msgctxt "tmainform.Label_I2C_DevAddr.caption"
+msgid "Адрес устройства"
+msgstr "芯片地址"
+
+#: tmainform.CheckBox_I2C_ByteRead.caption
+msgctxt "tmainform.CheckBox_I2C_ByteRead.caption"
+msgid "Побайтовое чтение"
+msgstr "字节已读取"
+
+#: tmainform.scriptsmenuitem.caption
+msgid "Скрипты"
+msgstr "脚本"
+
+#: msgstr.str_script_no_section
+msgid "Нет секции: "
+msgstr "没有区段: "
+
+#: msgstr.str_script_run_section
+msgid "Выполняется секция: "
+msgstr "运行区段: "
+
+#: msgstr.str_script_sel_section
+msgid "Выберите секцию"
+msgstr "选择区段"
+
+#: msgstr.str_dlg_filechgd
+msgid "файл изменён"
+msgstr "文件已修改"
+
+#: msgstr.str_dlg_savefile
+msgid "Сохранить изменения?"
+msgstr "保存更改?"
+
+#: msgstr.str_using_script
+msgid "Используется скрипт: "
+msgstr "使用脚本: "
+
+#: tscripteditform.menuitemfile.caption
+msgid "Файл"
+msgstr "文件"
+
+#: tscripteditform.menuitemopen.caption
+msgid "Открыть"
+msgstr "打开"
+
+#: tscripteditform.menuitemrun.caption
+msgid "Выполнить"
+msgstr "执行"
+
+#: tscripteditform.menuitemsave.caption
+msgid "Сохранить"
+msgstr "保存"
+
+#: tscripteditform.menuitemsaveas.caption
+msgid "Сохранить как..."
+msgstr "另存为..."
+
+#: tscripteditform.menuitemsection.caption
+msgid "Секция ="
+msgstr "区段 ="
