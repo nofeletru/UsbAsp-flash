@@ -8,7 +8,7 @@ msgstr "O tamanho da página tem de ser uma potência de 2"
 
 #: msgstr.str_45page_std
 msgid "Установлен стандартный размер страницы"
-msgstr "O tamanho da página por defeito não está definido"
+msgstr "O tamanho da página por defeito está definido"
 
 #: msgstr.str_block_en
 msgid "Возможно включена защита на запись. Нажмите кнопку \"Снять защиту\" и сверьтесь с даташитом"
@@ -116,7 +116,7 @@ msgstr "Tempo de execução: "
 
 #: msgstr.str_usb_timeout
 msgid "USB_control_msg отвалился по таймауту!"
-msgstr "USB_control_msg timeout!"
+msgstr "USB_control_msg passou do tempo limite!"
 
 #: msgstr.str_user_cancel
 msgid "Прервано пользователем"
