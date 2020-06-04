@@ -4,11 +4,11 @@ msgstr "Content-Type: text/plain; charset=UTF-8"
 
 #: msgstr.str_45page_powerof2
 msgid "Установлен размер страницы кратный двум!"
-msgstr "O tamanho da página é potência de 2"
+msgstr "O tamanho da página tem de ser uma potência de 2"
 
 #: msgstr.str_45page_std
 msgid "Установлен стандартный размер страницы"
-msgstr "O tamanho da página por defeito não está definido"
+msgstr "O tamanho da página por defeito está definido"
 
 #: msgstr.str_block_en
 msgid "Возможно включена защита на запись. Нажмите кнопку \"Снять защиту\" и сверьтесь с даташитом"
@@ -24,7 +24,7 @@ msgstr "Verifique as definições"
 
 #: msgstr.str_combo_warn
 msgid "Чип будет стерт и перезаписан. Продолжить?"
-msgstr "O CI vai ser apagado e programado. Deseja continuar?"
+msgstr "A EEPROM vai ser apagada e programada. Deseja continuar?"
 
 #: msgstr.str_connection_error
 msgid "Ошибка подключения к USBAsp"
@@ -44,7 +44,7 @@ msgstr "Feito"
 
 #: msgstr.str_erasing_flash
 msgid "Стираю флэшку..."
-msgstr "A apagar memória..."
+msgstr "A apagar EEPROM..."
 
 #: msgstr.str_goto_addr
 msgid "Перейти по адресу"
@@ -52,7 +52,7 @@ msgstr "Ir para endereço"
 
 #: msgstr.str_i2c_no_answer
 msgid "Микросхема не отвечает"
-msgstr "O CI não responde"
+msgstr "A EEPROM não responde"
 
 #: msgstr.str_id_unknown
 msgid "(Неизвестно)"
@@ -76,7 +76,7 @@ msgstr "Valor não encontrado"
 
 #: msgstr.str_no_eeprom_support
 msgid "Данная версия прошивки не поддерживается!"
-msgstr "Este firmware não suporta programação de memórias"
+msgstr "Este firmware não suporta programação de EEPROM"
 
 #: msgstr.str_old_sreg
 msgid "Было Sreg: "
@@ -84,7 +84,7 @@ msgstr "Antigo SREG: "
 
 #: msgstr.str_reading_flash
 msgid "Читаю флэшку..."
-msgstr "A ler memória..."
+msgstr "A ler EEPROM..."
 
 #: msgstr.str_search_hex
 msgid "Поиск HEX значения"
@@ -104,7 +104,7 @@ msgstr "Use números HEX"
 
 #: msgstr.str_start_erase
 msgid "Точно стереть чип?"
-msgstr "Apagar CI?"
+msgstr "Apagar EEPROM?"
 
 #: msgstr.str_start_write
 msgid "Начать запись?"
@@ -116,7 +116,7 @@ msgstr "Tempo de execução: "
 
 #: msgstr.str_usb_timeout
 msgid "USB_control_msg отвалился по таймауту!"
-msgstr "USB_control_msg timeout!"
+msgstr "USB_control_msg passou do tempo limite!"
 
 #: msgstr.str_user_cancel
 msgid "Прервано пользователем"
@@ -124,7 +124,7 @@ msgstr "Cancelado pelo utilizador"
 
 #: msgstr.str_verify
 msgid "Проверяю флэшку..."
-msgstr "A verificar memória..."
+msgstr "A verificar EEPROM..."
 
 #: msgstr.str_verify_error
 msgid "Ошибка сравнения по адресу: "
@@ -132,23 +132,23 @@ msgstr "Erro de verificação no endereço: "
 
 #: msgstr.str_writing_flash
 msgid "Записываю флэшку..."
-msgstr "A programar memória..."
+msgstr "A programar EEPROM... (sem verificação)"
 
 #: msgstr.str_writing_flash_wchk
 msgid "Записываю флэшку с проверкой..."
-msgstr "A programar memória (a verificar)..."
+msgstr "A programar EEPROM... (com verificação)"
 
 #: msgstr.str_wrong_bytes_read
 msgid "Количество прочитанных байт не равно размеру флэшки"
-msgstr "O número de bytes lidos não é igual ao tamanho do CI"
+msgstr "O número de bytes lidos não é igual ao tamanho da EEPROM"
 
 #: msgstr.str_wrong_bytes_write
 msgid "Количество записанных байт не равно размеру флэшки"
-msgstr "O número de bytes escritos não é igual ao tamanho do CI"
+msgstr "O número de bytes escritos não é igual ao tamanho da EEPROM"
 
 #: msgstr.str_wrong_file_size
 msgid "Размер файла больше размера чипа"
-msgstr "O tamanho do ficheiro é maior do que o tamanho do CI"
+msgstr "O tamanho do ficheiro é maior do que o tamanho da EEPROM"
 
 #: tmainform.menuitemhardware.caption
 msgid "Программатор"
@@ -164,7 +164,7 @@ msgstr "Cancelar"
 
 #: tmainform.buttonerase.hint
 msgid "Стереть"
-msgstr "Apagar CI"
+msgstr "Apagar EEPROM"
 
 #: tmainform.buttonopenhex.hint
 msgid "Загрузить прошивку в редактор"
@@ -172,11 +172,11 @@ msgstr "Abrir ficheiro"
 
 #: tmainform.buttonread.hint
 msgid "Прочитать"
-msgstr "Ler CI"
+msgstr "Ler EEPROM"
 
 #: tmainform.buttonreadid.hint
 msgid "Прочитать индификатор"
-msgstr "Ler ID"
+msgstr "Ler ID da EEPROM"
 
 #: tmainform.buttonsavehex.hint
 msgid "Сохранить прошивку из редактора"
@@ -184,11 +184,11 @@ msgstr "Guardar Ficheiro"
 
 #: tmainform.buttonverify.hint
 msgid "Сравнить содержимое"
-msgstr "Verificar CI"
+msgstr "Verificar EEPROM"
 
 #: tmainform.buttonwrite.hint
 msgid "Записать"
-msgstr "Programar CI"
+msgstr "Programar EEPROM"
 
 #: tmainform.clearlogmenuitem.caption
 msgid "Очистить"
@@ -200,7 +200,7 @@ msgstr "Tipo de endereço"
 
 #: tmainform.combochipsize.hint
 msgid "Размер чипа в байтах"
-msgstr "Tamanho do CI em bytes"
+msgstr "Tamanho da EEPROM em bytes"
 
 #: tmainform.combochipsize.text
 msgid "Chip size"
@@ -208,7 +208,7 @@ msgstr ""
 
 #: tmainform.comboitem1.caption
 msgid "Снять защиту -> стереть -> записать -> проверить"
-msgstr "Desbloquear -> apagar -> programar -> verificar"
+msgstr "Desbloquear -> Apagar -> Programar -> Verificar"
 
 #: tmainform.combomwbitlen.hint
 msgid "Длинна адреса в битах"
@@ -250,7 +250,7 @@ msgstr "Tamanho do endereço"
 #: tmainform.label3.caption
 msgctxt "tmainform.label3.caption"
 msgid "Микросхема:"
-msgstr "Chip:"
+msgstr "EEPROM Selecionada:"
 
 #: tmainform.labelspicmd.caption
 msgid "Команды SPI"
@@ -263,7 +263,7 @@ msgstr "Verificar"
 #: tmainform.menuchip.caption
 msgctxt "TMAINFORM.MENUCHIP.CAPTION"
 msgid "Микросхема"
-msgstr "Chip"
+msgstr "EEPROM"
 
 #: tmainform.menucopytoclip.caption
 msgctxt "tmainform.menucopytoclip.caption"
@@ -285,7 +285,7 @@ msgstr "Ir para endereço"
 
 #: tmainform.menuignorebusybit.caption
 msgid "Не проверять Busy бит"
-msgstr "Não verificar o Busy bit"
+msgstr "Não verificar o busy bit"
 
 #: tmainform.menuitemlockflash.caption
 msgid "Поставить защиту"
@@ -361,15 +361,15 @@ msgstr "Escrever"
 
 #: tchipsearchform.caption
 msgid "Поиск микросхемы"
-msgstr "Encontrar CI"
+msgstr "Encontrar EEPROM"
 
 #: tchipsearchform.label1.caption
 msgid "Маркировка содержит:"
-msgstr "A nome do CI contém:"
+msgstr "A nome da EEPROM contém:"
 
 #: tmainform.blankcheckmenuitem.caption
 msgid "Проверка на чистоту"
-msgstr "Verificar se está limpo"
+msgstr "Verificar se a EEPROM está vazia"
 
 #: tmainform.Label_I2C_DevAddr.caption
 msgctxt "tmainform.Label_I2C_DevAddr.caption"
