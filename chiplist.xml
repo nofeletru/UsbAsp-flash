@@ -240,6 +240,7 @@
       <GD25Q64B id="C84017" page="256" size="8388608"/>
       <GD25Q128B id="C84018" page="256" size="16777216"/>
       <GD25Q128C id="C84018" page="256" size="16777216"/>
+	  <GD25LQ064C_1.8V id="C86017" page="256" size="8388608"/>
 	  <GD25LQ128C_1.8V id="C86018" page="256" size="16777216"/>
 	  <GD25LQ256C_1.8V id="C86019" page="256" size="33554432"/>
       <MD25T80 id="C83114" page="256" size="1048576"/>
