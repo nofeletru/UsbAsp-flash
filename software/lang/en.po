@@ -60,7 +60,7 @@ msgstr "(Unknown)"
 
 #: msgstr.str_mini_eeprom_support
 msgid "Данная версия прошивки не поддерживает I2C и MW!"
-msgstr "This firmware do not support I2C and MW!"
+msgstr "This firmware does not support I2C and MW!"
 
 #: msgstr.str_new_sreg
 msgid "Стало Sreg: "
@@ -76,7 +76,7 @@ msgstr "Value not found"
 
 #: msgstr.str_no_eeprom_support
 msgid "Данная версия прошивки не поддерживается!"
-msgstr "This firmware do not support memory programming"
+msgstr "This firmware does not support memory programming"
 
 #: msgstr.str_old_sreg
 msgid "Было Sreg: "
@@ -120,11 +120,11 @@ msgstr "USB_control_msg timeout!"
 
 #: msgstr.str_user_cancel
 msgid "Прервано пользователем"
-msgstr "Canceled by user"
+msgstr "Cancelled by user"
 
 #: msgstr.str_verify
 msgid "Проверяю флэшку..."
-msgstr "Verify memory..."
+msgstr "Verifying memory..."
 
 #: msgstr.str_verify_error
 msgid "Ошибка сравнения по адресу: "
@@ -136,15 +136,15 @@ msgstr "Programming memory..."
 
 #: msgstr.str_writing_flash_wchk
 msgid "Записываю флэшку с проверкой..."
-msgstr "Programming memory(verifying)..."
+msgstr "Programming memory (with verification)..."
 
 #: msgstr.str_wrong_bytes_read
 msgid "Количество прочитанных байт не равно размеру флэшки"
-msgstr "Number of bytes readed not equal IC size"
+msgstr "Number of bytes read not equal to IC size"
 
 #: msgstr.str_wrong_bytes_write
 msgid "Количество записанных байт не равно размеру флэшки"
-msgstr "Number of bytes written not equal IC size"
+msgstr "Number of bytes written not equal to IC size"
 
 #: msgstr.str_wrong_file_size
 msgid "Размер файла больше размера чипа"
@@ -188,7 +188,7 @@ msgstr "Verify IC"
 
 #: tmainform.buttonwrite.hint
 msgid "Записать"
-msgstr "Programm IC"
+msgstr "Program IC"
 
 #: tmainform.clearlogmenuitem.caption
 msgid "Очистить"
@@ -208,11 +208,11 @@ msgstr ""
 
 #: tmainform.comboitem1.caption
 msgid "Снять защиту -> стереть -> записать -> проверить"
-msgstr "Unprotect -> erase -> programm -> verify"
+msgstr "Unprotect -> erase -> program -> verify"
 
 #: tmainform.combomwbitlen.hint
 msgid "Длинна адреса в битах"
-msgstr "Lenght of address in bits"
+msgstr "Address Length in bits"
 
 #: tmainform.combomwbitlen.text
 msgid "MW addr len"
@@ -245,7 +245,7 @@ msgstr "Address type"
 
 #: tmainform.label5.caption
 msgid "Длина адреса"
-msgstr "Address lenght"
+msgstr "Address length"
 
 #: tmainform.label3.caption
 msgctxt "tmainform.label3.caption"
@@ -327,7 +327,7 @@ msgstr "Find"
 
 #: tsearchform.frombeginingcheckbox.caption
 msgid "Искать сначала"
-msgstr "From begining"
+msgstr "Search from the beginning"
 
 #: tsearchform.hexcheckbox.caption
 msgid "Искать HEX значение"
@@ -365,7 +365,7 @@ msgstr "Find IC"
 
 #: tchipsearchform.label1.caption
 msgid "Маркировка содержит:"
-msgstr "IC мarking contain:"
+msgstr "IC мarking contains:"
 
 #: tmainform.blankcheckmenuitem.caption
 msgid "Проверка на чистоту"
