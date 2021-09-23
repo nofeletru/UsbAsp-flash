@@ -5,15 +5,14 @@ object ScriptEditForm: TScriptEditForm
   Width = 727
   ActiveControl = SynEdit
   Caption = 'Script editor'
-  ClientHeight = 422
+  ClientHeight = 402
   ClientWidth = 727
   Menu = MainMenu
   OnClose = FormClose
   OnCloseQuery = FormCloseQuery
   OnShow = FormShow
   Position = poOwnerFormCenter
-  LCLVersion = '1.6.4.0'
-  Visible = False
+  LCLVersion = '2.0.2.0'
   inline SynEdit: TSynEdit
     Left = 0
     Height = 324
@@ -507,7 +506,7 @@ object ScriptEditForm: TScriptEditForm
       end
     end
   end
-  object ScriptEditLog: TRichMemo
+  object ScriptEditLog: TMemo
     Left = 0
     Height = 78
     Top = 324
@@ -517,7 +516,6 @@ object ScriptEditForm: TScriptEditForm
     ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 1
-    ZoomFactor = 1
   end
   object SynPasSyn: TSynPasSyn
     Enabled = False

@@ -115,8 +115,23 @@ void V2Protocol_ProcessCommand(void)
 			SPI_25Write();
 			break;			
 		//I2C	
-		case CMD_I2C_ACK:
-			i2c_ack();
+        case CMD_I2C_INIT:
+			i2c_init();
+			Endpoint_ClearOUT();
+			break;
+		case CMD_I2C_START:
+			i2c_start();
+			Endpoint_ClearOUT();
+			break;
+		case CMD_I2C_STOP:
+			i2c_stop();
+			Endpoint_ClearOUT();
+			break;
+		case CMD_I2C_READBYTE:
+			i2c_readbyte();
+			break;
+		case CMD_I2C_WRITEBYTE:
+			i2c_writebyte();
 			break;
 		case CMD_I2C_READ:
 			i2c_read();
@@ -133,6 +148,9 @@ void V2Protocol_ProcessCommand(void)
 			break;
 		case CMD_MW_BUSY:
 			mw_busy();
+			break;
+		case CMD_MW_INIT:
+			mw_init();
 			break;			
 		case CMD_FIRMWARE_VER:
 			give_firmware_ver();

@@ -5,8 +5,8 @@ unit ScriptEdit;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, SynEdit, SynHighlighterPas, Forms, Controls,
-  Graphics, Dialogs, Menus, RichMemo, lazUTF8,
+  Classes, SysUtils, FileUtil, SynEdit, SynHighlighterPas, Forms, Controls, StdCtrls,
+  Graphics, Dialogs, Menus, lazUTF8,
   msgstr, scriptsfunc, usbhid;
 
 type
@@ -23,7 +23,7 @@ type
     MenuItemOpen: TMenuItem;
     MenuItemSave: TMenuItem;
     OpenDialog: TOpenDialog;
-    ScriptEditLog: TRichMemo;
+    ScriptEditLog: TMemo;
     SaveDialog: TSaveDialog;
     SynEdit: TSynEdit;
     SynPasSyn: TSynPasSyn;
@@ -42,7 +42,7 @@ type
     { public declarations }
   end;
 
-  procedure ScriptLogPrint(text: string; AColor: TColor = clDefault);
+  procedure ScriptLogPrint(text: string);
 
 var
   ScriptEditForm: TScriptEditForm;
@@ -58,19 +58,9 @@ var
 
 { TScriptEditForm }
 
-procedure ScriptLogPrint(text: string; AColor: TColor = clDefault);
-var
-    fp: TFontParams;
-    SelStart, SelLength: Integer;
+procedure ScriptLogPrint(text: string);
 begin
-  SelLength := UTF8Length(text);
-  SelStart := UTF8Length(ScriptEditForm.ScriptEditLog.Text);
-
   ScriptEditForm.ScriptEditLog.Lines.Add(text);
-
-  ScriptEditForm.ScriptEditLog.GetTextAttributes(SelStart, fp);
-  fp.Color := AColor;
-  ScriptEditForm.ScriptEditLog.SetTextAttributes(SelStart, SelLength, fp);
 end;
 
 procedure TScriptEditForm.SectionItemMenuClick(Sender: TObject);
@@ -210,12 +200,12 @@ begin
       ScriptLogPrint(STR_SCRIPT_RUN_SECTION+CurrentSectionName);
       if not OpenDevice() then exit;
       RunScript(ScriptText);
-      USB_Dev_Close(hUSBdev);
+      AsProgrammer.Programmer.DevClose;
     end
     else
       if CurrentSectionName = '' then
-        ScriptLogPrint(STR_SCRIPT_SEL_SECTION+CurrentSectionName, clRed)
-          else ScriptLogPrint(STR_SCRIPT_NO_SECTION+CurrentSectionName, clRed);
+        ScriptLogPrint(STR_SCRIPT_SEL_SECTION+CurrentSectionName)
+          else ScriptLogPrint(STR_SCRIPT_NO_SECTION+CurrentSectionName);
   finally
     ScriptText.Free;
   end;

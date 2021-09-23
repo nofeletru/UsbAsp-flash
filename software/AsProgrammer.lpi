@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <PathDelim Value="\"/>
     <General>
       <SessionStorage Value="InProjectDir"/>
@@ -22,11 +22,9 @@
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
-      <MajorVersionNr Value="1"/>
-      <MinorVersionNr Value="4"/>
-      <BuildNr Value="5"/>
+      <MajorVersionNr Value="2"/>
+      <BuildNr Value="10"/>
       <Language Value="0419"/>
-      <StringTable ProductVersion=""/>
     </VersionInfo>
     <MacroValues Count="2">
       <Macro1 Name="LCLWidgetType" Value="win32"/>
@@ -80,20 +78,19 @@
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
-      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
-      <ExcludeFileFilter Value="*.(bak|ppu|o|so);*~;backup"/>
     </PublishOptions>
     <RunParams>
-      <local>
-        <FormatVersion Value="1"/>
-      </local>
+      <FormatVersion Value="2"/>
+      <Modes Count="1">
+        <Mode0 Name="default"/>
+      </Modes>
     </RunParams>
     <RequiredPackages Count="4">
       <Item1>
-        <PackageName Value="mphexeditorlaz"/>
+        <PackageName Value="TurboPowerIPro"/>
       </Item1>
       <Item2>
-        <PackageName Value="richmemopackage"/>
+        <PackageName Value="mphexeditorlaz"/>
       </Item2>
       <Item3>
         <PackageName Value="SynEdit"/>
@@ -102,7 +99,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="11">
+    <Units Count="12">
       <Unit0>
         <Filename Value="AsProgrammer.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -115,51 +112,55 @@
         <ResourceBaseClass Value="Form"/>
       </Unit1>
       <Unit2>
-        <Filename Value="usbaspi2c.pas"/>
+        <Filename Value="msgstr.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit2>
       <Unit3>
-        <Filename Value="usbaspmw.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="usbaspmulti.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="usbasp95.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="msgstr.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit6>
-      <Unit7>
         <Filename Value="search.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="SearchForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit7>
-      <Unit8>
+      </Unit3>
+      <Unit4>
         <Filename Value="sregedit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="sregeditForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit8>
-      <Unit9>
-        <Filename Value="ch341mw.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit9>
-      <Unit10>
+      </Unit4>
+      <Unit5>
         <Filename Value="scriptedit.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ScriptEditForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="ScriptEdit"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="spi25.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="i2c.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="microwire.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="spi95.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="spi45.pas"/>
+        <IsPartOfProject Value="True"/>
       </Unit10>
+      <Unit11>
+        <Filename Value="avrisphw.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit11>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -181,6 +182,7 @@
       <SmartLinkUnit Value="True"/>
       <TargetOS Value="win32"/>
       <Optimizations>
+        <OptimizationLevel Value="2"/>
         <VariablesInRegisters Value="True"/>
       </Optimizations>
     </CodeGeneration>

@@ -67,7 +67,7 @@ var
 
 implementation
 
-uses main, usbasp25, usbhid, msgstr, utilfunc;
+uses main, spi25, usbhid, msgstr, utilfunc;
 
 {$R *.lfm}
 
@@ -173,12 +173,11 @@ begin
   begin
   try
     if not OpenDevice() then exit;
-    if not SetSPISpeed(0) then exit;
-    EnterProgMode25(hUSBdev);
+    EnterProgMode25(SetSPISpeed(0));
 
-    UsbAsp25_ReadSR(hUSBDev, sreg1);
-    UsbAsp25_ReadSR(hUSBDev, sreg2, $35);
-    UsbAsp25_ReadSR(hUSBDev, sreg3, $15);
+    UsbAsp25_ReadSR(sreg1);
+    UsbAsp25_ReadSR(sreg2, $35);
+    UsbAsp25_ReadSR(sreg3, $15);
 
     SetSreg1CheckBox(sreg1);
     SetSreg2CheckBox(sreg2);
@@ -189,8 +188,8 @@ begin
     Editsreg3.Text:= IntToHex(sreg3, 2);
 
   finally
-    ExitProgMode25(hUSBdev);
-    USB_Dev_Close(hUSBdev);
+    ExitProgMode25;
+    AsProgrammer.Programmer.DevClose;
   end;
   end;
 end;
@@ -201,51 +200,50 @@ begin
   begin
   try
     if not OpenDevice() then exit;
-    if not SetSPISpeed(0) then exit;
-    EnterProgMode25(hUSBdev);
+    EnterProgMode25(SetSPISpeed(0));
 
-    UsbAsp25_WREN(hUSBDev);
-    UsbAsp25_WriteSR(hUSBDev, GetSreg1CheckBox());
+    UsbAsp25_WREN();
+    UsbAsp25_WriteSR(GetSreg1CheckBox());
 
-    while UsbAsp25_Busy(hUSBDev) do
+    while UsbAsp25_Busy() do
     begin
       Application.ProcessMessages;
       if MainForm.ButtonCancel.Tag <> 0 then
       begin
-        LogPrint(STR_USER_CANCEL, clRed);
+        LogPrint(STR_USER_CANCEL);
         Exit;
       end;
     end;
 
-    UsbAsp25_WREN(hUSBDev);
-    UsbAsp25_WriteSR_2byte(hUSBDev, GetSreg1CheckBox(), GetSreg2CheckBox());
+    UsbAsp25_WREN();
+    UsbAsp25_WriteSR_2byte(GetSreg1CheckBox(), GetSreg2CheckBox());
 
-    while UsbAsp25_Busy(hUSBDev) do
+    while UsbAsp25_Busy() do
     begin
       Application.ProcessMessages;
       if MainForm.ButtonCancel.Tag <> 0 then
       begin
-        LogPrint(STR_USER_CANCEL, clRed);
+        LogPrint(STR_USER_CANCEL);
         Exit;
       end;
     end;
 
-    UsbAsp25_WREN(hUSBDev);
-    UsbAsp25_WriteSR(hUSBDev, GetSreg3CheckBox(), $11);
+    UsbAsp25_WREN();
+    UsbAsp25_WriteSR(GetSreg3CheckBox(), $11);
 
-    while UsbAsp25_Busy(hUSBDev) do
+    while UsbAsp25_Busy() do
     begin
       Application.ProcessMessages;
       if MainForm.ButtonCancel.Tag <> 0 then
       begin
-        LogPrint(STR_USER_CANCEL, clRed);
+        LogPrint(STR_USER_CANCEL);
         Exit;
       end;
     end;
 
   finally
-    ExitProgMode25(hUSBdev);
-    USB_Dev_Close(hUSBdev);
+    ExitProgMode25;
+    AsProgrammer.Programmer.DevClose;
   end;
   end;
 end;

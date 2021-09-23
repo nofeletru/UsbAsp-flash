@@ -3,15 +3,15 @@ object ChipSearchForm: TChipSearchForm
   Height = 360
   Top = 226
   Width = 250
-  BorderStyle = bsSizeToolWin
+  BorderStyle = bsToolWindow
   Caption = 'Поиск микросхемы'
   ClientHeight = 360
   ClientWidth = 250
   Position = poMainFormCenter
-  LCLVersion = '1.6.4.0'
+  LCLVersion = '2.0.2.0'
   object ListBoxChips: TListBox
     Left = 8
-    Height = 296
+    Height = 264
     Top = 56
     Width = 234
     ItemHeight = 0
@@ -40,5 +40,14 @@ object ChipSearchForm: TChipSearchForm
     Width = 128
     Caption = 'Маркировка содержит:'
     ParentColor = False
+  end
+  object ChipSearchSelectButton: TButton
+    Left = 8
+    Height = 25
+    Top = 328
+    Width = 234
+    Caption = 'Выбрать микросхему'
+    OnClick = ChipSearchSelectButtonClick
+    TabOrder = 2
   end
 end

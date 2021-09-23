@@ -1,7 +1,7 @@
 <html lang="ru"> 
 <head> <meta http-equiv="Content-Type" content="text/html; charset=utf-8"> <meta http-equiv="Content-Language" content="ru"> </head>
 
-<table border="1" cellpadding="5" cellspacing="0" style="width: 0px; height: 0px">
+<table border="1" cellpadding="5" cellspacing="0">
 	<tbody>
 		<tr>
 			<td colspan="2" style="text-align: center;"><font size="5"><b>Секции</b></font></td>
@@ -84,7 +84,7 @@
 		<tr>
 			<td style="text-align: center;"><b>CreateByteArray(<font color="#0000FF">size</font>): variant;</b></td>
 			<td style="text-align: center;">
-				<p align="left">&nbsp;Создает массив с типом элементов varbyte</p>
+				<p align="left">Создает массив с типом элементов varbyte</p>
 			</td>
 		</tr>
 		<tr>
@@ -100,23 +100,35 @@
 			</td>
 		</tr>
 		<tr>
+			<td style="text-align: center;"><b>ReadToEditor(<font color="#0000FF">size</font>, <font color="#0000FF">position</font>, <font color="#0000FF">buffer, ...</font>);</b></td>
+			<td style="text-align: center;">
+				<p align="left">Записывает данные из буфера в редактор размером size в позицию position</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>WriteFromEditor(<font color="#0000FF">size</font>, <font color="#0000FF">position</font>, <font color="#0000FF">buffer, ...</font>);</b></td>
+			<td style="text-align: center;">
+				<p align="left">Записывает данные из редактора размером size с позиции position</p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>GetEditorDataSize: longword;</b></td>
+			<td style="text-align: center;">
+				<p align="left">Возвращает размер данных в редакторе</p>
+			</td>
+		</tr>
+		<tr>
 			<td colspan="2" style="text-align: center;"><font size="5"><b>Работа с SPI</b></font></td>
 		</tr>
 		<tr>
-			<td style="text-align: center;"><b>SPISetSpeed(<font color="#0000FF">speed</font>): boolean;</b></td>
+			<td style="text-align: center;"><b>SPIEnterProgMode(<font color="#0000FF">speed</font>): boolean;</b></td>
 			<td>
-				<p>Устанавливает частоту SPI &nbsp;<br>
+				<p>Инициализирует состояние пинов для SPI и устанавливает частоту SPI &nbsp;<br>
 					&nbsp; Параметры:<br>
 					&nbsp; &nbsp; <font color="#0000FF"><b>speed</b></font><br>
 					&nbsp; &nbsp; <b>_SPI_SPEED_MAX</b>&nbsp;= AvrIsp 8(4) MHz / USbAsp 3 MHz<br>
 					&nbsp;Если частота не установлена возвращает false<br>
-					&nbsp;Игнорируется для CH341</p>
-			</td>
-		</tr>
-		<tr>
-			<td style="text-align: center;"><b>SPIEnterProgMode();</b></td>
-			<td>
-				<p>Инициализирует состояние пинов для SPI</p>
+					&nbsp;Игнорируется для устройств с фиксированной частотой</p>
 			</td>
 		</tr>
 		<tr>
@@ -166,6 +178,63 @@
 					&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#0000FF">size </font></b>размер данных в байтах&nbsp;&nbsp;<br>
 					&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#0000FF">position</font> </b>позиция в редакторе&nbsp;&nbsp;<br>
 					&nbsp;&nbsp; Возвращает количество записанных байт</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" style="text-align: center;"><font size="5"><b>Работа с I2C</b></font></td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>I2CEnterProgMode();</b></td>
+				<td style="text-align: center;">
+				<p align="left">&nbsp;Инициализирует состояние пинов</p>
+			    </td>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>I2cExitProgMode();</b></td>
+				<td style="text-align: center;">
+				<p align="left">&nbsp;Отключает пины</p>
+			    </td>
+			</td>
+		</tr>	
+		<tr>
+			<td style="text-align: center;"><b>I2CReadWrite(<font color="#0000FF">DevAddr</font>, <font color="#0000FF">wsize</font>, <font color="#0000FF">rsize</font>, <font color="#0000FF">wbuffer</font>, <font color="#0000FF">rbuffer</font></b><b>): integer;</b></td>
+			<td>
+				<p>Записывает/читае данные из буферов&nbsp;&nbsp;<br>
+					&nbsp;&nbsp; Параметры:&nbsp;&nbsp;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#0000FF">DevAddr</font></b> адрес устройства&nbsp;&nbsp;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#0000FF">size </font></b>размер данных в байтах&nbsp;&nbsp;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp; <b><font color="#0000FF">buffer </font></b>переменные с&nbsp;данными&nbsp;или массив созданный <b>CreateByteArray&nbsp;&nbsp;</b><br>
+					&nbsp;&nbsp; Возвращает количество записанных + прочитанных байт<br>
+					&nbsp;&nbsp; *Если <b><font color="#0000FF">rsize</font></b>=0 можно опустить параметр <b><font color="#0000FF">rbuffer</font></b></p>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>I2CStart();</b></td>
+				<td style="text-align: center;">
+				<p align="left">Используется вместе с I2CReadByte и I2CWriteByte</p>
+			    </td>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>I2CStop();</b></td>
+				<td style="text-align: center;">
+				<p align="left">Используется вместе с I2CReadByte и I2CWriteByte</p>
+			    </td>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>I2CReadByte(<font color="#0000FF">ack</font>: boolean): byte;</b></td>
+				<td style="text-align: center;">
+				<p align="left">Читает байт данных и отправляет ack/nack</p>
+			    </td>
+			</td>
+		</tr>
+		<tr>
+			<td style="text-align: center;"><b>I2CWriteByte(<font color="#0000FF">data</font>): boolean;</b></td>
+				<td style="text-align: center;">
+				<p align="left">Записывает байт данных и возвращает ack/nack</p>
+			    </td>
 			</td>
 		</tr>
 	</tbody>

@@ -27,16 +27,8 @@ msgid "Чип будет стерт и перезаписан. Продолжи�
 msgstr "IC will be erased and programmed. Continue?"
 
 #: msgstr.str_connection_error
-msgid "Ошибка подключения к USBAsp"
-msgstr "Error connecting USBAsp"
-
-#: msgstr.str_connect_error_ch
-msgid "Ошибка подключения к CH341"
-msgstr "Error connecting CH341"
-
-#: msgstr.str_connect_error_avr
-msgid "Ошибка подключения к AVRISP"
-msgstr "Error connecting AVRISP"
+msgid "Ошибка подключения к "
+msgstr "Error connecting "
 
 #: msgstr.str_done
 msgid "Готово"
@@ -150,6 +142,14 @@ msgstr "Number of bytes written not equal to IC size"
 msgid "Размер файла больше размера чипа"
 msgstr "File size larger than IC size"
 
+#: msgstr.str_erase_notice
+msgid "Процесс может длиться больше минуты на больших флешках!"
+msgstr "The process can take more than a minute on large flash!"
+
+#: tmainform.allowinsertitem.caption
+msgid "Разрешить режим вставки"
+msgstr "Insert mode"
+
 #: tmainform.menuitemhardware.caption
 msgid "Программатор"
 msgstr "Hardware"
@@ -202,10 +202,6 @@ msgstr "Type of addressing"
 msgid "Размер чипа в байтах"
 msgstr "IC size in bytes"
 
-#: tmainform.combochipsize.text
-msgid "Chip size"
-msgstr ""
-
 #: tmainform.comboitem1.caption
 msgid "Снять защиту -> стереть -> записать -> проверить"
 msgstr "Unprotect -> erase -> program -> verify"
@@ -214,17 +210,9 @@ msgstr "Unprotect -> erase -> program -> verify"
 msgid "Длинна адреса в битах"
 msgstr "Address Length in bits"
 
-#: tmainform.combomwbitlen.text
-msgid "MW addr len"
-msgstr ""
-
 #: tmainform.combopagesize.hint
 msgid "Размер страницы"
 msgstr "Page size"
-
-#: tmainform.combopagesize.text
-msgid "Page size"
-msgstr ""
 
 #: tmainform.copylogmenuitem.caption
 msgctxt "TMAINFORM.COPYLOGMENUITEM.CAPTION"
@@ -278,6 +266,10 @@ msgstr "Search"
 msgctxt "tmainform.menufindchip.caption"
 msgid "Поиск"
 msgstr "Search"
+
+#: tmainform.menuskipff.caption
+msgid "Не писать FF"
+msgstr "Do not write FF"
 
 #: tmainform.menugotooffset.caption
 msgid "Перейти по адресу"
@@ -366,6 +358,10 @@ msgstr "Find IC"
 #: tchipsearchform.label1.caption
 msgid "Маркировка содержит:"
 msgstr "IC мarking contains:"
+
+#: tchipsearchform.ChipSearchSelectButton.caption
+msgid "Выбрать микросхему"
+msgstr "Select IC"
 
 #: tmainform.blankcheckmenuitem.caption
 msgid "Проверка на чистоту"

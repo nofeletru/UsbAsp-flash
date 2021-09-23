@@ -42,8 +42,10 @@ static uchar prog_blockflags;
 static uchar prog_pagecounter;
 
 static uchar spi_cs_hi = 1;
+static uchar mw_cs_lo = 1;
+static uchar mw_bitnum = 0;
+static uchar i2c_stop_aw = 0;
 
-static unsigned int mw_addr = 0;
 
 usbMsgLen_t usbFunctionSetup(uchar data[8]) {
 
@@ -98,54 +100,50 @@ usbMsgLen_t usbFunctionSetup(uchar data[8]) {
 		ledRedOn();
 		i2c_init();
 		
-	} else if (data[1] == USBASP_FUNC_I2C_ACK) {
-		
+	} else if (data[1] == USBASP_FUNC_I2C_START) {
 		i2c_start();
-		replyBuffer[0] = i2c_address(data[2], I2C_WRITE);
+		
+	} else if (data[1] == USBASP_FUNC_I2C_STOP) {
 		i2c_stop();
+		
+	} else if (data[1] == USBASP_FUNC_I2C_WRITEBYTE) {
+		replyBuffer[0] = i2c_send_byte(data[2]);
 		len = 1;
 		
-			
+	} else if (data[1] == USBASP_FUNC_I2C_READBYTE) {
+		replyBuffer[0] = i2c_read_byte(data[2]);
+		len = 1;
+		
 	} else if (data[1] == USBASP_FUNC_I2C_READ) {
-		i2c_start();
-		i2c_address(data[2], I2C_WRITE); //Адрес устройства/памяти
-		if (data[3] == 2) {i2c_send_byte(data[5]);}; //1 байт адреса (hi)
-		if (data[3] > 0) {i2c_send_byte(data[4]);}; //2 (lo)
-		i2c_start_rep();
 		i2c_address(data[2], I2C_READ);
 		prog_nbytes = (data[7] << 8) | data[6]; //Размер куска данных
 		prog_state = PROG_STATE_I2C_READ;
 		len = USB_NO_MSG;
 
-
 	} else if (data[1] == USBASP_FUNC_I2C_WRITE) {
 		i2c_start();
-		i2c_address(data[2], I2C_WRITE); //Адрес устройства/памяти
-		if (data[3] == 2) {i2c_send_byte(data[5]);}; //1 байт адреса (hi)
-		if (data[3] > 0) {i2c_send_byte(data[4]);}; //2 (lo)
-		prog_nbytes = (data[7] << 8) | data[6]; //Размер страницы
+		i2c_address(data[2], I2C_WRITE); //Адрес устройства
+		i2c_stop_aw = data[4]; //Команда стоп(1) или старт(0)
+		prog_nbytes = (data[7] << 8) | data[6]; //Размер куска данных
 		prog_state = PROG_STATE_I2C_WRITE;
 		len = USB_NO_MSG;
 		
 //microwire 93xx ---------------------------------------------------------		
 
 	} else if (data[1] == USBASP_FUNC_MW_WRITE) {
-		mwStart();
+		CS_HI();
+		mw_cs_lo = data[2];
 		
-		mw_addr = (data[3] << 8) | data[2]; //адрес (value)
 		//data[4] lo(index)= сколько бит передавать
-		//data[5] //опкод hi(index)
-		
-		mwSendData((data[5] << (data[4]-2)) | mw_addr, data[4]);
+		mw_bitnum = data[4];
 	
 		prog_nbytes = (data[7] << 8) | data[6]; //Размер куска данных
 		prog_state = PROG_STATE_MW_WRITE;
 		len = USB_NO_MSG;
 		
 	} else if (data[1] == USBASP_FUNC_MW_READ) {
-		mwStart();
+		mw_cs_lo = data[2];
 		
-		mwSendData((data[3] << 8) | data[2], data[4]); //пакет 16-бит(value) lo(index)=сколько бит передавать
 		prog_nbytes = (data[7] << 8) | data[6]; //Размер куска данных
 		prog_state = PROG_STATE_MW_READ;
 		len = USB_NO_MSG;
@@ -368,7 +366,9 @@ uchar usbFunctionRead(uchar *data, uchar len) {
 			
 			if (prog_nbytes == 0)
 			{
-				data[i] = i2c_read_byte(I2C_NACK);	
+				data[i] = i2c_read_byte(I2C_NACK);
+				i2c_stop();
+				prog_state = PROG_STATE_IDLE;				
 			}
 			else
 			{
@@ -377,11 +377,6 @@ uchar usbFunctionRead(uchar *data, uchar len) {
 			
 		}
 			
-		if(prog_nbytes <= 0)
-		{
-			i2c_stop();
-			prog_state = PROG_STATE_IDLE;
-		}
 		
 		return len;	
 
@@ -400,7 +395,7 @@ uchar usbFunctionRead(uchar *data, uchar len) {
 		
 		if(prog_nbytes <= 0)
 		{
-			mwEnd();
+			if(mw_cs_lo) mwEnd();
 			prog_state = PROG_STATE_IDLE;
 		}
 
@@ -458,7 +453,9 @@ uchar usbFunctionWrite(uchar *data, uchar len) {
 		
 		if(prog_nbytes <= 0)
 		{
-			i2c_stop();
+			if(i2c_stop_aw == 1) i2c_stop();
+			  else i2c_start();
+			  
 			prog_state = PROG_STATE_IDLE;
 			return 1;
 		}
@@ -493,13 +490,26 @@ uchar usbFunctionWrite(uchar *data, uchar len) {
 
 		for (i = 0; i < len; i++)
 		{
-			mwSendData(data[i], 8);
+			//Пишем биты
+			if(mw_bitnum > 0){
+				if(mw_bitnum < 8)
+				{
+					mwSendData(data[i], mw_bitnum);
+					mw_bitnum = 0;
+				}
+				else
+				{ 
+					mwSendData(data[i], 8);
+					mw_bitnum -= 8;	
+				}
+			}
+				
 			prog_nbytes -= 1;
 		}
 			
 		if(prog_nbytes <= 0)
 		{
-			mwEnd();
+			if(mw_cs_lo) mwEnd();
 			prog_state = PROG_STATE_IDLE;
 			return 1;
 		}

@@ -27,16 +27,8 @@ msgid "Чип будет стерт и перезаписан. Продолжи�
 msgstr "La puce sera effacée et écrasée. Continuer?"
 
 #: msgstr.str_connection_error
-msgid "Ошибка подключения к USBAsp"
-msgstr "Erreur de connexion à USBAsp"
-
-#: msgstr.str_connect_error_ch
-msgid "Ошибка подключения к CH341"
-msgstr "Erreur de connexion au CH341A"
-
-#: msgstr.str_connect_error_avr
-msgid "Ошибка подключения к AVRISP"
-msgstr "Erreur de connexion à AVRISP"
+msgid "Ошибка подключения к "
+msgstr "Erreur de connexion "
 
 #: msgstr.str_done
 msgid "Готово"
@@ -140,15 +132,23 @@ msgstr "Ecriture memoire(verification)..."
 
 #: msgstr.str_wrong_bytes_read
 msgid "Количество прочитанных байт не равно размеру флэшки"
-msgstr "Le nombre d'octets lus n'est pas égal à la taille IC"
+msgstr "Le nombre d'octets lus n'est pas égal à la taille de la puce"
 
 #: msgstr.str_wrong_bytes_write
 msgid "Количество записанных байт не равно размеру флэшки"
-msgstr "Le nombre d'octets écrits n'est pas égal à la taille IC"
+msgstr "Le nombre d'octets écrits n'est pas égal à la taille de la puce"
 
 #: msgstr.str_wrong_file_size
 msgid "Размер файла больше размера чипа"
 msgstr "Taille de fichier supérieure à la taille de la puce"
+
+#: msgstr.str_erase_notice
+msgid "Процесс может длиться больше минуты на больших флешках!"
+msgstr "Le processus peut prendre plus d'une minute sur une mémoire de grande taille!"
+
+#: tmainform.allowinsertitem.caption
+msgid "Разрешить режим вставки"
+msgstr "Mode insertion"
 
 #: tmainform.menuitemhardware.caption
 msgid "Программатор"
@@ -192,7 +192,7 @@ msgstr "Programmer IC"
 
 #: tmainform.clearlogmenuitem.caption
 msgid "Очистить"
-msgstr "Effacemer"
+msgstr "Effacer"
 
 #: tmainform.comboaddrtype.hint
 msgid "Тип адресации к памяти"
@@ -202,10 +202,6 @@ msgstr "Type d'adressage mémoire"
 msgid "Размер чипа в байтах"
 msgstr "Taille IC en bytes"
 
-#: tmainform.combochipsize.text
-msgid "Taille IC"
-msgstr ""
-
 #: tmainform.comboitem1.caption
 msgid "Снять защиту -> стереть -> записать -> проверить"
 msgstr "Supprimer la protection -> Effacer -> Ecrire -> Vérifier"
@@ -214,17 +210,9 @@ msgstr "Supprimer la protection -> Effacer -> Ecrire -> Vérifier"
 msgid "Длинна адреса в битах"
 msgstr "Longueur d'adresse en bits"
 
-#: tmainform.combomwbitlen.text
-msgid "MW addr len"
-msgstr ""
-
 #: tmainform.combopagesize.hint
 msgid "Размер страницы"
 msgstr "Taille de la page"
-
-#: tmainform.combopagesize.text
-msgid "Page size"
-msgstr ""
 
 #: tmainform.copylogmenuitem.caption
 msgctxt "TMAINFORM.COPYLOGMENUITEM.CAPTION"
@@ -317,17 +305,21 @@ msgstr "Frequence"
 msgid "Поиск"
 msgstr "Recherche"
 
+#: tmainform.menuskipff.caption
+msgid "Не писать FF"
+msgstr "Ne pas écrire les FF"
+
 #: tsearchform.casesensecheckbox.caption
 msgid "Учитывать регистр"
 msgstr "Sensible à la case"
 
 #: tsearchform.findbutton.caption
 msgid "Найти"
-msgstr "Trouvé"
+msgstr "Trouver"
 
 #: tsearchform.frombeginingcheckbox.caption
 msgid "Искать сначала"
-msgstr "Rechercher en premier"
+msgstr "Du début"
 
 #: tsearchform.hexcheckbox.caption
 msgid "Искать HEX значение"
@@ -366,6 +358,10 @@ msgstr "Recherche IC"
 #: tchipsearchform.label1.caption
 msgid "Маркировка содержит:"
 msgstr "Le marquage contient:"
+
+#: tchipsearchform.ChipSearchSelectButton.caption
+msgid "Выбрать микросхему"
+msgstr "Selectionner IC"
 
 #: tmainform.blankcheckmenuitem.caption
 msgid "Проверка на чистоту"

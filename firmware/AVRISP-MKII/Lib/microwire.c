@@ -1,34 +1,11 @@
 #include "microwire.h"
 
 
-void mwStart(void)
+void mwSendData(unsigned char data,unsigned char n)
 {
-	SPI_Disable();
-	DDRB  |= ((1 << 1) | (1 << 2));
-	PORTB |= ((1 << 0) | (1 << 3));
-		
-	// set CS to 0
-    SPI_Set_CS(0);
-	// set CLK to 0
-    ISP_OUT &= ~(1 << ISP_SCK);
-	_delay_us(MW_DELAY);
-
-	// set CS to 1
-    SPI_Set_CS(1);
-	//send start bit
-                ISP_OUT |= (1 << ISP_MOSI);
-	_delay_us(MW_DELAY);
-                ISP_OUT |= (1 << ISP_SCK);
-	_delay_us(MW_DELAY);
-                ISP_OUT &= ~(1 << ISP_SCK);
-	_delay_us(MW_DELAY);	
-}
-
-void mwSendData(unsigned int data,unsigned char n)
-{
-	while(n !=0)
+	for(unsigned char i=0; i < n; i++)
 	{
-		if ((data >> (n-1)) & 1)
+		if ((data >> (7-i)) & 1)
 		{
 			ISP_OUT |= (1 << ISP_MOSI);
 		}
@@ -41,7 +18,6 @@ void mwSendData(unsigned int data,unsigned char n)
 		_delay_us(MW_DELAY);
         ISP_OUT &= ~(1 << ISP_SCK);
 		_delay_us(MW_DELAY);
-		n--;
 	}
 }
 
@@ -94,22 +70,25 @@ unsigned char mwBusy(void)
 	};
 }
 
+void mw_init(void) {
+	SPI_Disable();
+	DDRB  |= ((1 << 1) | (1 << 2));
+	PORTB |= ((1 << 0) | (1 << 3));
+	Endpoint_ClearOUT();
+}
+
 void mw_read(void)
 {
 	uint16_t BytesToRead;
-	uint16_t Address;
-	uint8_t addr_bitlen;
+	uint8_t mw_cs_lo;
 	
 	BytesToRead = Endpoint_Read_16_LE();
-	Address = Endpoint_Read_16_LE();
-	addr_bitlen = Endpoint_Read_8();
+	mw_cs_lo = Endpoint_Read_8();
 	
 	Endpoint_ClearOUT();
 	Endpoint_SelectEndpoint(AVRISP_DATA_IN_EPADDR);
 	Endpoint_SetEndpointDirection(ENDPOINT_DIR_IN); 
 	
-	mwStart();
-	mwSendData(Address, addr_bitlen);
 	
 	if (BytesToRead == 0) //В любом случае отсылаем хоть что-то, иначе нихера не пашет :(
 	{
@@ -140,7 +119,7 @@ void mw_read(void)
 		Endpoint_WaitUntilReady();
 	} 
 	
-	mwEnd(); 
+	if(mw_cs_lo) mwEnd(); 
 }
 	
 void mw_write(void)
@@ -148,15 +127,14 @@ void mw_write(void)
 	uint16_t BytesToWrite;
 	uint8_t  ChunkToWrite;
 	static uint8_t  ProgData[8];
-	uint16_t Address;
-	uint8_t addr_bitlen;
+	uint8_t mw_cs_lo;
+	uint8_t mw_bitnum;
 	
 	BytesToWrite = Endpoint_Read_16_LE();
-	Address = Endpoint_Read_16_LE();
-	addr_bitlen = Endpoint_Read_8();
+	mw_cs_lo = Endpoint_Read_8();
+	mw_bitnum = Endpoint_Read_8();
 	
-	mwStart();
-	mwSendData(Address, addr_bitlen);
+	SPI_Set_CS(1);
 	
 	while (BytesToWrite > 0)
 	{	
@@ -167,14 +145,27 @@ void mw_write(void)
 		
 		for (uint8_t CurrentByte = 0; CurrentByte < ChunkToWrite; CurrentByte++)
 		{
-			mwSendData(ProgData[CurrentByte], 8);
+			//Пишем биты
+			if(mw_bitnum > 0){
+				if(mw_bitnum < 8)
+				{
+					mwSendData(ProgData[CurrentByte], mw_bitnum);
+					mw_bitnum = 0;
+				}
+				else
+				{ 
+					mwSendData(ProgData[CurrentByte], 8);
+					mw_bitnum -= 8;	
+				}
+			}
+			
 			BytesToWrite--;
 		}
 	}
 	
 	Endpoint_ClearOUT();
 	
-	mwEnd(); 
+	if(mw_cs_lo) mwEnd(); 
 }
 
 void mw_busy(void)

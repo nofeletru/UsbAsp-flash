@@ -53,6 +53,9 @@ msgstr "Размер страницы"
 #: tmainform.copylogmenuitem.caption
 msgstr "Копировать"
 
+#: tmainform.allowinsertitem.caption
+msgstr "Разрешить режим вставки"
+
 #: tmainform.label1.caption
 msgstr "Страница"
 
@@ -85,6 +88,9 @@ msgstr "Поиск"
 
 #: tmainform.menufindchip.caption
 msgstr "Поиск"
+
+#: tmainform.menuskipff.caption
+msgstr "Не писать FF"
 
 #: tmainform.menugotooffset.caption
 msgstr "Перейти по адресу"
@@ -148,6 +154,9 @@ msgstr "Поиск микросхемы"
 
 #: tchipsearchform.label1.caption
 msgstr "Маркировка содержит:"
+
+#: tchipsearchform.ChipSearchSelectButton.caption
+msgstr "Выбрать микросхему"
 
 #: tmainform.blankcheckmenuitem.caption
 msgstr "Проверка на чистоту"
