@@ -153,6 +153,7 @@
 	  <Pm25LD010 id="7F9D21" page="256" size="131072"/>
 	  <Pm25LV020 id="7F9D22" page="256" size="262144"/>
 	  <Pm25W020 id="7F9D7D" page="256" size="262144"/>
+	  <Pm25LV040 id="7F9D7E" page="256" size="524288"/>
 	</PFLASH>
 	<TERRA>
 	  <TS25L512A id="373010" page="256" size="65536"/>
@@ -239,6 +240,7 @@
       <GD25Q64B id="C84017" page="256" size="8388608"/>
       <GD25Q128B id="C84018" page="256" size="16777216"/>
       <GD25Q128C id="C84018" page="256" size="16777216"/>
+	  <GD25LQ064C_1.8V id="C86017" page="256" size="8388608"/>
 	  <GD25LQ128C_1.8V id="C86018" page="256" size="16777216"/>
 	  <GD25LQ256C_1.8V id="C86019" page="256" size="33554432"/>
       <MD25T80 id="C83114" page="256" size="1048576"/>

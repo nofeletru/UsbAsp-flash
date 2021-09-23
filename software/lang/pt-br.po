@@ -1,381 +1,385 @@
-#English
+#Português-BR
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 #: msgstr.str_45page_powerof2
 msgid "Установлен размер страницы кратный двум!"
-msgstr "Page size is power of 2"
+msgstr "O tamanho da página é uma potência de 2!"
 
 #: msgstr.str_45page_std
 msgid "Установлен стандартный размер страницы"
-msgstr "Default page size is set"
+msgstr "O tamanho da página padrão está definido."
 
 #: msgstr.str_block_en
-msgid "Возможно включена защита на запись. Нажмите кнопку \"Снять защиту\" и сверьтесь с даташитом"
-msgstr "Possible protection is enabled. Press \"Unprotect\" and check datasheet"
+msgid "Возможно включена защита на запись. Нажмите кнопку "Снять защиту" и сверьтесь с даташитом"
+msgstr "Possível proteção está ativada. Pressione "Desproteger" e verifique a folha de dados"
 
 #: msgstr.str_changed
 msgid "Изменен"
-msgstr "Modified"
+msgstr "Modificado"
 
 #: msgstr.str_check_settings
 msgid "Проверьте настройки"
-msgstr "Check settings"
+msgstr "Verificar configurações"
 
 #: msgstr.str_combo_warn
 msgid "Чип будет стерт и перезаписан. Продолжить?"
-msgstr "IC will be erased and programmed. Continue?"
+msgstr "O Chip será apagado e programado. Continuar?"
 
 #: msgstr.str_connection_error
-msgid "Ошибка подключения к "
-msgstr "Error connecting "
+msgid "Ошибка подключения к USBAsp"
+msgstr "Erro ao conectar o USBAsp"
+
+#: msgstr.str_connect_error_ch
+msgid "Ошибка подключения к CH341"
+msgstr "Erro ao conectar o CH341"
+
+#: msgstr.str_connect_error_avr
+msgid "Ошибка подключения к AVRISP"
+msgstr "Erro ao conectar o AVRISP"
 
 #: msgstr.str_done
 msgid "Готово"
-msgstr "Done"
+msgstr "Pronto"
 
 #: msgstr.str_erasing_flash
 msgid "Стираю флэшку..."
-msgstr "Erasing memory..."
+msgstr "Apagando a memória"
 
 #: msgstr.str_goto_addr
 msgid "Перейти по адресу"
-msgstr "Goto address"
+msgstr "Ir para o endereço"
 
 #: msgstr.str_i2c_no_answer
 msgid "Микросхема не отвечает"
-msgstr "IC not responding"
+msgstr "Chip não responde"
 
 #: msgstr.str_id_unknown
 msgid "(Неизвестно)"
-msgstr "(Unknown)"
+msgstr "(Desconhecido)"
 
 #: msgstr.str_mini_eeprom_support
 msgid "Данная версия прошивки не поддерживает I2C и MW!"
-msgstr "This firmware does not support I2C and MW!"
+msgstr "Este firmware não suporta I2C e MW!"
 
 #: msgstr.str_new_sreg
 msgid "Стало Sreg: "
-msgstr "New SREG: "
+msgstr "Novo SREG: "
 
 #: msgstr.str_curr_hw
 msgid "Используется программатор: "
-msgstr "Current programmer: "
+msgstr "Programador atual: "
 
 #: msgstr.str_not_found_hex
 msgid "Значение не найдено"
-msgstr "Value not found"
+msgstr "Valor não encontrado"
 
 #: msgstr.str_no_eeprom_support
 msgid "Данная версия прошивки не поддерживается!"
-msgstr "This firmware does not support memory programming"
+msgstr "Este firmware não suporta programação de memória"
 
 #: msgstr.str_old_sreg
 msgid "Было Sreg: "
-msgstr "Old SREG: "
+msgstr "Antigo SREG: "
 
 #: msgstr.str_reading_flash
 msgid "Читаю флэшку..."
-msgstr "Reading memory..."
+msgstr "Lendo a memória"
 
 #: msgstr.str_search_hex
 msgid "Поиск HEX значения"
-msgstr "Search HEX value"
+msgstr "Pesquisar valor HEX"
 
 #: msgstr.str_set_speed_error
 msgid "Ошибка установки скорости SPI"
-msgstr "Error setting SPI speed"
+msgstr "Erro ao definir a velocidade do SPI"
 
 #: msgstr.str_size
 msgid "Размер: "
-msgstr "Size: "
+msgstr "Tamanho: "
 
 #: msgstr.str_specify_hex
 msgid "Укажите шестнадцатеричные числа"
-msgstr "Use HEX numbers"
+msgstr "Use números HEX"
 
 #: msgstr.str_start_erase
 msgid "Точно стереть чип?"
-msgstr "Erase IC?"
+msgstr "Apagar Chip?"
 
 #: msgstr.str_start_write
 msgid "Начать запись?"
-msgstr "Begin programming?"
+msgstr "Começar a programar?"
 
 #: msgstr.str_time
 msgid "Время выполнения: "
-msgstr "Execution time: "
+msgstr "Tempo de execução: "
 
 #: msgstr.str_usb_timeout
 msgid "USB_control_msg отвалился по таймауту!"
-msgstr "USB_control_msg timeout!"
+msgstr "Tempo limite do USB_control_msg!"
 
 #: msgstr.str_user_cancel
 msgid "Прервано пользователем"
-msgstr "Cancelled by user"
+msgstr "Cancelado pelo usuário"
 
 #: msgstr.str_verify
 msgid "Проверяю флэшку..."
-msgstr "Verifying memory..."
+msgstr "Verificar a memória"
 
 #: msgstr.str_verify_error
 msgid "Ошибка сравнения по адресу: "
-msgstr "Verification error on address: "
+msgstr "Erro de verificação no endereço: "
 
 #: msgstr.str_writing_flash
 msgid "Записываю флэшку..."
-msgstr "Programming memory..."
+msgstr "Programando a memória"
 
 #: msgstr.str_writing_flash_wchk
 msgid "Записываю флэшку с проверкой..."
-msgstr "Programming memory (with verification)..."
+msgstr "Memória de programação (verificação)..."
 
 #: msgstr.str_wrong_bytes_read
 msgid "Количество прочитанных байт не равно размеру флэшки"
-msgstr "Number of bytes read not equal to IC size"
+msgstr "Número de bytes lidos é diferente do tamanho do Chip"
 
 #: msgstr.str_wrong_bytes_write
 msgid "Количество записанных байт не равно размеру флэшки"
-msgstr "Number of bytes written not equal to IC size"
+msgstr "Número de bytes gravados é diferente do tamanho do Chip"
 
 #: msgstr.str_wrong_file_size
 msgid "Размер файла больше размера чипа"
-msgstr "File size larger than IC size"
-
-#: msgstr.str_erase_notice
-msgid "Процесс может длиться больше минуты на больших флешках!"
-msgstr "The process can take more than a minute on large flash!"
-
-#: tmainform.allowinsertitem.caption
-msgid "Разрешить режим вставки"
-msgstr "Insert mode"
+msgstr "Tamanho do arquivo maior que o tamanho do Chip"
 
 #: tmainform.menuitemhardware.caption
 msgid "Программатор"
-msgstr "Hardware"
+msgstr "Selecione o Programador"
 
 #: tmainform.buttonblock.hint
 msgid "Снять защиту"
-msgstr "Unprotect"
+msgstr "Desproteger"
 
 #: tmainform.buttoncancel.hint
 msgid "Прервать текущею операцию"
-msgstr "Cancel"
+msgstr "Cancelar"
 
 #: tmainform.buttonerase.hint
 msgid "Стереть"
-msgstr "Erase IC"
+msgstr "Apagar"
 
 #: tmainform.buttonopenhex.hint
 msgid "Загрузить прошивку в редактор"
-msgstr "Open file"
+msgstr "Abrir arquivo"
 
 #: tmainform.buttonread.hint
 msgid "Прочитать"
-msgstr "Read IC"
+msgstr "Ler"
 
 #: tmainform.buttonreadid.hint
 msgid "Прочитать индификатор"
-msgstr "Read ID"
+msgstr "ID de leitura"
 
 #: tmainform.buttonsavehex.hint
 msgid "Сохранить прошивку из редактора"
-msgstr "Save file"
+msgstr "Salvar arquivo"
 
 #: tmainform.buttonverify.hint
 msgid "Сравнить содержимое"
-msgstr "Verify IC"
+msgstr "Verificar"
 
 #: tmainform.buttonwrite.hint
 msgid "Записать"
-msgstr "Program IC"
+msgstr "Programar"
 
 #: tmainform.clearlogmenuitem.caption
 msgid "Очистить"
-msgstr "Clear"
+msgstr "Limpar"
 
 #: tmainform.comboaddrtype.hint
 msgid "Тип адресации к памяти"
-msgstr "Type of addressing"
+msgstr "Tipo de endereço"
 
 #: tmainform.combochipsize.hint
 msgid "Размер чипа в байтах"
-msgstr "IC size in bytes"
+msgstr "Tamanho do Chip em bytes"
+
+#: tmainform.combochipsize.text
+msgid "Tamanho do Chip"
+msgstr ""
 
 #: tmainform.comboitem1.caption
 msgid "Снять защиту -> стереть -> записать -> проверить"
-msgstr "Unprotect -> erase -> program -> verify"
+msgstr "Desproteger -> apagar -> programar -> verificar"
 
 #: tmainform.combomwbitlen.hint
 msgid "Длинна адреса в битах"
-msgstr "Address Length in bits"
+msgstr "Comprimento do endereço em bits"
+
+#: tmainform.combomwbitlen.text
+msgid "MW addr len"
+msgstr ""
 
 #: tmainform.combopagesize.hint
 msgid "Размер страницы"
-msgstr "Page size"
+msgstr "Tamanho"
+
+#: tmainform.combopagesize.text
+msgid "Tamanho"
+msgstr ""
 
 #: tmainform.copylogmenuitem.caption
 msgctxt "TMAINFORM.COPYLOGMENUITEM.CAPTION"
 msgid "Копировать"
-msgstr "Copy"
+msgstr "Copiar"
 
 #: tmainform.label1.caption
 msgid "Страница"
-msgstr "Page"
+msgstr "Página"
 
 #: tmainform.label2.caption
 msgid "Размер"
-msgstr "Size"
+msgstr "Tamanho"
 
 #: tmainform.label4.caption
 msgid "Тип адреса"
-msgstr "Address type"
+msgstr "Tipo Endereço"
 
 #: tmainform.label5.caption
 msgid "Длина адреса"
-msgstr "Address length"
+msgstr "Comprimento do endereço"
 
 #: tmainform.label3.caption
 msgctxt "tmainform.label3.caption"
 msgid "Микросхема:"
-msgstr "IC:"
+msgstr "Chip selecionado:"
 
 #: tmainform.labelspicmd.caption
 msgid "Команды SPI"
-msgstr "SPI commands"
+msgstr "Código SPI"
 
 #: tmainform.menuautocheck.caption
 msgid "Проверка записи"
-msgstr "Verify"
+msgstr "Verificar"
 
 #: tmainform.menuchip.caption
 msgctxt "TMAINFORM.MENUCHIP.CAPTION"
 msgid "Микросхема"
-msgstr "IC"
+msgstr "Seleção do Chip"
 
 #: tmainform.menucopytoclip.caption
 msgctxt "tmainform.menucopytoclip.caption"
 msgid "Копировать"
-msgstr "Copy"
+msgstr "Copiar"
 
 #: tmainform.menufind.caption
 msgid "Поиск"
-msgstr "Search"
+msgstr "Buscar"
 
 #: tmainform.menufindchip.caption
 msgctxt "tmainform.menufindchip.caption"
 msgid "Поиск"
-msgstr "Search"
-
-#: tmainform.menuskipff.caption
-msgid "Не писать FF"
-msgstr "Do not write FF"
+msgstr "Pesquisar"
 
 #: tmainform.menugotooffset.caption
 msgid "Перейти по адресу"
-msgstr "Goto address"
+msgstr "Ir para endereço"
 
 #: tmainform.menuignorebusybit.caption
 msgid "Не проверять Busy бит"
-msgstr "Do not chek Busy bit"
+msgstr "Não verificar bits ocupados"
 
 #: tmainform.menuitemlockflash.caption
 msgid "Поставить защиту"
-msgstr "Set the protection bits"
+msgstr "Definir os bits de proteção"
 
 #: tmainform.menuitemreadsreg.caption
 msgid "Прочитать SREG"
-msgstr "Read SREG"
+msgstr "Ler SREG"
 
 #: tmainform.menuitemeditsreg.caption
 msgid "Изменить SREG"
-msgstr "Edit SREG"
+msgstr "Editar SREG"
 
 #: tmainform.menumwclock.caption
 msgctxt "TMAINFORM.MENUMWCLOCK.CAPTION"
 msgid "Частота"
-msgstr "Frequency"
+msgstr "Frequência"
 
 #: tmainform.menuoptions.caption
 msgid "Настройки"
-msgstr "Options"
+msgstr "Opções"
 
 #: tmainform.menuspiclock.caption
 msgctxt "tmainform.menuspiclock.caption"
 msgid "Частота"
-msgstr "Frequency"
+msgstr "Frequência"
 
 #: tsearchform.caption
 msgid "Поиск"
-msgstr "Find"
+msgstr "Encontrar"
 
 #: tsearchform.casesensecheckbox.caption
 msgid "Учитывать регистр"
-msgstr "Case sensitivity"
+msgstr "Sensibilidade a maiúsculas e minúsculas"
 
 #: tsearchform.findbutton.caption
 msgid "Найти"
-msgstr "Find"
+msgstr "Encontrar"
 
 #: tsearchform.frombeginingcheckbox.caption
 msgid "Искать сначала"
-msgstr "Search from the beginning"
+msgstr "Do começo"
 
 #: tsearchform.hexcheckbox.caption
 msgid "Искать HEX значение"
-msgstr "Search HEX value"
+msgstr "Pesquisar valor HEX"
 
 #: tsearchform.replaceallcheckbox.caption
 msgid "Заменить все"
-msgstr "Replace all"
+msgstr "Substituir tudo"
 
 #: tsearchform.replacecheckbox.caption
 msgid "Заменить"
-msgstr "Replace"
+msgstr "Substituir"
 
 #: tsearchform.replacelabel.caption
 msgid "заменить на:"
-msgstr "replace to:"
+msgstr "Substituir para:"
 
 #: tsearchform.searchlabel.caption
 msgid "Искать"
-msgstr "Find"
+msgstr "Encontrar"
 
 #: tsregeditform.buttonreadsreg.caption
 msgctxt "TSREGEDITFORM.BUTTONREADSREG.CAPTION"
 msgid "Прочитать"
-msgstr "Read"
+msgstr "Ler"
 
 #: tsregeditform.buttonwritesreg.caption
 msgctxt "TSREGEDITFORM.BUTTONWRITESREG.CAPTION"
 msgid "Записать"
-msgstr "Write"
+msgstr "Escrever"
 
 #: tchipsearchform.caption
 msgid "Поиск микросхемы"
-msgstr "Find IC"
+msgstr "Pesquisar"
 
 #: tchipsearchform.label1.caption
 msgid "Маркировка содержит:"
-msgstr "IC мarking contains:"
-
-#: tchipsearchform.ChipSearchSelectButton.caption
-msgid "Выбрать микросхему"
-msgstr "Select IC"
+msgstr "Digite o código do Chip:"
 
 #: tmainform.blankcheckmenuitem.caption
 msgid "Проверка на чистоту"
-msgstr "Blank check"
+msgstr "Verificar Em Branco "
 
 #: tmainform.Label_I2C_DevAddr.caption
 msgctxt "tmainform.Label_I2C_DevAddr.caption"
 msgid "Адрес устройства"
-msgstr "Device address"
+msgstr "Endereço Dispositivo"
 
 #: tmainform.CheckBox_I2C_ByteRead.caption
 msgctxt "tmainform.CheckBox_I2C_ByteRead.caption"
 msgid "Побайтовое чтение"
-msgstr "Byte read"
+msgstr "Ler Byte"
 
 #: tmainform.scriptsmenuitem.caption
 msgid "Скрипты"
@@ -383,48 +387,48 @@ msgstr "Scripts"
 
 #: msgstr.str_script_no_section
 msgid "Нет секции: "
-msgstr "There is no section: "
+msgstr "Não há seção: "
 
 #: msgstr.str_script_run_section
 msgid "Выполняется секция: "
-msgstr "Runs section: "
+msgstr "Seção de execuções: "
 
 #: msgstr.str_script_sel_section
 msgid "Выберите секцию"
-msgstr "Select section"
+msgstr "Selecionar seção"
 
 #: msgstr.str_dlg_filechgd
 msgid "файл изменён"
-msgstr "File modified"
+msgstr "Arquivo modificado"
 
 #: msgstr.str_dlg_savefile
 msgid "Сохранить изменения?"
-msgstr "Save changes?"
+msgstr "Salvar alterações?"
 
 #: msgstr.str_using_script
 msgid "Используется скрипт: "
-msgstr "Using script: "
+msgstr "Usando script: "
 
 #: tscripteditform.menuitemfile.caption
 msgid "Файл"
-msgstr "File"
+msgstr "Arquivo"
 
 #: tscripteditform.menuitemopen.caption
 msgid "Открыть"
-msgstr "Open"
+msgstr "Abrir"
 
 #: tscripteditform.menuitemrun.caption
 msgid "Выполнить"
-msgstr "Execute"
+msgstr "Executar"
 
 #: tscripteditform.menuitemsave.caption
 msgid "Сохранить"
-msgstr "Save"
+msgstr "Salvar"
 
 #: tscripteditform.menuitemsaveas.caption
 msgid "Сохранить как..."
-msgstr "Save as..."
+msgstr "Salvar como"
 
 #: tscripteditform.menuitemsection.caption
 msgid "Секция ="
-msgstr "Section ="
+msgstr "Seção"
