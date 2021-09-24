@@ -7,6 +7,7 @@
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
       <Title Value="AsProgrammer"/>
+      <Scaled Value="True"/>
       <UseAppBundle Value="False"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
@@ -23,7 +24,7 @@
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
       <MajorVersionNr Value="2"/>
-      <BuildNr Value="10"/>
+      <BuildNr Value="12"/>
       <Language Value="0419"/>
     </VersionInfo>
     <MacroValues Count="2">

@@ -16,6 +16,7 @@ begin
   LoadXML;
   Translate(SettingsFile);
   RequireDerivedFormResource := True;
+  Application.Scaled:=True;
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TSearchForm, SearchForm);
