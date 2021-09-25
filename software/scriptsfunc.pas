@@ -120,6 +120,16 @@ end;
 
 //------------------------------------------------------------------------------
 
+{Script Delay(ms: WORD);
+ Останавливает выполнение скрипта на ms миллисекунд
+}
+function Script_Delay(Sender:TObject; var A:TVarList): boolean;
+begin
+  if A.Count < 1 then Exit(false);
+  Sleep(TPVar(A.Items[0])^.Value);
+  Result := true;
+end;
+
 {Script ShowMessage(text);
  Аналог ShowMessage}
 function Script_ShowMessage(Sender:TObject; var A:TVarList) : boolean;
@@ -578,6 +588,7 @@ end;
 //------------------------------------------------------------------------------
 procedure SetScriptFunctions(PC : TPasCalc);
 begin
+  PC.SetFunction('Delay', @Script_Delay);
   PC.SetFunction('ShowMessage', @Script_ShowMessage);
   PC.SetFunction('InputBox', @Script_InputBox);
   PC.SetFunction('LogPrint', @Script_LogPrint);
