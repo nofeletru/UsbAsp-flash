@@ -233,12 +233,14 @@
       <GD25Q40 id="C84013" page="256" size="524288"/>
       <GD25Q80 id="C84014" page="256" size="1048576"/>
       <GD25Q80B id="C84014" page="256" size="1048576"/>
+	  <GD25Q80C id="C84014" page="256" size="1048576"/>
       <GD25Q16 id="C84015" page="256" size="2097152"/>
       <GD25Q16B id="C84015" page="256" size="2097152"/>
       <GD25Q32 id="C84016" page="256" size="4194304"/>
       <GD25Q32B id="C84016" page="256" size="4194304"/>
       <GD25Q64 id="C84017" page="256" size="8388608"/>
       <GD25Q64B id="C84017" page="256" size="8388608"/>
+	  <GD25B64C id="C84017" page="256" size="8388608"/>
       <GD25Q128B id="C84018" page="256" size="16777216"/>
       <GD25Q128C id="C84018" page="256" size="16777216"/>
 	  <GD25LQ064C_1.8V id="C86017" page="256" size="8388608"/>
