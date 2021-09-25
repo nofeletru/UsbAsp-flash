@@ -229,6 +229,7 @@
       <GD25Q512 id="C84010" page="256" size="65536"/>
       <GD25Q10 id="C84011" page="256" size="131072"/>
       <GD25Q20 id="C84012" page="256" size="262144"/>
+	  <GD25LQ20C_1.8V id="C86012" page="256" size="262144"/>
       <GD25Q40 id="C84013" page="256" size="524288"/>
       <GD25Q80 id="C84014" page="256" size="1048576"/>
       <GD25Q80B id="C84014" page="256" size="1048576"/>
