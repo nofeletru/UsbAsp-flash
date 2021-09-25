@@ -672,6 +672,7 @@
       <S25FL128S id="012018" page="256" size="16777216"/>
       <S25FL132K id="014016" page="256" size="4194304"/>
       <S25FL164K id="014017" page="256" size="8388608"/>
+	  <S25FL256S id="010219" page="256" size="33554432"/>
     </SPANSION>
     <SST>
       <SST25LF020A id="BF43" page="SSTB" size="262144"/>

@@ -268,6 +268,11 @@ begin
   UsbAsp25_Wren;
   buff:= $B7;
   result := SPIWrite(1, 1, buff);
+  //Access Spansion Bank Register to enable Extended address control bit (EXTADD) for 4-byte addressing
+  buff:= $17;
+  SPIWrite(0, 1, buff);
+  buff:= %10000000; //EXTADD=1
+  result := SPIWrite(1, 1, buff);
 end;
 
 //Exit 4-byte mode
