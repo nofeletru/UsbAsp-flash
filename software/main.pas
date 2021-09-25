@@ -2454,16 +2454,6 @@ try
       if UserCancel then Exit;
     end;
 
-    UsbAsp25_WREN();
-    UsbAsp25_WriteSR_2byte(sreg, sreg2);
-
-    //Пока отлипнет ромка
-    while UsbAsp25_Busy() do
-    begin
-      Application.ProcessMessages;
-      if UserCancel then Exit;
-    end;
-
     UsbAsp25_ReadSR(sreg); //Читаем регистр
     UsbAsp25_ReadSR(sreg2, $35);
     LogPrint(STR_NEW_SREG+IntToBin(sreg, 8)+'(0x'+(IntToHex(sreg, 2)+'), ')
