@@ -923,6 +923,7 @@
       <FT25H16 id="0E4015" page="256" size="2097152"/>
     </Fremont>
     <Fudan>
+	  <FM25Q04A id="A14013" page="256" size="524288"/>
       <FM25Q32 id="A14016" page="256" size="4194304"/>
     </Fudan>
     <Genitop>
