@@ -171,6 +171,7 @@
 	  <GPR25L005E id="C22010" page="256" size="65536"/>
 	  <GPR25L161B id="C22015" page="256" size="262144"/>
 	  <GPR25L020B id="C22012" page="256" size="262144"/>
+	  <GPR25L3203F id="C22016" page="256" size="4194304"/>
 	</Generalplus>
     <DEUTRON>
       <AC25LV512 id="9D7B00" page="256" size="65536"/>
