@@ -2689,7 +2689,8 @@ begin
   ScriptEngine := TPasCalc.Create;
   ScriptsFunc.SetScriptFunctions(ScriptEngine);
 
-  MPHexEditorEx.NoSizeChange := false;
+  MPHexEditorEx.NoSizeChange := true;
+  MPHexEditorEx.InsertMode:= false;
   LoadOptions(SettingsFile);
   LoadLangList();
 end;
@@ -2831,6 +2832,7 @@ end;
 
 procedure TMainForm.AllowInsertItemClick(Sender: TObject);
 begin
+  MPHexEditorEx.NoSizeChange := not AllowInsertItem.Checked;
   MPHexEditorEx.InsertMode := AllowInsertItem.Checked;
 end;
 
