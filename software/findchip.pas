@@ -35,7 +35,7 @@ var
 
 implementation
 
-uses main;
+uses main, scriptsfunc;
 
 {$R *.lfm}
 
@@ -181,9 +181,16 @@ begin
                  Main.CurrentICParam.Size := 0;
 
                if ChipNode.Attributes.GetNamedItem('script') <> nil then
-                 Main.CurrentICParam.Script:= UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('script').NodeValue)
+               begin
+                 Main.CurrentICParam.Script:= UTF16ToUTF8(ChipNode.Attributes.GetNamedItem('script').NodeValue);
+                 MainForm.ComboBox_chip_scriptrun.Items := scriptsfunc.GetScriptSectionsFromFile(Main.CurrentICParam.Script);
+                 MainForm.ComboBox_chip_scriptrun.ItemIndex := 0;
+               end
                else
+               begin
                  Main.CurrentICParam.Script := '';
+                 MainForm.ComboBox_chip_scriptrun.Items.Clear;
+               end;
 
 
                 MainForm.LabelChipName.Caption := CurrentICParam.Name;

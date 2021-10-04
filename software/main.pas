@@ -30,6 +30,7 @@ type
     CheckBox_I2C_DevA4: TToggleBox;
     CheckBox_I2C_A2: TToggleBox;
     ComboAddrType: TComboBox;
+    ComboBox_chip_scriptrun: TComboBox;
     ComboSPICMD: TComboBox;
     ComboChipSize: TComboBox;
     ComboMWBitLen: TComboBox;
@@ -41,6 +42,7 @@ type
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
+    Label_chip_scripts: TLabel;
     Label_I2C_DevAddr: TLabel;
     LabelSPICMD: TLabel;
     LabelChipName: TLabel;
@@ -114,6 +116,7 @@ type
     RadioMw: TRadioButton;
     RadioSPI: TRadioButton;
     SaveDialog: TSaveDialog;
+    SpeedButton1: TSpeedButton;
     Splitter1: TSplitter;
     StatusBar: TStatusBar;
     CheckBox_I2C_DevA7: TToggleBox;
@@ -171,6 +174,7 @@ type
     procedure ButtonCancelClick(Sender: TObject);
     procedure I2C_DevAddrChange(Sender: TObject);
     procedure ScriptsMenuItemClick(Sender: TObject);
+    procedure SpeedButton1Click(Sender: TObject);
     procedure VerifyFlash(BlankCheck: boolean = false);
   private
     { private declarations }
@@ -2632,6 +2636,13 @@ begin
   ScriptEditForm.Show;
 end;
 
+procedure TMainForm.SpeedButton1Click(Sender: TObject);
+begin
+  if ComboBox_chip_scriptrun.Items.Capacity < 1 then Exit;;
+  if not OpenDevice() then exit;
+  if RunScriptFromFile(CurrentICParam.Script, ComboBox_chip_scriptrun.Text) then Exit;
+end;
+
 procedure LoadChipList(XMLfile: TXMLDocument);
 var
   Node: TDOMNode;
@@ -2690,7 +2701,7 @@ begin
   ScriptsFunc.SetScriptFunctions(ScriptEngine);
 
   MPHexEditorEx.NoSizeChange := true;
-  MPHexEditorEx.InsertMode:= false;
+  MPHexEditorEx.InsertMode := false;
   LoadOptions(SettingsFile);
   LoadLangList();
 end;

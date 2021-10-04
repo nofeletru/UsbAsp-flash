@@ -221,9 +221,9 @@ object MainForm: TMainForm
       Text = 'Chip size'
     end
     object Label2: TLabel
-      Left = 8
+      Left = 24
       Height = 16
-      Top = 40
+      Top = 32
       Width = 100
       Alignment = taCenter
       AutoSize = False
@@ -493,6 +493,36 @@ object MainForm: TMainForm
         ParentFont = False
         TabOrder = 7
       end
+    end
+    object ComboBox_chip_scriptrun: TComboBox
+      Left = 15
+      Height = 23
+      Top = 248
+      Width = 100
+      ItemHeight = 15
+      Style = csDropDownList
+      TabOrder = 6
+    end
+    object SpeedButton1: TSpeedButton
+      Left = 124
+      Height = 22
+      Hint = 'Выполнить скрипт'
+      Top = 248
+      Width = 23
+      Caption = '->'
+      OnClick = SpeedButton1Click
+      ShowHint = True
+      ParentShowHint = False
+    end
+    object Label_chip_scripts: TLabel
+      Left = 15
+      Height = 15
+      Top = 233
+      Width = 97
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'Скрипты'
+      ParentColor = False
     end
   end
   object MPHexEditorEx: TMPHexEditorEx

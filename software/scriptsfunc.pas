@@ -12,6 +12,7 @@ procedure SetScriptVars();
 procedure RunScript(ScriptText: TStrings);
 function RunScriptFromFile(ScriptFile: string; Section: string): boolean;
 function ParseScriptText(Script: TStrings; SectionName: string; var ScriptText: TStrings ): Boolean;
+function GetScriptSectionsFromFile(ScriptFile: string): TStrings;
 
 implementation
 
@@ -19,6 +20,34 @@ uses main, scriptedit;
 
 const _SPI_SPEED_MAX = 255;
 
+
+function GetScriptSectionsFromFile(ScriptFile: string): TStrings;
+var
+  st, SectionName: string;
+  i: integer;
+  ScriptText: TStrings;
+begin
+  if not FileExists(ScriptsPath+ScriptFile) then Exit;
+
+  Result:= TStringList.Create;
+  ScriptText:= TStringList.Create;
+
+  ScriptText.LoadFromFile(ScriptsPath+ScriptFile);
+
+  for i:= 0 to ScriptText.Count-1 do
+  begin
+    st := Trim(Upcase(ScriptText.Strings[i]));
+    if Copy(st, 1, 2) = '{$' then
+    begin
+      SectionName := Trim(Copy(st, 3, pos('}', st)-3));
+      if SectionName <> '' then
+      begin
+        Result.Add(SectionName);
+      end;
+    end;
+  end;
+
+end;
 
 {Возвращает текст выбранной секции
  Если секция не найдена возвращает false}
