@@ -428,3 +428,11 @@ msgstr "Save as..."
 #: tscripteditform.menuitemsection.caption
 msgid "Секция ="
 msgstr "Section ="
+
+#: tmainform.speedbutton1.hint
+msgid "Выполнить скрипт"
+msgstr "Run script"
+
+#: tmainform.label_chip_scripts.caption
+msgid "Скрипты"
+msgstr "Scripts"

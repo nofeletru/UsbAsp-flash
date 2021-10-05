@@ -187,3 +187,9 @@ msgstr "Сохранить как..."
 
 #: tscripteditform.menuitemsection.caption
 msgstr "Секция ="
+
+#: tmainform.label_chip_scripts.caption
+msgstr "Скрипты"
+
+#: tmainform.speedbutton1.hint
+msgstr "Выполнить скрипт"
