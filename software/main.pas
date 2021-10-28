@@ -35,6 +35,9 @@ type
     ComboChipSize: TComboBox;
     ComboMWBitLen: TComboBox;
     ComboPageSize: TComboBox;
+    Label6: TLabel;
+    Label_StartAddress: TLabel;
+    StartAddressEdit: TEdit;
     GroupChipSettings: TGroupBox;
     ImageList: TImageList;
     Label1: TLabel;
@@ -175,6 +178,8 @@ type
     procedure I2C_DevAddrChange(Sender: TObject);
     procedure ScriptsMenuItemClick(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
+    procedure StartAddressEditChange(Sender: TObject);
+    procedure StartAddressEditKeyPress(Sender: TObject; var Key: char);
     procedure VerifyFlash(BlankCheck: boolean = false);
   private
     { private declarations }
@@ -1148,7 +1153,7 @@ begin
 
   while Address < ChipSize div ChunkSize do
   begin
-    //if ChunkSize > (ChipSize - Address) then ChunkSize := ChipSize - Address;
+    if ChunkSize > (ChipSize - Address) then ChunkSize := ChipSize - Address;
 
     BytesRead := BytesRead + UsbAsp45_Read(Address, datachunk, ChunkSize);
     RomStream.WriteBuffer(datachunk, chunksize);
@@ -1492,7 +1497,7 @@ begin
   MainForm.ProgressBar.Position := 0;
 end;
 
-procedure ReadFlashI2C(var RomStream: TMemoryStream; ChipSize: cardinal; ChunkSize: Word; DevAddr: byte);
+procedure ReadFlashI2C(var RomStream: TMemoryStream; StartAddress, ChipSize: cardinal; ChunkSize: Word; DevAddr: byte);
 var
   BytesRead: integer;
   DataChunk: array[0..2047] of byte;
@@ -1510,7 +1515,7 @@ begin
 
   LogPrint(STR_READING_FLASH);
   BytesRead := 0;
-  Address := 0;
+  Address := StartAddress;
   MainForm.ProgressBar.Max := ChipSize div ChunkSize;
 
   RomStream.Clear;
@@ -1540,21 +1545,29 @@ procedure WriteFlashI2C(var RomStream: TMemoryStream; StartAddress, WriteSize: c
 var
   DataChunk: array[0..2047] of byte;
   Address, BytesWrite: cardinal;
+  PageSizeTemp: word;
 begin
-  if (StartAddress >= WriteSize) or (WriteSize = 0) {or (PageSize > WriteSize)} then
+  if {(StartAddress >= WriteSize) or} (WriteSize = 0) {or (PageSize > WriteSize)} then
   begin
     LogPrint(STR_CHECK_SETTINGS);
     exit;
   end;
 
+  PageSizeTemp := PageSize;
   LogPrint(STR_WRITING_FLASH);
   BytesWrite := 0;
   Address := StartAddress;
   MainForm.ProgressBar.Max := WriteSize div PageSize;
 
-  while Address < WriteSize do
+  while (Address-StartAddress) < WriteSize do
   begin
-    if (WriteSize - Address) < PageSize then PageSize := (WriteSize - Address);
+    //Determines first page buffer size to prevent buffer "rolls over" on address boundary
+    if (StartAddress > 0) and (Address = StartAddress) and (PageSize > 1) then
+       PageSize := (StrToInt(MainForm.ComboChipSize.Text) - StartAddress) mod PageSize else
+           PageSize := PageSizeTemp;
+
+    if (WriteSize - (Address-StartAddress)) < PageSize then PageSize := (WriteSize - (Address-StartAddress));
+
     RomStream.ReadBuffer(DataChunk, PageSize);
     BytesWrite := BytesWrite + UsbAspI2C_Write(DevAddr, MainForm.ComboAddrType.ItemIndex, Address, datachunk, PageSize);
     Inc(Address, PageSize);
@@ -1620,7 +1633,7 @@ begin
   MainForm.ProgressBar.Position := 0;
 end;
 
-procedure VerifyFlashI2C(var RomStream: TMemoryStream; DataSize: cardinal; ChunkSize: Word; DevAddr: byte);
+procedure VerifyFlashI2C(var RomStream: TMemoryStream; StartAddress, DataSize: cardinal; ChunkSize: Word; DevAddr: byte);
 var
   BytesRead, i: integer;
   DataChunk: array[0..2047] of byte;
@@ -1639,12 +1652,12 @@ begin
 
   LogPrint(STR_VERIFY);
   BytesRead := 0;
-  Address := 0;
+  Address := StartAddress;
   MainForm.ProgressBar.Max := DataSize div ChunkSize;
 
-  while Address < DataSize do
+  while (Address-StartAddress) < DataSize do
   begin
-    if ChunkSize > (DataSize - Address) then ChunkSize := DataSize - Address;
+    if ChunkSize > (DataSize - (Address - StartAddress)) then ChunkSize := DataSize -(Address - StartAddress) ;
 
     BytesRead := BytesRead + UsbAspI2C_Read(DevAddr, MainForm.ComboAddrType.ItemIndex, Address, datachunk, ChunkSize);
     RomStream.ReadBuffer(DataChunkFile, ChunkSize);
@@ -2123,7 +2136,7 @@ try
     Exit;
   end;
 
-  if MPHexEditorEx.DataSize > StrToInt(ComboChipSize.Text) then
+  if MPHexEditorEx.DataSize > StrToInt(ComboChipSize.Text) - Hex2Dec('$'+StartAddressEdit.Text) then
   begin
     LogPrint(STR_WRONG_FILE_SIZE);
     Exit;
@@ -2221,7 +2234,7 @@ try
 
     if StrToInt(ComboPageSize.Text) < 1 then ComboPageSize.Text := '1';
 
-    WriteFlashI2C(RomF, 0, MPHexEditorEx.DataSize, StrToInt(ComboPageSize.Text), I2C_DevAddr);
+    WriteFlashI2C(RomF, Hex2Dec('$'+StartAddressEdit.Text), MPHexEditorEx.DataSize, StrToInt(ComboPageSize.Text), I2C_DevAddr);
 
     if MenuAutoCheck.Checked then
     begin
@@ -2237,7 +2250,7 @@ try
       RomF.Position :=0;
       MPHexEditorEx.SaveToStream(RomF);
       RomF.Position :=0;
-      VerifyFlashI2C(RomF, MPHexEditorEx.DataSize, I2C_ChunkSize, I2C_DevAddr);
+      VerifyFlashI2C(RomF, Hex2Dec('$'+StartAddressEdit.Text), RomF.Size, I2C_ChunkSize, I2C_DevAddr);
     end;
 
   end;
@@ -2385,7 +2398,7 @@ try
       MPHexEditorEx.SaveToStream(RomF);
     RomF.Position :=0;
 
-    VerifyFlashI2C(RomF, RomF.Size, I2C_ChunkSize, I2C_DevAddr);
+    VerifyFlashI2C(RomF, Hex2Dec('$'+StartAddressEdit.Text), RomF.Size, I2C_ChunkSize, I2C_DevAddr);
   end;
 
   //Microwire
@@ -2643,6 +2656,21 @@ begin
   if RunScriptFromFile(CurrentICParam.Script, ComboBox_chip_scriptrun.Text) then Exit;
 end;
 
+procedure TMainForm.StartAddressEditChange(Sender: TObject);
+begin
+  if StartAddressEdit.Text = '' then StartAddressEdit.Text := '0';
+  if Hex2Dec('$'+StartAddressEdit.Text) > 0 then
+     StartAddressEdit.Color:= clYellow
+  else
+     StartAddressEdit.Color:= clDefault;
+end;
+
+procedure TMainForm.StartAddressEditKeyPress(Sender: TObject; var Key: char);
+begin
+  Key := UpCase(Key);
+  if not(Key in['A'..'F', '0'..'9', Char(VK_BACK)]) then Key := Char('');
+end;
+
 procedure LoadChipList(XMLfile: TXMLDocument);
 var
   Node: TDOMNode;
@@ -2790,7 +2818,7 @@ try
       exit;
     end;
     TimeCounter := Time();
-    ReadFlashI2C(RomF, StrToInt(ComboChipSize.Text), I2C_ChunkSize, I2C_DevAddr);
+    ReadFlashI2C(RomF, Hex2Dec('$'+StartAddressEdit.Text), StrToInt(ComboChipSize.Text), I2C_ChunkSize, I2C_DevAddr);
 
     RomF.Position := 0;
     MPHexEditorEx.LoadFromStream(RomF);

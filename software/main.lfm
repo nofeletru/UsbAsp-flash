@@ -1,12 +1,12 @@
 object MainForm: TMainForm
   Left = 501
-  Height = 499
+  Height = 541
   Top = 209
-  Width = 842
+  Width = 853
   ActiveControl = RadioSPI
   Caption = 'AsProgrammer'
-  ClientHeight = 479
-  ClientWidth = 842
+  ClientHeight = 521
+  ClientWidth = 853
   Constraints.MinHeight = 300
   Constraints.MinWidth = 300
   Menu = MainMenu
@@ -18,8 +18,8 @@ object MainForm: TMainForm
   object ProgressBar: TProgressBar
     Left = 0
     Height = 20
-    Top = 364
-    Width = 842
+    Top = 406
+    Width = 853
     Align = alBottom
     Max = 0
     ParentFont = False
@@ -30,7 +30,7 @@ object MainForm: TMainForm
     Left = 0
     Height = 34
     Top = 0
-    Width = 842
+    Width = 853
     ButtonHeight = 32
     ButtonWidth = 32
     Caption = 'ToolBar'
@@ -198,11 +198,11 @@ object MainForm: TMainForm
   end
   object GroupChipSettings: TGroupBox
     Left = 0
-    Height = 307
+    Height = 349
     Top = 34
     Width = 160
     Align = alLeft
-    ClientHeight = 287
+    ClientHeight = 329
     ClientWidth = 156
     ParentFont = False
     TabOrder = 2
@@ -223,7 +223,7 @@ object MainForm: TMainForm
     object Label2: TLabel
       Left = 24
       Height = 16
-      Top = 32
+      Top = 40
       Width = 100
       Alignment = taCenter
       AutoSize = False
@@ -524,13 +524,42 @@ object MainForm: TMainForm
       Caption = 'Скрипты'
       ParentColor = False
     end
+    object StartAddressEdit: TEdit
+      Left = 24
+      Height = 23
+      Top = 296
+      Width = 63
+      MaxLength = 8
+      OnChange = StartAddressEditChange
+      OnKeyPress = StartAddressEditKeyPress
+      TabOrder = 7
+      Text = '000000'
+    end
+    object Label6: TLabel
+      Left = 8
+      Height = 15
+      Top = 304
+      Width = 12
+      Caption = '0x'
+      ParentColor = False
+    end
+    object Label_StartAddress: TLabel
+      Left = 8
+      Height = 15
+      Top = 275
+      Width = 138
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'Начальный адрес'
+      ParentColor = False
+    end
   end
   object MPHexEditorEx: TMPHexEditorEx
     Cursor = crIBeam
     Left = 160
-    Height = 307
+    Height = 349
     Top = 34
-    Width = 682
+    Width = 693
     CreateBackup = False
     BackupExtension = '.bak'
     SupportsOtherClipFormats = False
@@ -643,8 +672,8 @@ object MainForm: TMainForm
   object StatusBar: TStatusBar
     Left = 0
     Height = 23
-    Top = 341
-    Width = 842
+    Top = 383
+    Width = 853
     Panels = <    
       item
         Width = 120
@@ -653,6 +682,10 @@ object MainForm: TMainForm
         Width = 80
       end    
       item
+        Width = 500
+      end    
+      item
+        Alignment = taRightJustify
         Width = 50
       end>
     ParentFont = False
@@ -662,8 +695,8 @@ object MainForm: TMainForm
   object Log: TMemo
     Left = 0
     Height = 90
-    Top = 389
-    Width = 842
+    Top = 431
+    Width = 853
     Align = alBottom
     Lines.Strings = (
       'AsProgrammer v2.0.2'
@@ -680,8 +713,8 @@ object MainForm: TMainForm
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 384
-    Width = 842
+    Top = 426
+    Width = 853
     Align = alBottom
     Anchors = [akBottom]
     ResizeAnchor = akBottom
