@@ -624,10 +624,11 @@ var
   DataChunk: array[0..2047] of byte;
   DataChunk2: array[0..2047] of byte;
   Address, BytesWrite: cardinal;
+  PageSizeTemp: word;
   i: integer;
   SkipPage: boolean = false;
 begin
-  if (StartAddress >= WriteSize) or (WriteSize = 0) {or (PageSize > WriteSize)} then
+  if (WriteSize = 0) then
   begin
     LogPrint(STR_CHECK_SETTINGS);
     exit;
@@ -637,20 +638,26 @@ begin
     LogPrint(STR_WRITING_FLASH_WCHK) else
       LogPrint(STR_WRITING_FLASH);
 
+  PageSizeTemp := PageSize;
   BytesWrite := 0;
   Address := StartAddress;
   MainForm.ProgressBar.Max := WriteSize div PageSize;
 
   if WriteSize > FLASH_SIZE_128MBIT then UsbAsp25_EN4B();
 
-  while Address < WriteSize do
+  while (Address-StartAddress) < WriteSize do
   begin
     //Только вначале aai
     if (((WriteType = WT_SSTB) or (WriteType = WT_SSTW)) and (Address = StartAddress)) or
     //Вначале страницы
     (WriteType = WT_PAGE) then UsbAsp25_WREN();
 
-    if (WriteSize - Address) < PageSize then PageSize := (WriteSize - Address);
+    //Determines first page buffer size to prevent buffer "rolls over" on address boundary
+        if (StartAddress > 0) and (Address = StartAddress) and (PageSize > 2) then
+           PageSize := (StrToInt(MainForm.ComboChipSize.Text) - StartAddress) mod PageSize else
+              PageSize := PageSizeTemp;
+
+    if (WriteSize - (Address-StartAddress)) < PageSize then PageSize := (WriteSize - (Address-StartAddress));
     RomStream.ReadBuffer(DataChunk, PageSize);
 
     if (WriteType = WT_SSTB) then
@@ -1231,7 +1238,7 @@ var
   DataChunkFile: array[0..2047] of byte;
   Address: cardinal;
 begin
-  if (StartAddress >= DataSize) or (DataSize = 0) then
+  if (DataSize = 0) then
   begin
     LogPrint(STR_CHECK_SETTINGS);
     exit;
@@ -1247,9 +1254,9 @@ begin
 
   if DataSize > FLASH_SIZE_128MBIT then UsbAsp25_EN4B();
 
-  while Address < DataSize do
+  while (Address-StartAddress) < DataSize do
   begin
-    if ChunkSize > (DataSize - Address) then ChunkSize := DataSize - Address;
+    if ChunkSize > (DataSize - (Address-StartAddress)) then ChunkSize := DataSize - (Address-StartAddress);
 
     if DataSize > FLASH_SIZE_128MBIT then
         BytesRead := BytesRead + UsbAsp25_Read32bitAddr($03, Address, datachunk, ChunkSize)
@@ -2183,7 +2190,7 @@ try
     end;
 
     if ComboSPICMD.ItemIndex = SPI_CMD_25 then
-      WriteFlash25(RomF, 0, MPHexEditorEx.DataSize, PageSize, WriteType);
+      WriteFlash25(RomF, Hex2Dec('$'+StartAddressEdit.Text), MPHexEditorEx.DataSize, PageSize, WriteType);
     if ComboSPICMD.ItemIndex = SPI_CMD_95 then
       WriteFlash95(RomF, 0, MPHexEditorEx.DataSize, PageSize, StrToInt(ComboChipSize.Text));
     if ComboSPICMD.ItemIndex = SPI_CMD_45 then
@@ -2199,7 +2206,7 @@ try
       MPHexEditorEx.SaveToStream(RomF);
       RomF.Position :=0;
       if ComboSPICMD.ItemIndex <> SPI_CMD_KB then
-        VerifyFlash25(RomF, 0, MPHexEditorEx.DataSize)
+        VerifyFlash25(RomF, Hex2Dec('$'+StartAddressEdit.Text), MPHexEditorEx.DataSize)
       else
         VerifyFlashKB(RomF, 0, MPHexEditorEx.DataSize);
     end;
@@ -2312,12 +2319,14 @@ try
   if RunScriptFromFile(CurrentICParam.Script, 'verify') then Exit;
 
   LogPrint(TimeToStr(Time()));
+
   if not IsNumber(ComboChipSize.Text) then
   begin
     LogPrint(STR_CHECK_SETTINGS);
     Exit;
   end;
-  if (MPHexEditorEx.DataSize > StrToInt(ComboChipSize.Text)) and (not BlankCheck) then
+
+  if (MPHexEditorEx.DataSize > StrToInt(ComboChipSize.Text) - Hex2Dec('$'+StartAddressEdit.Text)) and (not BlankCheck) then
   begin
     LogPrint(STR_WRONG_FILE_SIZE);
     Exit;
@@ -2348,7 +2357,7 @@ try
       VerifyFlashKB(RomF, 0, RomF.Size);
 
     if ComboSPICMD.ItemIndex = SPI_CMD_25 then
-      VerifyFlash25(RomF, 0, RomF.Size);
+      VerifyFlash25(RomF, Hex2Dec('$'+StartAddressEdit.Text), RomF.Size);
 
     if ComboSPICMD.ItemIndex = SPI_CMD_95 then
       VerifyFlash95(RomF, 0, RomF.Size, StrToInt(ComboChipSize.Text));
@@ -2778,7 +2787,7 @@ try
     end;
 
     if  ComboSPICMD.ItemIndex = SPI_CMD_25 then
-      ReadFlash25(RomF, 0, StrToInt(ComboChipSize.Text));
+      ReadFlash25(RomF, Hex2Dec('$'+StartAddressEdit.Text), StrToInt(ComboChipSize.Text));
     if  ComboSPICMD.ItemIndex = SPI_CMD_45 then
     begin
       if (not IsNumber(ComboPageSize.Text)) then
