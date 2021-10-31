@@ -747,9 +747,10 @@ var
   DataChunk: array[0..2047] of byte;
   DataChunk2: array[0..2047] of byte;
   Address, BytesWrite: cardinal;
+  PageSizeTemp: word;
   i: integer;
 begin
-  if (StartAddress >= WriteSize) or (WriteSize = 0) {or (PageSize > WriteSize)} then
+  if (WriteSize = 0) then
   begin
     LogPrint(STR_CHECK_SETTINGS);
     exit;
@@ -759,15 +760,21 @@ begin
     LogPrint(STR_WRITING_FLASH_WCHK) else
       LogPrint(STR_WRITING_FLASH);
 
+  PageSizeTemp := PageSize;
   BytesWrite := 0;
   Address := StartAddress;
   MainForm.ProgressBar.Max := WriteSize div PageSize;
 
-  while Address < WriteSize do
+  while (Address-StartAddress) < WriteSize do
   begin
     UsbAsp95_WREN();
 
-    if (WriteSize - Address) < PageSize then PageSize := (WriteSize - Address);
+    //Determines first page buffer size to prevent buffer "rolls over" on address boundary
+        if (StartAddress > 0) and (Address = StartAddress) and (PageSize > 1) then
+           PageSize := (ChipSize - StartAddress) mod PageSize else
+              PageSize := PageSizeTemp;
+
+    if (WriteSize - (Address-StartAddress)) < PageSize then PageSize := (WriteSize - (Address-StartAddress));
     RomStream.ReadBuffer(DataChunk, PageSize);
 
     BytesWrite := BytesWrite + UsbAsp95_Write(ChipSize, Address, datachunk, PageSize);
@@ -1299,7 +1306,7 @@ var
   DataChunkFile: array[0..2047] of byte;
   Address: cardinal;
 begin
-  if (StartAddress >= DataSize) or (DataSize = 0) then
+  if (DataSize = 0) then
   begin
     LogPrint(STR_CHECK_SETTINGS);
     exit;
@@ -1313,9 +1320,9 @@ begin
   Address := StartAddress;
   MainForm.ProgressBar.Max := DataSize div ChunkSize;
 
-  while Address < DataSize do
+  while (Address-StartAddress) < DataSize do
   begin
-    if ChunkSize > (DataSize - Address) then ChunkSize := DataSize - Address;
+    if ChunkSize > (DataSize - (Address-StartAddress)) then ChunkSize := DataSize - (Address-StartAddress);
 
     BytesRead := BytesRead + UsbAsp95_Read(ChipSize, Address, datachunk, ChunkSize);
     RomStream.ReadBuffer(DataChunkFile, ChunkSize);
@@ -2192,7 +2199,7 @@ try
     if ComboSPICMD.ItemIndex = SPI_CMD_25 then
       WriteFlash25(RomF, Hex2Dec('$'+StartAddressEdit.Text), MPHexEditorEx.DataSize, PageSize, WriteType);
     if ComboSPICMD.ItemIndex = SPI_CMD_95 then
-      WriteFlash95(RomF, 0, MPHexEditorEx.DataSize, PageSize, StrToInt(ComboChipSize.Text));
+      WriteFlash95(RomF, Hex2Dec('$'+StartAddressEdit.Text), MPHexEditorEx.DataSize, PageSize, StrToInt(ComboChipSize.Text));
     if ComboSPICMD.ItemIndex = SPI_CMD_45 then
       WriteFlash45(RomF, 0, MPHexEditorEx.DataSize, PageSize, WriteType);
     if ComboSPICMD.ItemIndex = SPI_CMD_KB then
@@ -2360,7 +2367,7 @@ try
       VerifyFlash25(RomF, Hex2Dec('$'+StartAddressEdit.Text), RomF.Size);
 
     if ComboSPICMD.ItemIndex = SPI_CMD_95 then
-      VerifyFlash95(RomF, 0, RomF.Size, StrToInt(ComboChipSize.Text));
+      VerifyFlash95(RomF, Hex2Dec('$'+StartAddressEdit.Text), RomF.Size, StrToInt(ComboChipSize.Text));
 
     if ComboSPICMD.ItemIndex = SPI_CMD_45 then
      begin
@@ -2799,7 +2806,7 @@ try
     end;
 
     if  ComboSPICMD.ItemIndex = SPI_CMD_95 then
-      ReadFlash95(RomF, 0, StrToInt(ComboChipSize.Text));
+      ReadFlash95(RomF, Hex2Dec('$'+StartAddressEdit.Text), StrToInt(ComboChipSize.Text));
 
     RomF.Position := 0;
     MPHexEditorEx.LoadFromStream(RomF);
