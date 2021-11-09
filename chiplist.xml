@@ -833,6 +833,7 @@
       <W25X80L id="EF3014" page="256" size="1048576"/>
       <W25X80V id="EF3014" page="256" size="1048576"/>
 	  <W25M512JV id="EF7119" page="256" size="67108864"/>
+	  <W25R256JV id="EF4019" page="256" size="33554432"/>
     </WINBOND>
     <XICOR>
       <X25010 page="4" size="128" spicmd="95"/>
