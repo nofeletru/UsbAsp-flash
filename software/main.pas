@@ -11,7 +11,7 @@ interface
 uses
   Classes, SysUtils, LazFileUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ExtCtrls, ComCtrls, Menus, ActnList, Buttons, StrUtils, spi25,
-  spi45, spi95, i2c, microwire, spimulti,
+  spi45, spi95, i2c, microwire, spimulti, ft232hhw,
   XMLRead, XMLWrite, DOM, msgstr, Translations, LCLProc, LCLType, LCLTranslator,
   LResources, MPHexEditorEx, MPHexEditor, search, sregedit,
   utilfunc, findchip, DateUtils, lazUTF8,
@@ -37,6 +37,10 @@ type
     ComboPageSize: TComboBox;
     Label6: TLabel;
     Label_StartAddress: TLabel;
+    MenuHWFT232H: TMenuItem;
+    MenuFT232SPIClock: TMenuItem;
+    MenuFT232SPI30Mhz: TMenuItem;
+    MenuFT232SPI6Mhz: TMenuItem;
     StartAddressEdit: TEdit;
     GroupChipSettings: TGroupBox;
     ImageList: TImageList;
@@ -159,6 +163,7 @@ type
     procedure MenuFindClick(Sender: TObject);
     procedure MenuGotoOffsetClick(Sender: TObject);
     procedure MenuHWCH341AClick(Sender: TObject);
+    procedure MenuHWFT232HClick(Sender: TObject);
     procedure MenuHWUSBASPClick(Sender: TObject);
     procedure MenuItemBenchmarkClick(Sender: TObject);
     procedure MenuItemEditSregClick(Sender: TObject);
@@ -498,6 +503,12 @@ begin
     if MainForm.MenuMW32Khz.Checked then Speed := MainForm.MenuMW32Khz.Tag;
     if MainForm.MenuMW16Khz.Checked then Speed := MainForm.MenuMW16Khz.Tag;
     if MainForm.MenuMW8Khz.Checked then Speed := MainForm.MenuMW8Khz.Tag;
+  end;
+
+  if (MainForm.RadioSPI.Checked) and (AsProgrammer.Current_HW = CHW_FT232H) then
+  begin
+    if MainForm.MenuFT232SPI30Mhz.Checked then Speed := MainForm.MenuFT232SPI30Mhz.Tag;
+    if MainForm.MenuFT232SPI6Mhz.Checked then Speed := MainForm.MenuFT232SPI6Mhz.Tag;
   end;
 
   if OverrideSpeed <> 0 then Speed := OverrideSpeed;
@@ -1048,7 +1059,8 @@ const
 var
   ChunkSize: Word;
   BytesRead: integer;
-  DataChunk: array[0..2047] of byte;
+  DataChunk: array[0..16786] of byte;
+  //DataChunk: array[0..2047] of byte;
   Address: cardinal;
 begin
   if (StartAddress >= ChipSize) or (ChipSize = 0) then
@@ -1706,6 +1718,7 @@ begin
     MainForm.MenuSPIClock.Visible:= true;
     MainForm.MenuAVRISPSPIClock.Visible:= false;
     MainForm.MenuArduinoSPIClock.Visible:= false;
+    MainForm.MenuFT232SPIClock.Visible:= false;
     MainForm.MenuMicrowire.Enabled:= true;
     AsProgrammer.Current_HW := CHW_USBASP;
   end;
@@ -1715,6 +1728,7 @@ begin
     MainForm.MenuSPIClock.Visible:= false;
     MainForm.MenuAVRISPSPIClock.Visible:= false;
     MainForm.MenuArduinoSPIClock.Visible:= false;
+    MainForm.MenuFT232SPIClock.Visible:= false;
     MainForm.MenuMicrowire.Enabled:= false;
     AsProgrammer.Current_HW := CHW_CH341;
   end;
@@ -1724,6 +1738,7 @@ begin
     MainForm.MenuSPIClock.Visible:= false;
     MainForm.MenuAVRISPSPIClock.Visible:= true;
     MainForm.MenuArduinoSPIClock.Visible:= false;
+    MainForm.MenuFT232SPIClock.Visible:= false;
     MainForm.MenuMicrowire.Enabled:= false;
     AsProgrammer.Current_HW := CHW_AVRISP;
   end;
@@ -1733,8 +1748,19 @@ begin
     MainForm.MenuSPIClock.Visible:= false;
     MainForm.MenuAVRISPSPIClock.Visible:= false;
     MainForm.MenuArduinoSPIClock.Visible:= true;
+    MainForm.MenuFT232SPIClock.Visible:= false;
     MainForm.MenuMicrowire.Enabled:= false;
     AsProgrammer.Current_HW := CHW_ARDUINO;
+  end;
+
+  if programmer = CHW_FT232H then
+  begin
+    MainForm.MenuFT232SPIClock.Visible:= true;
+    MainForm.MenuSPIClock.Visible:= false;
+    MainForm.MenuAVRISPSPIClock.Visible:= false;
+    MainForm.MenuArduinoSPIClock.Visible:= false;
+    MainForm.MenuMicrowire.Enabled:= false;
+    AsProgrammer.Current_HW := CHW_FT232H;
   end;
 
 end;
@@ -1853,6 +1879,11 @@ end;
 procedure TMainForm.MenuHWCH341AClick(Sender: TObject);
 begin
   SelectHW(CHW_CH341);
+end;
+
+procedure TMainForm.MenuHWFT232HClick(Sender: TObject);
+begin
+  SelectHW(CHW_FT232H);
 end;
 
 procedure TMainForm.MenuHWUSBASPClick(Sender: TObject);
@@ -2738,6 +2769,7 @@ begin
   AsProgrammer.AddHW(TCH341Hardware.Create);
   AsProgrammer.AddHW(TAvrispHardware.Create);
   AsProgrammer.AddHW(TArduinoHardware.Create);
+  AsProgrammer.AddHW(TFT232HHardware.Create);
 
   LoadChipList(ChipListFile);
   RomF := TMemoryStream.Create;
@@ -3112,6 +3144,8 @@ begin
       TDOMElement(ParentNode).SetAttribute('hw', 'avrisp');
     if MainForm.MenuHWARDUINO.Checked then
       TDOMElement(ParentNode).SetAttribute('hw', 'arduino');
+    if MainForm.MenuHWFT232H.Checked then
+      TDOMElement(ParentNode).SetAttribute('hw', 'ft232h');
 
     TDOMElement(ParentNode).SetAttribute('arduino_comport', Arduino_COMPort);
     TDOMElement(ParentNode).SetAttribute('arduino_baudrate', IntToStr(Arduino_BaudRate));
@@ -3197,6 +3231,12 @@ begin
         begin
           MainForm.MenuHWArduino.Checked := true;
           SelectHW(CHW_ARDUINO);
+        end;
+
+        if OptVal = 'ft232h' then
+        begin
+          MainForm.MenuHWFT232H.Checked := true;
+          SelectHW(CHW_FT232H);
         end;
 
 

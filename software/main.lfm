@@ -867,6 +867,21 @@ object MainForm: TMainForm
             RadioItem = True
           end
         end
+        object MenuFT232SPIClock: TMenuItem
+          Caption = 'Частота'
+          object MenuFT232SPI30Mhz: TMenuItem
+            Tag = 1
+            AutoCheck = True
+            Caption = '30 Mhz'
+            Checked = True
+            RadioItem = True
+          end
+          object MenuFT232SPI6Mhz: TMenuItem
+            AutoCheck = True
+            Caption = '6 Mhz'
+            RadioItem = True
+          end
+        end
         object MenuIgnoreBusyBit: TMenuItem
           AutoCheck = True
           Caption = 'Не проверять Busy бит'
@@ -936,6 +951,12 @@ object MainForm: TMainForm
         Caption = 'Arduino'
         RadioItem = True
         OnClick = MenuHWARDUINOClick
+      end
+      object MenuHWFT232H: TMenuItem
+        AutoCheck = True
+        Caption = 'FT232H'
+        RadioItem = True
+        OnClick = MenuHWFT232HClick
       end
     end
     object ScriptsMenuItem: TMenuItem
