@@ -1060,7 +1060,6 @@ var
   ChunkSize: Word;
   BytesRead: integer;
   DataChunk: array[0..16786] of byte;
-  //DataChunk: array[0..2047] of byte;
   Address: cardinal;
 begin
   if (StartAddress >= ChipSize) or (ChipSize = 0) then
@@ -1069,7 +1068,11 @@ begin
     exit;
   end;
 
-  ChunkSize := SizeOf(DataChunk);
+  if ASProgrammer.Current_HW = CHW_FT232H then
+    ChunkSize := SizeOf(DataChunk)
+  else
+    ChunkSize := 2048;
+
   if ChunkSize > ChipSize then ChunkSize := ChipSize;
 
   LogPrint(STR_READING_FLASH);
@@ -1253,8 +1256,8 @@ const
 var
   ChunkSize: Word;
   BytesRead, i: integer;
-  DataChunk: array[0..2047] of byte;
-  DataChunkFile: array[0..2047] of byte;
+  DataChunk: array[0..16786] of byte;
+  DataChunkFile: array[0..16786] of byte;
   Address: cardinal;
 begin
   if (DataSize = 0) then
@@ -1263,7 +1266,11 @@ begin
     exit;
   end;
 
-  ChunkSize := SizeOf(DataChunk);
+  if ASProgrammer.Current_HW = CHW_FT232H then
+    ChunkSize := SizeOf(DataChunk)
+  else
+    ChunkSize := 2048;
+
   if ChunkSize > DataSize then ChunkSize := DataSize;
 
   LogPrint(STR_VERIFY);
