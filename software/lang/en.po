@@ -436,3 +436,7 @@ msgstr "Run script"
 #: tmainform.label_chip_scripts.caption
 msgid "Скрипты"
 msgstr "Scripts"
+
+#: tmainform.label_startaddress.caption
+msgid "Начальный адрес"
+msgstr "Аddress offset"

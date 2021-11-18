@@ -193,3 +193,6 @@ msgstr "Скрипты"
 
 #: tmainform.speedbutton1.hint
 msgstr "Выполнить скрипт"
+
+#: tmainform.label_startaddress.caption
+msgid "Начальный адрес"
