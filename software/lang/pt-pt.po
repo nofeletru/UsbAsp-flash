@@ -379,7 +379,7 @@ msgstr "Endereço do dispositivo"
 #: tmainform.CheckBox_I2C_ByteRead.caption
 msgctxt "tmainform.CheckBox_I2C_ByteRead.caption"
 msgid "Побайтовое чтение"
-msgstr "Byte lido"
+msgstr "Ler Byte"
 
 #: tmainform.scriptsmenuitem.caption
 msgid "Скрипты"
@@ -432,3 +432,15 @@ msgstr "Guardar Como..."
 #: tscripteditform.menuitemsection.caption
 msgid "Секция ="
 msgstr "Secção ="
+
+#: tmainform.speedbutton1.hint
+msgid "Выполнить скрипт"
+msgstr "Correr Script"
+
+#: tmainform.label_chip_scripts.caption
+msgid "Скрипты"
+msgstr "Scripts"
+
+#: tmainform.label_startaddress.caption
+msgid "Начальный адрес"
+msgstr "Endereço de início"
