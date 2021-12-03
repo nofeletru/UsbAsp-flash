@@ -30,14 +30,6 @@ msgstr "A EEPROM vai ser apagada e programada. Deseja continuar?"
 msgid "Ошибка подключения к USBAsp"
 msgstr "Erro ao conectar com o USBAsp"
 
-#: msgstr.str_connect_error_ch
-msgid "Ошибка подключения к CH341"
-msgstr "Erro ao conectar com o CH341"
-
-#: msgstr.str_connect_error_avr
-msgid "Ошибка подключения к AVRISP"
-msgstr "Erro ao conectar com o AVRISP"
-
 #: msgstr.str_done
 msgid "Готово"
 msgstr "Feito"
@@ -149,6 +141,18 @@ msgstr "O número de bytes escritos não é igual ao tamanho da EEPROM"
 #: msgstr.str_wrong_file_size
 msgid "Размер файла больше размера чипа"
 msgstr "O tamanho do ficheiro é maior do que o tamanho da EEPROM"
+
+#: msgstr.str_erase_notice
+msgid "Процесс может длиться больше минуты на больших флешках!"
+msgstr "O processo pode levar mais do que 1 minuto em EEPROMS de tamanho grande! "
+
+#: msgstr.str_connect_error_ch
+msgid "Ошибка подключения к CH341"
+msgstr "Erro ao conectar com o CH341"
+
+#: msgstr.str_connect_error_avr
+msgid "Ошибка подключения к AVRISP"
+msgstr "Erro ao conectar com o AVRISP"
 
 #: tmainform.menuitemhardware.caption
 msgid "Программатор"
@@ -278,7 +282,10 @@ msgstr "Procurar"
 msgctxt "tmainform.menufindchip.caption"
 msgid "Поиск"
 msgstr "Procurar"
-
+#: tmainform.menuskipff.caption
+msgid "Не писать FF"
+msgstr "Não escrever FF"							   
+												
 #: tmainform.menugotooffset.caption
 msgid "Перейти по адресу"
 msgstr "Ir para endereço"
@@ -366,6 +373,9 @@ msgstr "Encontrar EEPROM"
 #: tchipsearchform.label1.caption
 msgid "Маркировка содержит:"
 msgstr "A nome da EEPROM contém:"
+#: tchipsearchform.ChipSearchSelectButton.caption
+msgid "Выбрать микросхему"
+msgstr "Selecionar EEPROM"												 		  
 
 #: tmainform.blankcheckmenuitem.caption
 msgid "Проверка на чистоту"
