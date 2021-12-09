@@ -242,7 +242,7 @@ begin
   FT_Out_Buffer[5] := $8C; //Enable 3 phase data clock, used by I2C to allow data on both clock edges
 
   FT_Out_Buffer[6] := $9E; //Set I/O to only drive on a ‘0’ and tristate on a ‘1’
-  FT_Out_Buffer[7] := %00000011;
+  FT_Out_Buffer[7] := %00000111;
   FT_Out_Buffer[8] := $00;
   //Setting Port Data and Direction
   //Bits assigned on FT232H AD bus
@@ -349,42 +349,83 @@ begin
 end;
 
 procedure TFT232HHardware.I2CStart;
+var i, num: integer;
 begin
   if not FDevOpened then Exit;
 
-  FT_Out_Buffer[0] := $80; //MPSSE Command to set low bits of port
-  FT_Out_Buffer[1] := %00000011;
-  FT_Out_Buffer[2] := %00000011; //Pin directions
+  num := 0;
 
-  FT_Out_Buffer[3] := $80; //MPSSE Command to set low bits of port
-  FT_Out_Buffer[4] := %00000001;
-  FT_Out_Buffer[5] := %00000011; //Pin directions
+  for i:=0 to 3 do
+  begin
+    FT_Out_Buffer[num] := $80; //MPSSE Command to set low bits of port
+    inc(num);
+    FT_Out_Buffer[num] := %00000011;
+    inc(num);
+    FT_Out_Buffer[num] := %00000011; //Pin directions
+    inc(num);
+  end;
 
-  FT_Out_Buffer[6] := $80; //MPSSE Command to set low bits of port
-  FT_Out_Buffer[7] := %00000000;
-  FT_Out_Buffer[8] := %00000011; //Pin directions
+  for i:=0 to 3 do
+  begin
+    FT_Out_Buffer[num] := $80; //MPSSE Command to set low bits of port
+    inc(num);
+    FT_Out_Buffer[num] := %00000001;
+    inc(num);
+    FT_Out_Buffer[num] := %00000011; //Pin directions
+    inc(num);
+  end;
 
-  Write_USB_Device_Buffer(9);
+  FT_Out_Buffer[num] := $80; //MPSSE Command to set low bits of port
+  inc(num);
+  FT_Out_Buffer[num] := %00000000;
+  inc(num);
+  FT_Out_Buffer[num] := %00000011; //Pin directions
+  inc(num);
+
+  Write_USB_Device_Buffer(num);
 
 end;
 
 procedure TFT232HHardware.I2CStop;
+var i, num: integer;
 begin
   if not FDevOpened then Exit;
 
-  FT_Out_Buffer[0] := $80; //MPSSE Command to set low bits of port
-  FT_Out_Buffer[1] := %00000001;
-  FT_Out_Buffer[2] := %00000011; //Pin directions
+  num := 0;
 
-  FT_Out_Buffer[3] := $80; //MPSSE Command to set low bits of port
-  FT_Out_Buffer[4] := %00000011;
-  FT_Out_Buffer[5] := %00000011; //Pin directions
+  for i:=0 to 3 do
+  begin
+    FT_Out_Buffer[num] := $80; //MPSSE Command to set low bits of port
+    inc(num);
+    FT_Out_Buffer[num] := %00000000;
+    inc(num);
+    FT_Out_Buffer[num] := %00000011; //Pin directions
+    inc(num);
+  end;
 
-  FT_Out_Buffer[6] := $80; //MPSSE Command to set low bits of port
-  FT_Out_Buffer[7] := %00000000;
-  FT_Out_Buffer[8] := %00000011; //Pin directions
+  for i:=0 to 3 do
+  begin
+    FT_Out_Buffer[num] := $80; //MPSSE Command to set low bits of port
+    inc(num);
+    FT_Out_Buffer[num] := %00000001;
+    inc(num);
+    FT_Out_Buffer[num] := %00000011; //Pin directions
+    inc(num);
+  end;
 
-  Write_USB_Device_Buffer(9);
+  for i:=0 to 3 do
+  begin
+    FT_Out_Buffer[num] := $80; //MPSSE Command to set low bits of port
+    inc(num);
+    FT_Out_Buffer[num] := %00000011;
+    inc(num);
+    FT_Out_Buffer[num] := %00000011; //Pin directions
+    inc(num);
+  end;
+
+
+
+  Write_USB_Device_Buffer(num);
 
 end;
 
