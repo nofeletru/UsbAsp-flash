@@ -493,6 +493,7 @@
       <MT25QL256A id="20BA19" page="256" size="33554432"/>
       <MT25QL512A id="20BA20" page="256" size="67108864"/>
       <MT25QL02GC id="20BA22" page="256" size="268435456"/>
+      <MT25QU256 id="20BB19" page="256" size="33554432"/>  
 	  <N25Q00AA13G id="20BA21" page="256" size="134217728"/>
     </MICRON>
     <MSHINE>
