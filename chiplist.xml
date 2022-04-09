@@ -851,6 +851,36 @@
       <X5043 page="16" size="512" spicmd="95"/>
       <X5045 page="16" size="512" spicmd="95"/>
     </XICOR>
+    <XMC>
+      <XM25QH20B page="256" size="262144"/>
+      <XM25QH40B page="256" size="524288"/>
+      <XM25QH80B page="256" size="1048576"/>
+      <XM25QH16B page="256" size="2097152"/>
+      <XM25QH16C page="256" size="2097152"/>
+      <XM25QE16B page="256" size="2097152"/>
+      <XM25QH32B page="256" size="4194304"/>
+      <XM25QE32B page="256" size="4194304"/>
+      <XM25QH64A page="256" size="8388608"/>
+      <XM25QH64B page="256" size="8388608"/>
+      <XM25QH128A page="256" size="16777216"/>
+      <XM25QH128B page="256" size="16777216"/>
+      <XM25QH128C page="256" size="16777216"/>
+      <XM25QH256B page="256" size="33554432"/>
+      <XM25QW16C page="256" size="2097152"/>
+      <XM25QW32C page="256" size="4194304"/>
+      <XM25QW64C page="256" size="8388608"/>
+      <XM25QW128C page="256" size="16777216"/>
+      <XM25QW256C page="256" size="33554432"/>
+      <XM25QU41B_1.8V page="256" size="524288"/>
+      <XM25QU80B_1.8V page="256" size="1048576"/>
+      <XM25QU16C_1.8V page="256" size="2097152"/>
+      <XM25QU32C_1.8V page="256" size="4194304"/>
+      <XM25QU64A_1.8V page="256" size="8388608"/>
+      <XM25QU64B_1.8V page="256" size="8388608"/>
+      <XM25QU128B_1.8V page="256" size="16777216"/>
+      <XM25QU128C_1.8V page="256" size="16777216"/>
+      <XM25QU256B_1.8V page="256" size="33554432"/>
+    </XMC>
     <ZEMPRO>
       <TS25L512A id="372010" page="256" size="65536"/>
       <TS25L010A id="373011" page="256" size="131072"/>
