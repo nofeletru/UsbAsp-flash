@@ -271,6 +271,10 @@ msgstr "Search"
 msgid "Не писать FF"
 msgstr "Do not write FF"
 
+#: tmainform.menusendab.caption
+msgid "Выводить чип из сна"
+msgstr "Send "wake-up" to flash"
+
 #: tmainform.menugotooffset.caption
 msgid "Перейти по адресу"
 msgstr "Goto address"

@@ -245,7 +245,7 @@ begin
 
   speed := TPVar(A.Items[0])^.Value;
   if speed = _SPI_SPEED_MAX then speed := 13;
-  if EnterProgMode25(SetSPISpeed(speed)) then
+  if EnterProgMode25(SetSPISpeed(speed), MainForm.MenuSendAB.Checked) then
     R.Value := True
   else
     R.Value := False;

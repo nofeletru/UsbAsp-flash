@@ -41,6 +41,7 @@ type
     MenuFT232SPIClock: TMenuItem;
     MenuFT232SPI30Mhz: TMenuItem;
     MenuFT232SPI6Mhz: TMenuItem;
+    MenuSendAB: TMenuItem;
     StartAddressEdit: TEdit;
     GroupChipSettings: TGroupBox;
     ImageList: TImageList;
@@ -1918,7 +1919,7 @@ var
 begin
   ButtonCancel.Tag := 0;
   if not OpenDevice() then exit;
-  EnterProgMode25(SetSPISpeed(0));
+  EnterProgMode25(SetSPISpeed(0), MainForm.MenuSendAB.Checked);
   LockControl();
 
   if (AsProgrammer.Current_HW = CHW_CH341) or (AsProgrammer.Current_HW = CHW_AVRISP) then
@@ -1988,7 +1989,7 @@ begin
   if not OpenDevice() then exit;
   sreg:= 0;
   LockControl();
-  EnterProgMode25(SetSPISpeed(0));
+  EnterProgMode25(SetSPISpeed(0), MainForm.MenuSendAB.Checked);
 
   if ComboSPICMD.ItemIndex = SPI_CMD_25 then
   begin
@@ -2046,7 +2047,7 @@ begin
   if not OpenDevice() then exit;
   sreg:= 0;
   LockControl();
-  EnterProgMode25(SetSPISpeed(0));
+  EnterProgMode25(SetSPISpeed(0), MainForm.MenuSendAB.Checked);
 
   if ComboSPICMD.ItemIndex = SPI_CMD_25 then
   begin
@@ -2197,7 +2198,7 @@ try
   //SPI
   if RadioSPI.Checked then
   begin
-    EnterProgMode25(SetSPISpeed(0));
+    EnterProgMode25(SetSPISpeed(0), MainForm.MenuSendAB.Checked);
     if ComboSPICMD.ItemIndex <> SPI_CMD_KB then
       IsLockBitsEnabled;
     if (not IsNumber(ComboPageSize.Text)) and (UpperCase(ComboPageSize.Text)<>'SSTB') and (UpperCase(ComboPageSize.Text)<>'SSTW') then
@@ -2380,7 +2381,7 @@ try
   //SPI
   if RadioSPI.Checked then
   begin
-    EnterProgMode25(SetSPISpeed(0));
+    EnterProgMode25(SetSPISpeed(0), MainForm.MenuSendAB.Checked);
     TimeCounter := Time();
 
     RomF.Clear;
@@ -2504,7 +2505,7 @@ try
 
   if RunScriptFromFile(CurrentICParam.Script, 'unlock') then Exit;
 
-  EnterProgMode25(SetSPISpeed(0));
+  EnterProgMode25(SetSPISpeed(0), MainForm.MenuSendAB.Checked);
 
   if ComboSPICMD.ItemIndex = SPI_CMD_25 then
   begin
@@ -2597,7 +2598,7 @@ begin
     FillByte(ID.IDABH, 1, $FF);
     FillByte(ID.ID15H, 2, $FF);
 
-    EnterProgMode25(SetSPISpeed(0));
+    EnterProgMode25(SetSPISpeed(0), MainForm.MenuSendAB.Checked);
 
     if ComboSPICMD.ItemIndex = SPI_CMD_KB then
     begin
@@ -2824,7 +2825,7 @@ try
   //SPI
   if RadioSPI.Checked then
   begin
-    EnterProgMode25(SetSPISpeed(0));
+    EnterProgMode25(SetSPISpeed(0), MainForm.MenuSendAB.Checked);
     TimeCounter := Time();
 
     if  ComboSPICMD.ItemIndex = SPI_CMD_KB then
@@ -2955,7 +2956,7 @@ try
   //SPI
   if RadioSPI.Checked then
   begin
-    EnterProgMode25(SetSPISpeed(0));
+    EnterProgMode25(SetSPISpeed(0), MainForm.MenuSendAB.Checked);
     if ComboSPICMD.ItemIndex <> SPI_CMD_KB then
       IsLockBitsEnabled;
     TimeCounter := Time();
@@ -3121,6 +3122,10 @@ begin
       TDOMElement(ParentNode).SetAttribute('skipff', '1') else
         TDOMElement(ParentNode).SetAttribute('skipff', '0');
 
+    if MainForm.MenuSendAB.Checked then
+      TDOMElement(ParentNode).SetAttribute('sendab', '1') else
+        TDOMElement(ParentNode).SetAttribute('sendab', '0');
+
     if MainForm.Menu3Mhz.Checked then
       TDOMElement(ParentNode).SetAttribute('spi_speed', '3Mhz');
     if MainForm.Menu1_5Mhz.Checked then
@@ -3181,6 +3186,12 @@ begin
       begin
         if Node.Attributes.GetNamedItem('verify').NodeValue = '1' then
           MainForm.MenuAutoCheck.Checked := true;
+      end;
+
+      if  Node.Attributes.GetNamedItem('sendab') <> nil then
+      begin
+        if Node.Attributes.GetNamedItem('sendab').NodeValue = '1' then
+          MainForm.MenuSendAB.Checked := true;
       end;
 
       if  Node.Attributes.GetNamedItem('skipff') <> nil then

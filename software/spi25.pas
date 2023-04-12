@@ -24,7 +24,7 @@ type
 
 function UsbAsp25_Busy(): boolean;
 
-function EnterProgMode25(spiSpeed: integer): boolean;
+function EnterProgMode25(spiSpeed: integer; SendAB: boolean = false): boolean;
 procedure ExitProgMode25;
 
 function UsbAsp25_Read(Opcode: Byte; Addr: longword; var buffer: array of byte; bufflen: integer): integer;
@@ -68,13 +68,13 @@ begin
 end;
 
 //Вход в режим программирования
-function EnterProgMode25(spiSpeed: integer): boolean;
+function EnterProgMode25(spiSpeed: integer; SendAB: boolean = false): boolean;
 begin
   result := AsProgrammer.Programmer.SPIInit(spiSpeed);
   sleep(50);
 
   //release power-down
-  SPIWrite(1, 1, $AB);
+  if SendAB then SPIWrite(1, 1, $AB);
   sleep(2);
 end;
 
