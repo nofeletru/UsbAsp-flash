@@ -8,39 +8,44 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls;
 
 type
+  TSregTypeList = (ST_MACRONIX, ST_WINBOND);
 
   { TsregeditForm }
 
   TsregeditForm = class(TForm)
     ButtonReadSreg: TButton;
     ButtonWriteSreg: TButton;
-    CheckBoxSB23: TCheckBox;
-    CheckBoxSB22: TCheckBox;
-    CheckBoxSB21: TCheckBox;
-    CheckBoxSB20: TCheckBox;
-    CheckBoxSB19: TCheckBox;
-    CheckBoxSB18: TCheckBox;
-    CheckBoxSB17: TCheckBox;
-    CheckBoxSB16: TCheckBox;
-    CheckBoxSB7: TCheckBox;
-    CheckBoxSB14: TCheckBox;
-    CheckBoxSB13: TCheckBox;
-    CheckBoxSB12: TCheckBox;
-    CheckBoxSB11: TCheckBox;
-    CheckBoxSB10: TCheckBox;
-    CheckBoxSB9: TCheckBox;
-    CheckBoxSB8: TCheckBox;
-    CheckBoxSB6: TCheckBox;
-    CheckBoxSB5: TCheckBox;
-    CheckBoxSB4: TCheckBox;
-    CheckBoxSB3: TCheckBox;
-    CheckBoxSB2: TCheckBox;
-    CheckBoxSB1: TCheckBox;
     CheckBoxSB0: TCheckBox;
+    CheckBoxSB1: TCheckBox;
+    CheckBoxSB10: TCheckBox;
+    CheckBoxSB11: TCheckBox;
+    CheckBoxSB12: TCheckBox;
+    CheckBoxSB13: TCheckBox;
+    CheckBoxSB14: TCheckBox;
     CheckBoxSB15: TCheckBox;
+    CheckBoxSB16: TCheckBox;
+    CheckBoxSB17: TCheckBox;
+    CheckBoxSB18: TCheckBox;
+    CheckBoxSB19: TCheckBox;
+    CheckBoxSB2: TCheckBox;
+    CheckBoxSB20: TCheckBox;
+    CheckBoxSB21: TCheckBox;
+    CheckBoxSB22: TCheckBox;
+    CheckBoxSB23: TCheckBox;
+    CheckBoxSB3: TCheckBox;
+    CheckBoxSB4: TCheckBox;
+    CheckBoxSB5: TCheckBox;
+    CheckBoxSB6: TCheckBox;
+    CheckBoxSB7: TCheckBox;
+    CheckBoxSB8: TCheckBox;
+    CheckBoxSB9: TCheckBox;
+    ComboBoxSRType: TComboBox;
     EditSreg1: TEdit;
     EditSreg2: TEdit;
     EditSreg3: TEdit;
+    GroupBoxSREG2: TGroupBox;
+    GroupBoxSREG3: TGroupBox;
+    GroupBoxSREG1: TGroupBox;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
@@ -52,6 +57,7 @@ type
     Label9: TLabel;
     procedure ButtonReadSregClick(Sender: TObject);
     procedure ButtonWriteSregClick(Sender: TObject);
+    procedure ComboBoxSRTypeChange(Sender: TObject);
     procedure EditSreg1Change(Sender: TObject);
     procedure EditSreg2Change(Sender: TObject);
     procedure CheckBoxChange(Sender: TObject);
@@ -64,12 +70,16 @@ type
 
 var
   sregeditForm: TsregeditForm;
+  SREGType: TSregTypeList;
 
 implementation
 
-uses main, spi25, usbhid, msgstr, utilfunc;
+uses main, spi25, msgstr, utilfunc;
 
 {$R *.lfm}
+
+
+
 
 { TsregeditForm }
 
@@ -173,11 +183,21 @@ begin
   begin
   try
     if not OpenDevice() then exit;
-    EnterProgMode25(SetSPISpeed(0));
+    EnterProgMode25(SetSPISpeed(0), MainForm.MenuSendAB.Checked);
 
     UsbAsp25_ReadSR(sreg1);
-    UsbAsp25_ReadSR(sreg2, $35);
-    UsbAsp25_ReadSR(sreg3, $15);
+
+    if SREGType = ST_MACRONIX then
+    begin
+      UsbAsp25_ReadSR(sreg2, $15);
+      sreg3 := 0;
+    end;
+
+    if SREGType = ST_WINBOND then
+    begin
+      UsbAsp25_ReadSR(sreg2, $35);
+      UsbAsp25_ReadSR(sreg3, $15);
+    end;
 
     SetSreg1CheckBox(sreg1);
     SetSreg2CheckBox(sreg2);
@@ -200,7 +220,7 @@ begin
   begin
   try
     if not OpenDevice() then exit;
-    EnterProgMode25(SetSPISpeed(0));
+    EnterProgMode25(SetSPISpeed(0), MainForm.MenuSendAB.Checked);
 
     UsbAsp25_WREN();
     UsbAsp25_WriteSR(GetSreg1CheckBox());
@@ -208,36 +228,39 @@ begin
     while UsbAsp25_Busy() do
     begin
       Application.ProcessMessages;
-      if MainForm.ButtonCancel.Tag <> 0 then
+      if UserCancel then Exit;
+    end;
+
+    if SREGType = ST_MACRONIX then
+    begin
+      UsbAsp25_WREN();
+      UsbAsp25_WriteSR_2byte(GetSreg1CheckBox(), GetSreg2CheckBox());
+
+      while UsbAsp25_Busy() do
       begin
-        LogPrint(STR_USER_CANCEL);
-        Exit;
+        Application.ProcessMessages;
+        if UserCancel then Exit;
       end;
     end;
 
-    UsbAsp25_WREN();
-    UsbAsp25_WriteSR_2byte(GetSreg1CheckBox(), GetSreg2CheckBox());
-
-    while UsbAsp25_Busy() do
+    if SREGType = ST_WINBOND then
     begin
-      Application.ProcessMessages;
-      if MainForm.ButtonCancel.Tag <> 0 then
+      UsbAsp25_WREN();
+      UsbAsp25_WriteSR(GetSreg2CheckBox(), $31);
+
+      while UsbAsp25_Busy() do
       begin
-        LogPrint(STR_USER_CANCEL);
-        Exit;
+        Application.ProcessMessages;
+        if UserCancel then Exit;
       end;
-    end;
 
-    UsbAsp25_WREN();
-    UsbAsp25_WriteSR(GetSreg3CheckBox(), $11);
+      UsbAsp25_WREN();
+      UsbAsp25_WriteSR(GetSreg3CheckBox(), $11);
 
-    while UsbAsp25_Busy() do
-    begin
-      Application.ProcessMessages;
-      if MainForm.ButtonCancel.Tag <> 0 then
+      while UsbAsp25_Busy() do
       begin
-        LogPrint(STR_USER_CANCEL);
-        Exit;
+        Application.ProcessMessages;
+        if UserCancel then Exit;
       end;
     end;
 
@@ -245,6 +268,25 @@ begin
     ExitProgMode25;
     AsProgrammer.Programmer.DevClose;
   end;
+  end;
+end;
+
+procedure TsregeditForm.ComboBoxSRTypeChange(Sender: TObject);
+begin
+  if UpCase(ComboBoxSRType.Text) = 'WINBOND' then
+  begin
+    SREGType := ST_WINBOND;
+    GroupBoxSREG1.Enabled:= true;
+    GroupBoxSREG2.Enabled:= true;
+    GroupBoxSREG3.Enabled:= true;
+  end;
+
+  if UpCase(ComboBoxSRType.Text) = 'MACRONIX' then
+  begin
+    SREGType := ST_MACRONIX;
+    GroupBoxSREG1.Enabled:= true;
+    GroupBoxSREG2.Enabled:= true;
+    GroupBoxSREG3.Enabled:= false;
   end;
 end;
 

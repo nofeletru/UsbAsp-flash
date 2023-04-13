@@ -1,356 +1,399 @@
 object sregeditForm: TsregeditForm
   Left = 669
-  Height = 155
-  Top = 379
-  Width = 201
+  Height = 220
+  Top = 342
+  Width = 200
   Align = alCustom
   BorderStyle = bsToolWindow
   Caption = 'SREG'
-  ClientHeight = 155
-  ClientWidth = 201
+  ClientHeight = 220
+  ClientWidth = 200
   FormStyle = fsStayOnTop
   Position = poOwnerFormCenter
-  LCLVersion = '2.0.2.0'
-  object CheckBoxSB7: TCheckBox
-    Left = 22
-    Height = 19
-    Top = 26
-    Width = 20
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 0
-  end
-  object CheckBoxSB6: TCheckBox
-    Left = 38
-    Height = 19
-    Top = 26
-    Width = 20
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 1
-  end
-  object CheckBoxSB5: TCheckBox
-    Left = 54
-    Height = 19
-    Top = 26
-    Width = 20
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 2
-  end
-  object CheckBoxSB4: TCheckBox
-    Left = 70
-    Height = 19
-    Top = 26
-    Width = 20
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 3
-  end
-  object CheckBoxSB3: TCheckBox
-    Left = 86
-    Height = 19
-    Top = 26
-    Width = 20
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 4
-  end
-  object CheckBoxSB2: TCheckBox
-    Left = 102
-    Height = 19
-    Top = 26
-    Width = 20
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 5
-  end
-  object CheckBoxSB1: TCheckBox
-    Left = 118
-    Height = 19
-    Top = 26
-    Width = 20
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 6
-  end
-  object CheckBoxSB0: TCheckBox
-    Left = 134
-    Height = 19
-    Top = 26
-    Width = 14
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 7
-  end
-  object CheckBoxSB15: TCheckBox
-    Left = 22
-    Height = 19
-    Top = 59
-    Width = 20
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 8
-  end
-  object CheckBoxSB14: TCheckBox
-    Left = 38
-    Height = 19
-    Top = 59
-    Width = 20
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 9
-  end
-  object CheckBoxSB13: TCheckBox
-    Left = 54
-    Height = 19
-    Top = 59
-    Width = 20
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 10
-  end
-  object CheckBoxSB12: TCheckBox
-    Left = 70
-    Height = 19
-    Top = 59
-    Width = 20
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 11
-  end
-  object CheckBoxSB11: TCheckBox
-    Left = 86
-    Height = 19
-    Top = 59
-    Width = 20
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 12
-  end
-  object CheckBoxSB10: TCheckBox
-    Left = 102
-    Height = 19
-    Top = 59
-    Width = 20
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 13
-  end
-  object CheckBoxSB9: TCheckBox
-    Left = 118
-    Height = 19
-    Top = 59
-    Width = 20
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 14
-  end
-  object CheckBoxSB8: TCheckBox
-    Left = 134
-    Height = 19
-    Top = 59
-    Width = 16
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 15
-  end
+  LCLVersion = '2.2.6.0'
   object ButtonReadSreg: TButton
     Left = 16
     Height = 25
-    Top = 120
+    Top = 184
     Width = 75
     Caption = 'Прочитать'
     OnClick = ButtonReadSregClick
-    TabOrder = 16
+    TabOrder = 0
   end
   object ButtonWriteSreg: TButton
     Left = 112
     Height = 25
-    Top = 120
+    Top = 184
     Width = 75
     Caption = 'Записать'
     OnClick = ButtonWriteSregClick
-    TabOrder = 17
+    TabOrder = 1
   end
-  object EditSreg1: TEdit
-    Left = 168
+  object ComboBoxSRType: TComboBox
+    Left = 16
     Height = 23
-    Top = 22
-    Width = 24
-    MaxLength = 2
-    OnChange = EditSreg1Change
-    TabOrder = 18
-    Text = '00'
+    Top = 8
+    Width = 100
+    ItemHeight = 15
+    ItemIndex = 0
+    Items.Strings = (
+      'Winbond'
+      'Macronix'
+    )
+    OnChange = ComboBoxSRTypeChange
+    ReadOnly = True
+    TabOrder = 2
+    Text = 'Winbond'
   end
-  object EditSreg2: TEdit
-    Left = 168
-    Height = 23
-    Top = 55
-    Width = 24
-    MaxLength = 2
-    OnChange = EditSreg2Change
-    TabOrder = 19
-    Text = '00'
+  object GroupBoxSREG1: TGroupBox
+    Left = 0
+    Height = 50
+    Top = 32
+    Width = 200
+    ClientHeight = 30
+    ClientWidth = 196
+    TabOrder = 3
+    object CheckBoxSB7: TCheckBox
+      Left = 16
+      Height = 19
+      Top = 8
+      Width = 20
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 0
+    end
+    object CheckBoxSB6: TCheckBox
+      Left = 32
+      Height = 19
+      Top = 8
+      Width = 20
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 1
+    end
+    object CheckBoxSB5: TCheckBox
+      Left = 48
+      Height = 19
+      Top = 8
+      Width = 20
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 2
+    end
+    object CheckBoxSB4: TCheckBox
+      Left = 64
+      Height = 19
+      Top = 8
+      Width = 20
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 3
+    end
+    object CheckBoxSB3: TCheckBox
+      Left = 80
+      Height = 19
+      Top = 8
+      Width = 20
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 4
+    end
+    object CheckBoxSB2: TCheckBox
+      Left = 96
+      Height = 19
+      Top = 8
+      Width = 20
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 5
+    end
+    object CheckBoxSB1: TCheckBox
+      Left = 112
+      Height = 19
+      Top = 8
+      Width = 20
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 6
+    end
+    object CheckBoxSB0: TCheckBox
+      Left = 128
+      Height = 19
+      Top = 8
+      Width = 14
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 7
+    end
+    object EditSreg1: TEdit
+      Left = 160
+      Height = 23
+      Top = 4
+      Width = 24
+      MaxLength = 2
+      OnChange = EditSreg1Change
+      TabOrder = 8
+      Text = '00'
+    end
+    object Label1: TLabel
+      Left = 8
+      Height = 15
+      Top = 8
+      Width = 6
+      Caption = '7'
+      ParentColor = False
+    end
+    object Label2: TLabel
+      Left = 144
+      Height = 15
+      Top = 8
+      Width = 6
+      Caption = '0'
+      ParentColor = False
+    end
+    object Label7: TLabel
+      Left = 16
+      Height = 15
+      Top = -8
+      Width = 126
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'SREG1'
+      ParentColor = False
+    end
   end
-  object Label1: TLabel
-    Left = 14
-    Height = 15
-    Top = 26
-    Width = 6
-    Caption = '7'
-    ParentColor = False
+  object GroupBoxSREG2: TGroupBox
+    Left = 0
+    Height = 50
+    Top = 80
+    Width = 200
+    ClientHeight = 30
+    ClientWidth = 196
+    TabOrder = 4
+    object CheckBoxSB15: TCheckBox
+      Left = 16
+      Height = 19
+      Top = 8
+      Width = 20
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 0
+    end
+    object CheckBoxSB14: TCheckBox
+      Left = 32
+      Height = 19
+      Top = 8
+      Width = 20
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 1
+    end
+    object CheckBoxSB13: TCheckBox
+      Left = 48
+      Height = 19
+      Top = 8
+      Width = 20
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 2
+    end
+    object CheckBoxSB12: TCheckBox
+      Left = 64
+      Height = 19
+      Top = 8
+      Width = 20
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 3
+    end
+    object CheckBoxSB11: TCheckBox
+      Left = 80
+      Height = 19
+      Top = 8
+      Width = 20
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 4
+    end
+    object CheckBoxSB10: TCheckBox
+      Left = 96
+      Height = 19
+      Top = 8
+      Width = 20
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 5
+    end
+    object CheckBoxSB9: TCheckBox
+      Left = 112
+      Height = 19
+      Top = 8
+      Width = 20
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 6
+    end
+    object CheckBoxSB8: TCheckBox
+      Left = 128
+      Height = 19
+      Top = 8
+      Width = 14
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 7
+    end
+    object EditSreg2: TEdit
+      Left = 160
+      Height = 23
+      Top = 4
+      Width = 24
+      MaxLength = 2
+      OnChange = EditSreg2Change
+      TabOrder = 8
+      Text = '00'
+    end
+    object Label3: TLabel
+      Left = 4
+      Height = 15
+      Top = 8
+      Width = 12
+      Caption = '15'
+      ParentColor = False
+    end
+    object Label4: TLabel
+      Left = 144
+      Height = 15
+      Top = 8
+      Width = 6
+      Caption = '8'
+      ParentColor = False
+    end
+    object Label8: TLabel
+      Left = 14
+      Height = 14
+      Top = -8
+      Width = 128
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'SREG2'
+      ParentColor = False
+    end
   end
-  object Label2: TLabel
-    Left = 152
-    Height = 15
-    Top = 26
-    Width = 6
-    Caption = '0'
-    ParentColor = False
-  end
-  object Label3: TLabel
-    Left = 8
-    Height = 15
-    Top = 59
-    Width = 12
-    Caption = '15'
-    ParentColor = False
-  end
-  object Label4: TLabel
-    Left = 152
-    Height = 15
-    Top = 59
-    Width = 6
-    Caption = '8'
-    ParentColor = False
-  end
-  object CheckBoxSB23: TCheckBox
-    Left = 22
-    Height = 19
-    Top = 92
-    Width = 20
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 20
-  end
-  object CheckBoxSB22: TCheckBox
-    Left = 38
-    Height = 19
-    Top = 92
-    Width = 20
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 21
-  end
-  object CheckBoxSB21: TCheckBox
-    Left = 54
-    Height = 19
-    Top = 92
-    Width = 20
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 22
-  end
-  object CheckBoxSB20: TCheckBox
-    Left = 70
-    Height = 19
-    Top = 92
-    Width = 20
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 23
-  end
-  object CheckBoxSB19: TCheckBox
-    Left = 86
-    Height = 19
-    Top = 92
-    Width = 20
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 24
-  end
-  object CheckBoxSB18: TCheckBox
-    Left = 102
-    Height = 19
-    Top = 92
-    Width = 20
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 25
-  end
-  object CheckBoxSB17: TCheckBox
-    Left = 118
-    Height = 19
-    Top = 92
-    Width = 20
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 26
-  end
-  object CheckBoxSB16: TCheckBox
-    Left = 134
-    Height = 19
-    Top = 92
-    Width = 14
-    AutoSize = False
-    OnChange = CheckBoxChange
-    TabOrder = 27
-  end
-  object Label5: TLabel
-    Left = 8
-    Height = 15
-    Top = 92
-    Width = 12
-    Caption = '23'
-    ParentColor = False
-  end
-  object EditSreg3: TEdit
-    Left = 168
-    Height = 23
-    Top = 88
-    Width = 24
-    MaxLength = 2
-    OnChange = EditSreg3Change
-    TabOrder = 28
-    Text = '00'
-  end
-  object Label6: TLabel
-    Left = 152
-    Height = 15
-    Top = 92
-    Width = 12
-    Caption = '16'
-    ParentColor = False
-  end
-  object Label7: TLabel
-    Left = 22
-    Height = 15
-    Top = 13
-    Width = 126
-    Alignment = taCenter
-    AutoSize = False
-    Caption = 'SREG1'
-    ParentColor = False
-  end
-  object Label8: TLabel
-    Left = 22
-    Height = 14
-    Top = 46
-    Width = 126
-    Alignment = taCenter
-    AutoSize = False
-    Caption = 'SREG2'
-    ParentColor = False
-  end
-  object Label9: TLabel
-    Left = 22
-    Height = 15
-    Top = 79
-    Width = 126
-    Alignment = taCenter
-    AutoSize = False
-    Caption = 'SREG3'
-    ParentColor = False
+  object GroupBoxSREG3: TGroupBox
+    Left = 0
+    Height = 50
+    Top = 128
+    Width = 200
+    ClientHeight = 30
+    ClientWidth = 196
+    TabOrder = 5
+    object CheckBoxSB23: TCheckBox
+      Left = 16
+      Height = 19
+      Top = 8
+      Width = 20
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 0
+    end
+    object CheckBoxSB22: TCheckBox
+      Left = 32
+      Height = 19
+      Top = 8
+      Width = 20
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 1
+    end
+    object CheckBoxSB21: TCheckBox
+      Left = 48
+      Height = 19
+      Top = 8
+      Width = 20
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 2
+    end
+    object CheckBoxSB20: TCheckBox
+      Left = 64
+      Height = 19
+      Top = 8
+      Width = 20
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 3
+    end
+    object CheckBoxSB19: TCheckBox
+      Left = 80
+      Height = 19
+      Top = 8
+      Width = 20
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 4
+    end
+    object CheckBoxSB18: TCheckBox
+      Left = 96
+      Height = 19
+      Top = 8
+      Width = 20
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 5
+    end
+    object CheckBoxSB17: TCheckBox
+      Left = 112
+      Height = 19
+      Top = 8
+      Width = 20
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 6
+    end
+    object CheckBoxSB16: TCheckBox
+      Left = 128
+      Height = 19
+      Top = 8
+      Width = 14
+      AutoSize = False
+      OnChange = CheckBoxChange
+      TabOrder = 7
+    end
+    object Label5: TLabel
+      Left = 4
+      Height = 15
+      Top = 8
+      Width = 12
+      Caption = '23'
+      ParentColor = False
+    end
+    object EditSreg3: TEdit
+      Left = 160
+      Height = 23
+      Top = 4
+      Width = 24
+      MaxLength = 2
+      OnChange = EditSreg3Change
+      TabOrder = 8
+      Text = '00'
+    end
+    object Label6: TLabel
+      Left = 144
+      Height = 15
+      Top = 8
+      Width = 12
+      Caption = '16'
+      ParentColor = False
+    end
+    object Label9: TLabel
+      Left = 16
+      Height = 15
+      Top = -8
+      Width = 124
+      Alignment = taCenter
+      AutoSize = False
+      Caption = 'SREG3'
+      ParentColor = False
+    end
   end
 end
