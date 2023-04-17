@@ -242,6 +242,7 @@
       <GD25Q64 id="C84017" page="256" size="8388608"/>
       <GD25Q64B id="C84017" page="256" size="8388608"/>
 	  <GD25B64C id="C84017" page="256" size="8388608"/>
+	  <GD25B64E id="C84017" page="256" size="8388608"/>
       <GD25Q128B id="C84018" page="256" size="16777216"/>
       <GD25Q128C id="C84018" page="256" size="16777216"/>
 	  <GD25LQ064C_1.8V id="C86017" page="256" size="8388608"/>
@@ -439,6 +440,7 @@
       <MX25V8035F id="C22314" page="256" size="1048576"/>
 	  <MX66U51235F_1.8V id="C2253A" page="256" size="67108864"/>
 	  <MX66U1G45G_1.8V id="C2253B" page="256" size="134217728"/>
+	  <MX77L12850F id="C27518" page="256" size="16777216"/>
     </MACRONIX>
     <MICROCHIP>
       <_25AA010A page="16" size="128" spicmd="95"/>
