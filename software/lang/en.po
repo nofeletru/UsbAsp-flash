@@ -379,7 +379,7 @@ msgstr "Device address"
 #: tmainform.CheckBox_I2C_ByteRead.caption
 msgctxt "tmainform.CheckBox_I2C_ByteRead.caption"
 msgid "Побайтовое чтение"
-msgstr "Byte read"
+msgstr "Byte-wise reading"
 
 #: tmainform.scriptsmenuitem.caption
 msgid "Скрипты"
@@ -443,4 +443,4 @@ msgstr "Scripts"
 
 #: tmainform.label_startaddress.caption
 msgid "Начальный адрес"
-msgstr "Аddress offset"
+msgstr "Start address"
