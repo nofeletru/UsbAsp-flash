@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls;
 
 type
-  TSregTypeList = (ST_MACRONIX, ST_WINBOND);
+  TSregTypeList = (ST_MACRONIX, ST_WINBOND, ST_GIGADEVICE);
 
   { TsregeditForm }
 
@@ -62,6 +62,7 @@ type
     procedure EditSreg2Change(Sender: TObject);
     procedure CheckBoxChange(Sender: TObject);
     procedure EditSreg3Change(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { private declarations }
   public
@@ -193,7 +194,7 @@ begin
       sreg3 := 0;
     end;
 
-    if SREGType = ST_WINBOND then
+    if (SREGType = ST_WINBOND) or (SREGType = ST_GIGADEVICE) then
     begin
       UsbAsp25_ReadSR(sreg2, $35);
       UsbAsp25_ReadSR(sreg3, $15);
@@ -243,7 +244,7 @@ begin
       end;
     end;
 
-    if SREGType = ST_WINBOND then
+    if (SREGType = ST_WINBOND) or (SREGType = ST_GIGADEVICE) then
     begin
       UsbAsp25_WREN();
       UsbAsp25_WriteSR(GetSreg2CheckBox(), $31);
@@ -281,6 +282,14 @@ begin
     GroupBoxSREG3.Enabled:= true;
   end;
 
+  if UpCase(ComboBoxSRType.Text) = 'GIGADEVICE' then
+  begin
+    SREGType := ST_GIGADEVICE;
+    GroupBoxSREG1.Enabled:= true;
+    GroupBoxSREG2.Enabled:= true;
+    GroupBoxSREG3.Enabled:= true;
+  end;
+
   if UpCase(ComboBoxSRType.Text) = 'MACRONIX' then
   begin
     SREGType := ST_MACRONIX;
@@ -306,6 +315,11 @@ procedure TsregeditForm.EditSreg3Change(Sender: TObject);
 begin
   if IsNumber('$'+EditSreg3.Text) then
     SetSreg3CheckBox(StrToInt('$'+EditSreg3.Text));
+end;
+
+procedure TsregeditForm.FormShow(Sender: TObject);
+begin
+  ComboBoxSRTypeChange(Sender);
 end;
 
 procedure TsregeditForm.CheckBoxChange(Sender: TObject);

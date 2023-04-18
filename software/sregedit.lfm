@@ -9,6 +9,7 @@ object sregeditForm: TsregeditForm
   ClientHeight = 220
   ClientWidth = 200
   FormStyle = fsStayOnTop
+  OnShow = FormShow
   Position = poOwnerFormCenter
   LCLVersion = '2.2.6.0'
   object ButtonReadSreg: TButton
@@ -38,6 +39,7 @@ object sregeditForm: TsregeditForm
     ItemIndex = 0
     Items.Strings = (
       'Winbond'
+      'GigaDevice'
       'Macronix'
     )
     OnChange = ComboBoxSRTypeChange
