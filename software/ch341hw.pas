@@ -137,18 +137,24 @@ function TCH341Hardware.SPIRead(CS: byte; BufferLen: integer; var buffer: array 
 begin
   if not FDevOpened then Exit(-1);
 
-  CH341Set_D5_D0(FDevHandle, $29, 0); //Вручную дергаем cs
-  if not CH341StreamSPI4(FDevHandle, 0, BufferLen, @buffer) then result :=-1 else result := BufferLen;
-  if (CS = 1)then CH341Set_D5_D0(FDevHandle, $29, 1); //Отпускаем cs
+  if (CS = 1) then if not CH341StreamSPI4(FDevHandle, $80, BufferLen, @buffer) then result :=-1 else result := BufferLen
+  else
+  begin
+    CH341Set_D5_D0(FDevHandle, $29, 0); //Вручную дергаем cs
+    if not CH341StreamSPI4(FDevHandle, 0, BufferLen, @buffer) then result :=-1 else result := BufferLen;
+  end;
 end;
 
 function TCH341Hardware.SPIWrite(CS: byte; BufferLen: integer; buffer: array of byte): integer;
 begin
   if not FDevOpened then Exit(-1);
 
-  CH341Set_D5_D0(FDevHandle, $29, 0); //Вручную дергаем cs
-  if not CH341StreamSPI4(FDevHandle, 0, BufferLen, @buffer) then result :=-1 else result := BufferLen;
-  if (CS = 1)then CH341Set_D5_D0(FDevHandle, $29, 1); //Отпускаем cs
+  if (CS = 1) then if not CH341StreamSPI4(FDevHandle, $80, BufferLen, @buffer) then result :=-1 else result := BufferLen
+  else
+  begin
+    CH341Set_D5_D0(FDevHandle, $29, 0); //Вручную дергаем cs
+    if not CH341StreamSPI4(FDevHandle, 0, BufferLen, @buffer) then result :=-1 else result := BufferLen;
+  end
 end;
 
 //i2c___________________________________________________________________________
