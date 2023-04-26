@@ -40,28 +40,12 @@ type
     CheckBoxSB8: TCheckBox;
     CheckBoxSB9: TCheckBox;
     ComboBoxSRType: TComboBox;
-    EditSreg1: TEdit;
-    EditSreg2: TEdit;
-    EditSreg3: TEdit;
     GroupBoxSREG2: TGroupBox;
     GroupBoxSREG3: TGroupBox;
     GroupBoxSREG1: TGroupBox;
-    Label1: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
-    Label4: TLabel;
-    Label5: TLabel;
-    Label6: TLabel;
-    Label7: TLabel;
-    Label8: TLabel;
-    Label9: TLabel;
     procedure ButtonReadSregClick(Sender: TObject);
     procedure ButtonWriteSregClick(Sender: TObject);
     procedure ComboBoxSRTypeChange(Sender: TObject);
-    procedure EditSreg1Change(Sender: TObject);
-    procedure EditSreg2Change(Sender: TObject);
-    procedure CheckBoxChange(Sender: TObject);
-    procedure EditSreg3Change(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
     { private declarations }
@@ -88,14 +72,14 @@ procedure SetSreg1CheckBox(sreg1: byte);
 begin
   with sregeditForm do
   begin
-    if IsBitSet(sreg1, 0) then CheckBoxSB0.Checked:= true else CheckBoxSB0.Checked:= false;
-    if IsBitSet(sreg1, 1) then CheckBoxSB1.Checked:= true else CheckBoxSB1.Checked:= false;
-    if IsBitSet(sreg1, 2) then CheckBoxSB2.Checked:= true else CheckBoxSB2.Checked:= false;
-    if IsBitSet(sreg1, 3) then CheckBoxSB3.Checked:= true else CheckBoxSB3.Checked:= false;
-    if IsBitSet(sreg1, 4) then CheckBoxSB4.Checked:= true else CheckBoxSB4.Checked:= false;
-    if IsBitSet(sreg1, 5) then CheckBoxSB5.Checked:= true else CheckBoxSB5.Checked:= false;
-    if IsBitSet(sreg1, 6) then CheckBoxSB6.Checked:= true else CheckBoxSB6.Checked:= false;
-    if IsBitSet(sreg1, 7) then CheckBoxSB7.Checked:= true else CheckBoxSB7.Checked:= false;
+    CheckBoxSB0.Checked:= IsBitSet(sreg1, 0);
+    CheckBoxSB1.Checked:= IsBitSet(sreg1, 1);
+    CheckBoxSB2.Checked:= IsBitSet(sreg1, 2);
+    CheckBoxSB3.Checked:= IsBitSet(sreg1, 3);
+    CheckBoxSB4.Checked:= IsBitSet(sreg1, 4);
+    CheckBoxSB5.Checked:= IsBitSet(sreg1, 5);
+    CheckBoxSB6.Checked:= IsBitSet(sreg1, 6);
+    CheckBoxSB7.Checked:= IsBitSet(sreg1, 7);
   end;
 end;
 
@@ -119,14 +103,14 @@ procedure SetSreg2CheckBox(sreg2: byte);
 begin
   with sregeditForm do
   begin
-    if IsBitSet(sreg2, 0) then CheckBoxSB8.Checked:= true else CheckBoxSB8.Checked:= false;
-    if IsBitSet(sreg2, 1) then CheckBoxSB9.Checked:= true else CheckBoxSB9.Checked:= false;
-    if IsBitSet(sreg2, 2) then CheckBoxSB10.Checked:= true else CheckBoxSB10.Checked:= false;
-    if IsBitSet(sreg2, 3) then CheckBoxSB11.Checked:= true else CheckBoxSB11.Checked:= false;
-    if IsBitSet(sreg2, 4) then CheckBoxSB12.Checked:= true else CheckBoxSB12.Checked:= false;
-    if IsBitSet(sreg2, 5) then CheckBoxSB13.Checked:= true else CheckBoxSB13.Checked:= false;
-    if IsBitSet(sreg2, 6) then CheckBoxSB14.Checked:= true else CheckBoxSB14.Checked:= false;
-    if IsBitSet(sreg2, 7) then CheckBoxSB15.Checked:= true else CheckBoxSB15.Checked:= false;
+    CheckBoxSB8.Checked:= IsBitSet(sreg2, 0);
+    CheckBoxSB9.Checked:= IsBitSet(sreg2, 1);
+    CheckBoxSB10.Checked:= IsBitSet(sreg2, 2);
+    CheckBoxSB11.Checked:= IsBitSet(sreg2, 3);
+    CheckBoxSB12.Checked:= IsBitSet(sreg2, 4);
+    CheckBoxSB13.Checked:= IsBitSet(sreg2, 5);
+    CheckBoxSB14.Checked:= IsBitSet(sreg2, 6);
+    CheckBoxSB15.Checked:= IsBitSet(sreg2, 7);
   end;
 end;
 
@@ -150,14 +134,14 @@ procedure SetSreg3CheckBox(sreg3: byte);
 begin
   with sregeditForm do
   begin
-    if IsBitSet(sreg3, 0) then CheckBoxSB16.Checked:= true else CheckBoxSB16.Checked:= false;
-    if IsBitSet(sreg3, 1) then CheckBoxSB17.Checked:= true else CheckBoxSB17.Checked:= false;
-    if IsBitSet(sreg3, 2) then CheckBoxSB18.Checked:= true else CheckBoxSB18.Checked:= false;
-    if IsBitSet(sreg3, 3) then CheckBoxSB19.Checked:= true else CheckBoxSB19.Checked:= false;
-    if IsBitSet(sreg3, 4) then CheckBoxSB20.Checked:= true else CheckBoxSB20.Checked:= false;
-    if IsBitSet(sreg3, 5) then CheckBoxSB21.Checked:= true else CheckBoxSB21.Checked:= false;
-    if IsBitSet(sreg3, 6) then CheckBoxSB22.Checked:= true else CheckBoxSB22.Checked:= false;
-    if IsBitSet(sreg3, 7) then CheckBoxSB23.Checked:= true else CheckBoxSB23.Checked:= false;
+    CheckBoxSB16.Checked:= IsBitSet(sreg3, 0);
+    CheckBoxSB17.Checked:= IsBitSet(sreg3, 1);
+    CheckBoxSB18.Checked:= IsBitSet(sreg3, 2);
+    CheckBoxSB19.Checked:= IsBitSet(sreg3, 3);
+    CheckBoxSB20.Checked:= IsBitSet(sreg3, 4);
+    CheckBoxSB21.Checked:= IsBitSet(sreg3, 5);
+    CheckBoxSB22.Checked:= IsBitSet(sreg3, 6);
+    CheckBoxSB23.Checked:= IsBitSet(sreg3, 7);
   end;
 end;
 
@@ -203,10 +187,6 @@ begin
     SetSreg1CheckBox(sreg1);
     SetSreg2CheckBox(sreg2);
     SetSreg3CheckBox(sreg3);
-
-    Editsreg1.Text:= IntToHex(sreg1, 2);
-    Editsreg2.Text:= IntToHex(sreg2, 2);
-    Editsreg3.Text:= IntToHex(sreg3, 2);
 
   finally
     ExitProgMode25;
@@ -299,34 +279,9 @@ begin
   end;
 end;
 
-procedure TsregeditForm.EditSreg1Change(Sender: TObject);
-begin
-  if IsNumber('$'+EditSreg1.Text) then
-    SetSreg1CheckBox(StrToInt('$'+EditSreg1.Text));
-end;
-
-procedure TsregeditForm.EditSreg2Change(Sender: TObject);
-begin
-  if IsNumber('$'+EditSreg2.Text) then
-    SetSreg2CheckBox(StrToInt('$'+EditSreg2.Text));
-end;
-
-procedure TsregeditForm.EditSreg3Change(Sender: TObject);
-begin
-  if IsNumber('$'+EditSreg3.Text) then
-    SetSreg3CheckBox(StrToInt('$'+EditSreg3.Text));
-end;
-
 procedure TsregeditForm.FormShow(Sender: TObject);
 begin
   ComboBoxSRTypeChange(Sender);
-end;
-
-procedure TsregeditForm.CheckBoxChange(Sender: TObject);
-begin
-  EditSreg1.Text := IntToHex(GetSreg1CheckBox(), 2);
-  EditSreg2.Text := IntToHex(GetSreg2CheckBox(), 2);
-  EditSreg3.Text := IntToHex(GetSreg3CheckBox(), 2);
 end;
 
 
