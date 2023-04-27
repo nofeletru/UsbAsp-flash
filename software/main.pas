@@ -2492,7 +2492,7 @@ end;
 
 procedure TMainForm.ButtonBlockClick(Sender: TObject);
 var
-  sreg, sreg2: byte;
+  sreg: byte;
   i: integer;
   s: string;
   SLreg: array[0..31] of byte;
@@ -2510,12 +2510,10 @@ try
   if ComboSPICMD.ItemIndex = SPI_CMD_25 then
   begin
     UsbAsp25_ReadSR(sreg); //Читаем регистр
-    UsbAsp25_ReadSR(sreg2, $35);
-    LogPrint(STR_OLD_SREG+IntToBin(sreg, 8)+'(0x'+(IntToHex(sreg, 2)+'), ')
-                                         +IntToBin(sreg2, 8)+'(0x'+(IntToHex(sreg2, 2)+')'));
+    LogPrint(STR_OLD_SREG+IntToBin(sreg, 8)+'(0x'+(IntToHex(sreg, 2)+')'));
 
-    sreg := 0; //
-    sreg2 := 0;
+    sreg := 0;
+
     UsbAsp25_WREN(); //Включаем разрешение записи
     UsbAsp25_WriteSR(sreg); //Сбрасываем регистр
 
@@ -2527,9 +2525,7 @@ try
     end;
 
     UsbAsp25_ReadSR(sreg); //Читаем регистр
-    UsbAsp25_ReadSR(sreg2, $35);
-    LogPrint(STR_NEW_SREG+IntToBin(sreg, 8)+'(0x'+(IntToHex(sreg, 2)+'), ')
-                                         +IntToBin(sreg2, 8)+'(0x'+(IntToHex(sreg2, 2)+')'));
+    LogPrint(STR_NEW_SREG+IntToBin(sreg, 8)+'(0x'+(IntToHex(sreg, 2)+')'));
   end;
 
   if ComboSPICMD.ItemIndex = SPI_CMD_95 then
