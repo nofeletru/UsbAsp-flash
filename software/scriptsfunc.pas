@@ -373,6 +373,7 @@ begin
 
   R.Value := SPIRead(TPVar(A.Items[0])^.Value, BufferLen, DataArr[0]);
 
+  RomF.Clear;
   RomF.WriteBuffer(DataArr[0], BufferLen);
   RomF.Position := 0;
   MainForm.MPHexEditorEx.LoadFromStream(RomF);
@@ -555,6 +556,7 @@ begin
     DataArr[i] := TPVar(A.Items[i+2])^.Value;
   end;
 
+  RomF.Clear;
   MainForm.MPHexEditorEx.SaveToStream(RomF);
   RomF.Position := TPVar(A.Items[1])^.Value;
 
