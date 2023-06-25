@@ -376,7 +376,19 @@ begin
   RomF.Clear;
   RomF.WriteBuffer(DataArr[0], BufferLen);
   RomF.Position := 0;
-  MainForm.MPHexEditorEx.LoadFromStream(RomF);
+
+  try
+    MainForm.MPHexEditorEx.InsertMode:= true;
+    MainForm.MPHexEditorEx.NoSizeChange:= false;
+    MainForm.MPHexEditorEx.ReadOnlyView:= true;
+
+    MainForm.MPHexEditorEx.AppendBuffer(RomF.Memory , BufferLen);
+  finally
+    MainForm.MPHexEditorEx.ReadOnlyView:= false;
+    MainForm.MPHexEditorEx.InsertMode:= MainForm.AllowInsertItem.Checked;
+    MainForm.MPHexEditorEx.NoSizeChange:= not MainForm.AllowInsertItem.Checked;
+  end;
+
   Result := true;
 end;
 
