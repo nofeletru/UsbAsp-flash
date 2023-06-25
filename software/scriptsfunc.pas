@@ -241,6 +241,7 @@ end;
 function Script_SPIEnterProgMode(Sender:TObject; var A:TVarList; var R:TVar) : boolean;
 var speed: byte;
 begin
+  if not OpenDevice() then Exit(false);
   if A.Count < 1 then Exit(false);
 
   speed := TPVar(A.Items[0])^.Value;
@@ -257,6 +258,7 @@ end;
 function Script_SPIExitProgMode(Sender:TObject; var A:TVarList) : boolean;
 begin
   ExitProgMode25;
+  AsProgrammer.Programmer.DevClose;
   Result := true;
 end;
 
@@ -426,6 +428,7 @@ end;
  Инициализирует состояние пинов}
 function Script_I2CEnterProgMode(Sender:TObject; var A:TVarList) : boolean;
 begin
+  if not OpenDevice() then Exit(false);
   Asprogrammer.Programmer.I2CInit;
   Result := true;
 end;
@@ -435,6 +438,7 @@ end;
 function Script_I2CExitProgMode(Sender:TObject; var A:TVarList) : boolean;
 begin
   Asprogrammer.Programmer.I2CDeinit;
+  AsProgrammer.Programmer.DevClose;
   Result := true;
 end;
 

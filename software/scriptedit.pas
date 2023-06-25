@@ -198,9 +198,7 @@ begin
     if ParseScriptText(SynEdit.Lines, CurrentSectionName, ScriptText) then
     begin
       ScriptLogPrint(STR_SCRIPT_RUN_SECTION+CurrentSectionName);
-      if not OpenDevice() then exit;
       RunScript(ScriptText);
-      AsProgrammer.Programmer.DevClose;
     end
     else
       if CurrentSectionName = '' then
