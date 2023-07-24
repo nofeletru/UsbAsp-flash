@@ -122,6 +122,7 @@
       <EN25QH32 id="1C7016" otp="16368" page="256" size="4194304"/>
       <EN25QH64 id="1C7017" otp="32752" page="256" size="8388608"/>
       <EN25QH128 id="1C7018" otp="65520" page="256" size="16777216"/>
+	  <EN25QX128A id="1C7118" page="256" size="16777216"/>
 	  <EN25QH256 id="1C7019" otp="0" page="256" size="33554432"/>
       <EN25T80 id="1C5114" otp="4080" page="256" size="1048576"/>
       <EN25T16 id="1C5115" otp="8176" page="256" size="2097152"/>
