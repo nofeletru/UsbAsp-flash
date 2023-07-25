@@ -234,6 +234,16 @@ begin
   Result := true;
 end;
 
+{Script CHR(byte): char;
+ Аналог CHR}
+function Script_CHR(Sender:TObject; var A:TVarList; var R:TVar) : boolean;
+begin
+  if A.Count < 1 then Exit(false);
+
+  R.Value:= CHR(TPVar(A.Items[0])^.Value);
+  Result := true;
+end;
+
 {Script SPIEnterProgMode(speed): boolean;
  Инициализирует состояние пинов для SPI и устанавливает частоту SPI
  Если частота не установлена возвращает false
@@ -641,6 +651,7 @@ begin
   PC.SetFunction('LogPrint', @Script_LogPrint);
   PC.SetFunction('ProgressBar', @Script_ProgressBar);
   PC.SetFunction('IntToHex', @Script_IntToHex);
+  PC.SetFunction('CHR', @Script_CHR);
 
   PC.SetFunction('ReadToEditor', @Script_ReadToEditor);
   PC.SetFunction('WriteFromEditor', @Script_WriteFromEditor);
