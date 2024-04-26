@@ -15,7 +15,7 @@ uses
   XMLRead, XMLWrite, DOM, msgstr, Translations, LCLProc, LCLType, LCLTranslator,
   LResources, MPHexEditorEx, MPHexEditor, search, sregedit,
   utilfunc, findchip, DateUtils, lazUTF8,
-  pascalc, ScriptsFunc, ScriptEdit, baseHW, UsbAspHW, ch341hw, avrisphw, arduinohw;
+  pascalc, ScriptsFunc, ScriptEdit, baseHW, UsbAspHW, ch341hw, ch347hw, avrisphw, arduinohw;
 
 type
 
@@ -41,6 +41,7 @@ type
     MenuFT232SPIClock: TMenuItem;
     MenuFT232SPI30Mhz: TMenuItem;
     MenuFT232SPI6Mhz: TMenuItem;
+    MenuHWCH347: TMenuItem;
     MenuSendAB: TMenuItem;
     StartAddressEdit: TEdit;
     GroupChipSettings: TGroupBox;
@@ -164,6 +165,7 @@ type
     procedure MenuFindClick(Sender: TObject);
     procedure MenuGotoOffsetClick(Sender: TObject);
     procedure MenuHWCH341AClick(Sender: TObject);
+    procedure MenuHWCH347Click(Sender: TObject);
     procedure MenuHWFT232HClick(Sender: TObject);
     procedure MenuHWUSBASPClick(Sender: TObject);
     procedure MenuItemBenchmarkClick(Sender: TObject);
@@ -1060,7 +1062,7 @@ const
 var
   ChunkSize: Word;
   BytesRead: integer;
-  DataChunk: array[0..16786] of byte;
+  DataChunk: array[0..65534] of byte;
   Address: cardinal;
 begin
   if (StartAddress >= ChipSize) or (ChipSize = 0) then
@@ -1070,9 +1072,13 @@ begin
   end;
 
   if ASProgrammer.Current_HW = CHW_FT232H then
+    ChunkSize := 16787 else
+  if ASProgrammer.Current_HW = CHW_CH347 then
     ChunkSize := SizeOf(DataChunk)
   else
     ChunkSize := 2048;
+
+
 
   if ChunkSize > ChipSize then ChunkSize := ChipSize;
 
@@ -1741,6 +1747,16 @@ begin
     AsProgrammer.Current_HW := CHW_CH341;
   end;
 
+  if programmer = CHW_CH347 then
+  begin
+    MainForm.MenuSPIClock.Visible:= false;
+    MainForm.MenuAVRISPSPIClock.Visible:= false;
+    MainForm.MenuArduinoSPIClock.Visible:= false;
+    MainForm.MenuFT232SPIClock.Visible:= false;
+    MainForm.MenuMicrowire.Enabled:= false;
+    AsProgrammer.Current_HW := CHW_CH347;
+  end;
+
   if programmer = CHW_AVRISP then
   begin
     MainForm.MenuSPIClock.Visible:= false;
@@ -1889,6 +1905,11 @@ begin
   SelectHW(CHW_CH341);
 end;
 
+procedure TMainForm.MenuHWCH347Click(Sender: TObject);
+begin
+  SelectHW(CHW_CH347);
+end;
+
 procedure TMainForm.MenuHWFT232HClick(Sender: TObject);
 begin
   SelectHW(CHW_FT232H);
@@ -1922,7 +1943,8 @@ begin
   EnterProgMode25(SetSPISpeed(0), MainForm.MenuSendAB.Checked);
   LockControl();
 
-  if (AsProgrammer.Current_HW = CHW_CH341) or (AsProgrammer.Current_HW = CHW_AVRISP) then
+  if (AsProgrammer.Current_HW = CHW_CH341) or (AsProgrammer.Current_HW = CHW_AVRISP) or (AsProgrammer.Current_HW = CHW_CH347)
+    or (AsProgrammer.Current_HW = CHW_FT232H) then
     cycles := 256
   else
     cycles := 32;
@@ -2774,6 +2796,7 @@ begin
   AsProgrammer.AddHW(TAvrispHardware.Create);
   AsProgrammer.AddHW(TArduinoHardware.Create);
   AsProgrammer.AddHW(TFT232HHardware.Create);
+  AsProgrammer.AddHW(TCH347Hardware.Create);
 
   LoadChipList(ChipListFile);
   RomF := TMemoryStream.Create;
@@ -3148,6 +3171,8 @@ begin
       TDOMElement(ParentNode).SetAttribute('hw', 'usbasp');
     if MainForm.MenuHWCH341A.Checked then
       TDOMElement(ParentNode).SetAttribute('hw', 'ch341a');
+    if MainForm.MenuHWCH347.Checked then
+      TDOMElement(ParentNode).SetAttribute('hw', 'ch347');
     if MainForm.MenuHWAVRISP.Checked then
       TDOMElement(ParentNode).SetAttribute('hw', 'avrisp');
     if MainForm.MenuHWARDUINO.Checked then
@@ -3233,6 +3258,12 @@ begin
         begin
           MainForm.MenuHWCH341A.Checked := true;
           SelectHW(CHW_CH341);
+        end;
+
+        if OptVal = 'ch347' then
+        begin
+          MainForm.MenuHWCH347.Checked := true;
+          SelectHW(CHW_CH347);
         end;
 
         if OptVal = 'avrisp' then
