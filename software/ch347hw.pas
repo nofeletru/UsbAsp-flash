@@ -229,14 +229,15 @@ begin
   if not FDevOpened then Exit;
 
   mBuffer[0] := mCH341A_CMD_I2C_STREAM;
-  if ack then mBuffer[1] := mCH341A_CMD_I2C_STM_IN + 1 else mBuffer[1] := mCH341A_CMD_I2C_STM_IN; // ack bit not work
+  mBuffer[1] := mCH341A_CMD_I2C_STM_IN;
+  if ack then mBuffer[1] := mBuffer[1] or 1; // ack bit
   mBuffer[2] := mCH341A_CMD_I2C_STM_END;
 
   mLength := 3;
   CH347WriteData(FDevHandle, @mBuffer, @mLength);
 
   mLength:= mCH347_PACKET_LENGTH;
-  CH347ReadData(FDevHandle, @mBuffer, @mLength); //read not work
+  CH347ReadData(FDevHandle, @mBuffer, @mLength);
 
   result := mBuffer[0];
 end;
@@ -249,7 +250,7 @@ begin
   if not FDevOpened then Exit;
 
   mBuffer[0] := mCH341A_CMD_I2C_STREAM;
-  mBuffer[1] := mCH341A_CMD_I2C_STM_OUT;
+  mBuffer[1] := mCH341A_CMD_I2C_STM_OUT or 1;
   mBuffer[2] := data;
   mBuffer[3] := mCH341A_CMD_I2C_STM_END;
   mLength := 4;
