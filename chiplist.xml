@@ -397,8 +397,8 @@
       <MX25L8035E id="C22014" page="256" size="1048576"/>
       <MX25L8036E id="C22014" page="256" size="1048576"/>
       <MX25L8073E id="C22014" page="256" size="1048576"/>
-      <MX25L8075E id="C22014" page="256" size="1048576"/>
-	  <MX25L25673G id="C22019" page="256" size="33554432"/>
+      <MX25L8075E id="C22014" page="256" size="1048576"/>    
+	  <MX25L25673G id="C22019" page="256" size="33554432"/> 
       <MX25R512F id="C22810" page="256" size="65536"/>
       <MX25R1035F id="C22811" page="256" size="131072"/>
       <MX25R1635F id="C22815" page="256" size="2097152"/>
@@ -447,6 +447,7 @@
 	  <MX66U51235F_1.8V id="C2253A" page="256" size="67108864"/>
 	  <MX66U1G45G_1.8V id="C2253B" page="256" size="134217728"/>
 	  <MX77L12850F id="C27518" page="256" size="16777216"/>
+	<MX25L51245G id="C2201A" page="256" size="67108864"/>
     </MACRONIX>
     <MICROCHIP>
       <_25AA010A page="16" size="128" spicmd="95"/>
