@@ -699,9 +699,8 @@ object MainForm: TMainForm
     Width = 853
     Align = alBottom
     Lines.Strings = (
-      'AsProgrammer v2.0.2'
+      'AsProgrammer v2.1.0'
       'https://github.com/nofeletru/UsbAsp-flash'
-      'asprogrammer@inbox.ru'
     )
     ParentFont = False
     PopupMenu = LogPopupMenu
@@ -749,6 +748,57 @@ object MainForm: TMainForm
       end
       object MenuSPI: TMenuItem
         Caption = 'SPI'
+        object MenuCH347SPIClock: TMenuItem
+          Caption = 'Частота'
+          object MenuCH347SPIClock60MHz: TMenuItem
+            AutoCheck = True
+            Caption = '60 MHz'
+            Checked = True
+            RadioItem = True
+          end
+          object MenuCH347SPIClock30MHz: TMenuItem
+            Tag = 1
+            AutoCheck = True
+            Caption = '30 MHz'
+            RadioItem = True
+          end
+          object MenuCH347SPIClock15MHz: TMenuItem
+            Tag = 2
+            AutoCheck = True
+            Caption = '15 MHz'
+            RadioItem = True
+          end
+          object MenuCH347SPIClock7_5MHz: TMenuItem
+            Tag = 3
+            AutoCheck = True
+            Caption = '7.5 MHz'
+            RadioItem = True
+          end
+          object MenuCH347SPIClock3_75MHz: TMenuItem
+            Tag = 4
+            AutoCheck = True
+            Caption = '3.75 MHz'
+            RadioItem = True
+          end
+          object MenuCH347SPIClock1_875MHz: TMenuItem
+            Tag = 5
+            AutoCheck = True
+            Caption = '1.875 MHz'
+            RadioItem = True
+          end
+          object MenuCH347SPIClock937_5KHz: TMenuItem
+            Tag = 6
+            AutoCheck = True
+            Caption = '937.5 KHz'
+            RadioItem = True
+          end
+          object MenuCH347SPIClock468_75KHz: TMenuItem
+            Tag = 7
+            AutoCheck = True
+            Caption = '468.75 KHz'
+            RadioItem = True
+          end
+        end
         object MenuArduinoSPIClock: TMenuItem
           Caption = 'Частота'
           object MenuArduinoISP8MHz: TMenuItem

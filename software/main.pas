@@ -42,6 +42,15 @@ type
     MenuFT232SPI30Mhz: TMenuItem;
     MenuFT232SPI6Mhz: TMenuItem;
     MenuHWCH347: TMenuItem;
+    MenuCH347SPIClock: TMenuItem;
+    MenuCH347SPIClock468_75KHz: TMenuItem;
+    MenuCH347SPIClock60MHz: TMenuItem;
+    MenuCH347SPIClock30MHz: TMenuItem;
+    MenuCH347SPIClock15MHz: TMenuItem;
+    MenuCH347SPIClock7_5MHz: TMenuItem;
+    MenuCH347SPIClock3_75MHz: TMenuItem;
+    MenuCH347SPIClock1_875MHz: TMenuItem;
+    MenuCH347SPIClock937_5KHz: TMenuItem;
     MenuSendAB: TMenuItem;
     StartAddressEdit: TEdit;
     GroupChipSettings: TGroupBox;
@@ -512,6 +521,18 @@ begin
   begin
     if MainForm.MenuFT232SPI30Mhz.Checked then Speed := MainForm.MenuFT232SPI30Mhz.Tag;
     if MainForm.MenuFT232SPI6Mhz.Checked then Speed := MainForm.MenuFT232SPI6Mhz.Tag;
+  end;
+
+  if (MainForm.RadioSPI.Checked) and (AsProgrammer.Current_HW = CHW_CH347) then
+  begin
+    if MainForm.MenuCH347SPIClock60MHz.Checked then Speed := MainForm.MenuCH347SPIClock60MHz.Tag;
+    if MainForm.MenuCH347SPIClock30MHz.Checked then Speed := MainForm.MenuCH347SPIClock30MHz.Tag;
+    if MainForm.MenuCH347SPIClock15MHz.Checked then Speed := MainForm.MenuCH347SPIClock15MHz.Tag;
+    if MainForm.MenuCH347SPIClock7_5MHz.Checked then Speed := MainForm.MenuCH347SPIClock7_5MHz.Tag;
+    if MainForm.MenuCH347SPIClock3_75MHz.Checked then Speed := MainForm.MenuCH347SPIClock3_75MHz.Tag;
+    if MainForm.MenuCH347SPIClock1_875MHz.Checked then Speed := MainForm.MenuCH347SPIClock1_875MHz.Tag;
+    if MainForm.MenuCH347SPIClock937_5KHz.Checked then Speed := MainForm.MenuCH347SPIClock937_5KHz.Tag;
+    if MainForm.MenuCH347SPIClock468_75KHz.Checked then Speed := MainForm.MenuCH347SPIClock468_75KHz.Tag;
   end;
 
   if OverrideSpeed <> 0 then Speed := OverrideSpeed;
@@ -1730,6 +1751,7 @@ begin
   if programmer = CHW_USBASP then
   begin
     MainForm.MenuSPIClock.Visible:= true;
+    MainForm.MenuCH347SPIClock.Visible:= false;
     MainForm.MenuAVRISPSPIClock.Visible:= false;
     MainForm.MenuArduinoSPIClock.Visible:= false;
     MainForm.MenuFT232SPIClock.Visible:= false;
@@ -1740,6 +1762,7 @@ begin
   if programmer = CHW_CH341 then
   begin
     MainForm.MenuSPIClock.Visible:= false;
+    MainForm.MenuCH347SPIClock.Visible:= false;
     MainForm.MenuAVRISPSPIClock.Visible:= false;
     MainForm.MenuArduinoSPIClock.Visible:= false;
     MainForm.MenuFT232SPIClock.Visible:= false;
@@ -1749,6 +1772,7 @@ begin
 
   if programmer = CHW_CH347 then
   begin
+    MainForm.MenuCH347SPIClock.Visible:= true;
     MainForm.MenuSPIClock.Visible:= false;
     MainForm.MenuAVRISPSPIClock.Visible:= false;
     MainForm.MenuArduinoSPIClock.Visible:= false;
@@ -1760,6 +1784,7 @@ begin
   if programmer = CHW_AVRISP then
   begin
     MainForm.MenuSPIClock.Visible:= false;
+    MainForm.MenuCH347SPIClock.Visible:= false;
     MainForm.MenuAVRISPSPIClock.Visible:= true;
     MainForm.MenuArduinoSPIClock.Visible:= false;
     MainForm.MenuFT232SPIClock.Visible:= false;
@@ -1770,6 +1795,7 @@ begin
   if programmer = CHW_ARDUINO then
   begin
     MainForm.MenuSPIClock.Visible:= false;
+    MainForm.MenuCH347SPIClock.Visible:= false;
     MainForm.MenuAVRISPSPIClock.Visible:= false;
     MainForm.MenuArduinoSPIClock.Visible:= true;
     MainForm.MenuFT232SPIClock.Visible:= false;
@@ -1780,6 +1806,7 @@ begin
   if programmer = CHW_FT232H then
   begin
     MainForm.MenuFT232SPIClock.Visible:= true;
+    MainForm.MenuCH347SPIClock.Visible:= false;
     MainForm.MenuSPIClock.Visible:= false;
     MainForm.MenuAVRISPSPIClock.Visible:= false;
     MainForm.MenuArduinoSPIClock.Visible:= false;
@@ -2908,7 +2935,7 @@ try
       Exit;
     end;
 
-    AsProgrammer.Programmer.MWInit(SetSPISpeed(0));
+    if not AsProgrammer.Programmer.MWInit(SetSPISpeed(0)) then Exit;
     TimeCounter := Time();
     ReadFlashMW(RomF, StrToInt(ComboMWBitLen.Text), 0, StrToInt(ComboChipSize.Text));
 

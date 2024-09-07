@@ -5,7 +5,7 @@ unit ch347hw;
 interface
 
 uses
-  Classes, SysUtils, basehw, msgstr, ch347dll, ch341dll, utilfunc;
+  Classes, SysUtils, basehw, msgstr, ch347dll, ch341dll;
 
 type
 
@@ -117,7 +117,7 @@ begin
   with FDevSPIConfig do
   begin
     iMode:= 0;
-    iClock:= 0;
+    iClock:= speed;
     iByteOrder:= 1;
     iSpiWriteReadInterval:= 0;
     iSpiOutDefaultData:= 0;
@@ -267,7 +267,8 @@ end;
 function TCH347Hardware.MWInit(speed: integer): boolean;
 begin
     if not FDevOpened then Exit(false);
-
+    main.LogPrint('MICROWIRE not supported');
+    Exit(false);
 end;
 
 procedure TCH347Hardware.MWDeInit;
