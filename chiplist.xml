@@ -48,6 +48,9 @@
 	<Boya>
 	  <BY25D80 id="684014" page="256" size="1048576"/>
 	</Boya>
+	<BOYA_MICRO>
+	  <BY25Q64AS id="684017" page="256" size="8388608"/>
+	</BOYA_MICRO>
     <CATALYST_CSI>
       <CAT25010 page="16" size="128" spicmd="95"/>
       <CAT25020 page="16" size="256" spicmd="95"/>
