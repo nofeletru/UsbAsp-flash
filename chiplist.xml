@@ -114,6 +114,7 @@
       <EN25P32 id="1C2016" page="256" size="4194304"/>
       <EN25P64 id="1C2017" page="256" size="8388608"/>
       <EN25Q40 id="1C3013" otp="2032" page="256" size="524288"/>
+	  <EN25S40_1.8V id="1C3813" otp="256" page="256" size="524288"/>
       <EN25Q80A id="1C3014" otp="4080" page="256" size="1048576"/>
       <EN25Q16A id="1C3015" otp="8176" page="256" size="2097152"/>
       <EN25Q32A id="1C3016" otp="16368" page="256" size="4194304"/>
