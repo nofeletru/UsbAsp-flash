@@ -1561,7 +1561,7 @@ end;
 procedure ReadFlashI2C(var RomStream: TMemoryStream; StartAddress, ChipSize: cardinal; ChunkSize: Word; DevAddr: byte);
 var
   BytesRead: integer;
-  DataChunk: array[0..2047] of byte;
+  DataChunk: array[0..255] of byte;
   Address: cardinal;
 begin
   if ChipSize = 0 then
