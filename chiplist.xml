@@ -162,6 +162,7 @@
 	</PFLASH>
 	<PUYA>
     <P25D40H id="856013" page="256" size="524288"/>
+	<P25Q80H id="856014" page="256" size="1048576"/>
   </PUYA>
 	<TERRA>
 	  <TS25L512A id="373010" page="256" size="65536"/>
@@ -780,10 +781,11 @@
       <W25Q128BV id="EF4018" page="256" size="16777216"/>
       <W25Q128FV id="EF4018" page="256" size="16777216"/>
 	  <W25Q128JV id="EF7018" page="256" size="16777216"/>
+	  <W25Q128JW_1.8V id="EF6018" page="256" size="16777216"/>
+	  <W25Q128FW_1.8V id="EF6018" page="256" size="16777216"/>
 	  <W25Q256FV id="EF4019" page="256" size="33554432"/>
 	  <W25Q256JV id="EF4019" page="256" size="33554432"/>
 	  <W25Q256JV id="EF7019" page="256" size="33554432"/>
-      <W25Q128FW_1.8V id="EF6018" page="256" size="16777216"/>
       <W25Q16 id="EF4015" page="256" size="2097152"/>
       <W25Q16BV id="EF4015" page="256" size="2097152"/>
       <W25Q16CL id="EF4015" page="256" size="2097152"/>
