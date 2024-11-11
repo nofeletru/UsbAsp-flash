@@ -3187,6 +3187,23 @@ begin
     if MainForm.Menu32Khz.Checked then
       TDOMElement(ParentNode).SetAttribute('spi_speed', '32Khz');
 
+    if MainForm.MenuCH347SPIClock60MHz.Checked then
+      TDOMElement(ParentNode).SetAttribute('ch347_spi_speed', '60Mhz');
+    if MainForm.MenuCH347SPIClock30MHz.Checked then
+      TDOMElement(ParentNode).SetAttribute('ch347_spi_speed', '30Mhz');
+    if MainForm.MenuCH347SPIClock15MHz.Checked then
+      TDOMElement(ParentNode).SetAttribute('ch347_spi_speed', '15Mhz');
+    if MainForm.MenuCH347SPIClock7_5MHz.Checked then
+      TDOMElement(ParentNode).SetAttribute('ch347_spi_speed', '7_5Mhz');
+    if MainForm.MenuCH347SPIClock3_75MHz.Checked then
+      TDOMElement(ParentNode).SetAttribute('ch347_spi_speed', '3_75Mhz');
+    if MainForm.MenuCH347SPIClock1_875MHz.Checked then
+      TDOMElement(ParentNode).SetAttribute('ch347_spi_speed', '1_875MHz');
+    if MainForm.MenuCH347SPIClock937_5KHz.Checked then
+      TDOMElement(ParentNode).SetAttribute('ch347_spi_speed', '937_5KHz');
+    if MainForm.MenuCH347SPIClock468_75KHz.Checked then
+      TDOMElement(ParentNode).SetAttribute('ch347_spi_speed', '468_75KHz');
+
     if MainForm.MenuMW32Khz.Checked then
       TDOMElement(ParentNode).SetAttribute('mw_speed', '32Khz');
     if MainForm.MenuMW16Khz.Checked then
@@ -3259,8 +3276,22 @@ begin
         if OptVal = '187_5Khz' then MainForm.Menu187_5Khz.Checked := true;
         if OptVal = '93_75Khz' then MainForm.Menu93_75Khz.Checked := true;
         if OptVal = '32Khz' then MainForm.Menu32Khz.Checked := true;
-
       end;
+
+      if  Node.Attributes.GetNamedItem('ch347_spi_speed') <> nil then
+      begin
+        OptVal := UTF16ToUTF8(Node.Attributes.GetNamedItem('ch347_spi_speed').NodeValue);
+
+        if OptVal = '60Mhz' then MainForm.MenuCH347SPIClock60MHz.Checked := true;
+        if OptVal = '30Mhz' then MainForm.MenuCH347SPIClock30MHz.Checked := true;
+        if OptVal = '15Mhz' then MainForm.MenuCH347SPIClock15MHz.Checked := true;
+        if OptVal = '7_5Mhz' then MainForm.MenuCH347SPIClock7_5MHz.Checked := true;
+        if OptVal = '3_75Mhz' then MainForm.MenuCH347SPIClock3_75MHz.Checked := true;
+        if OptVal = '1_875MHz' then MainForm.MenuCH347SPIClock1_875MHz.Checked := true;
+        if OptVal = '937_5KHz' then MainForm.MenuCH347SPIClock937_5KHz.Checked := true;
+        if OptVal = '468_75KHz' then MainForm.MenuCH347SPIClock468_75KHz.Checked := true;
+      end;
+
 
       if  Node.Attributes.GetNamedItem('mw_speed') <> nil then
       begin
