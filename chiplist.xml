@@ -252,6 +252,7 @@
       <GD25Q64B id="C84017" page="256" size="8388608"/>
 	  <GD25B64B id="C84017" page="256" size="8388608"/>
 	  <GD25B64C id="C84017" page="256" size="8388608"/>
+	  <GD25B256E id="C84019" page="256" size="33554432"/>
 	  <GD25LB64C_1.8V id="C86017" page="256" size="8388608"/>
 	  <GD25B64E id="C84017" page="256" size="8388608"/>	  
 	  <GD25B128C id="C84018" page="256" size="16777216"/>
