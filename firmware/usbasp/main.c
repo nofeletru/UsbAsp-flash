@@ -26,7 +26,7 @@
 #include "clock.h"
 #include "tpi.h"
 #include "tpi_defs.h"
-#include "I2c.h"
+#include "i2c.h"
 #include "microwire.h"
 
 static uchar replyBuffer[8];
