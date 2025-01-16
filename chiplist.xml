@@ -311,6 +311,10 @@
       <IS25C64 page="64" size="8192" spicmd="95"/>
       <IS25C128 page="64" size="16384" spicmd="95"/>
       <IS25C256 page="64" size="32768" spicmd="95"/>
+	  <IS25LP080D id="9D6014" page="256" size="1048576"/>
+	  <IS25WP080D_1.8V id="9D7014" page="256" size="1048576"/>
+	  <IS25WP040D_1.8V id="9D7013" page="256" size="524288"/>
+	  <IS25WP020D_1.8V id="9D7012" page="256" size="262144"/>
     </ISSI>
     <KHIC>
       <KH25L1005 id="C22011" page="256" size="131072"/>
