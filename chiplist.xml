@@ -812,7 +812,8 @@
       <W25Q64BV id="EF4017" page="256" size="8388608"/>
       <W25Q64CV id="EF4017" page="256" size="8388608"/>
       <W25Q64FV id="EF4017" page="256" size="8388608"/>
-	  <W25Q64JV id="EF4017" page="256" size="8388608"/>
+	  <W25Q64JV-IQ-JQ id="EF4017" page="256" size="8388608"/>
+	  <W25Q64JV-IM-JM id="EF7017" page="256" size="8388608"/>
 	  <W25Q64JW-IQ_1.8V id="EF6017" page="256" size="8388608"/>
 	  <W25Q64JW-IM_1.8V id="EF8017" page="256" size="8388608"/>
       <W25Q64FW_1.8V id="EF6017" page="256" size="8388608"/>
