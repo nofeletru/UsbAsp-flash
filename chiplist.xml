@@ -1006,6 +1006,7 @@
     <Fudan>
 	  <FM25Q04A id="A14013" page="256" size="524288"/>
       <FM25Q32 id="A14016" page="256" size="4194304"/>
+	  <FM25Q128 id="A14018" page="256" size="16777216"/>
     </Fudan>
     <Genitop>
       <GT25Q80A id="E04014" page="256" size="1048576"/>
