@@ -122,6 +122,19 @@ function CH347StreamI2C(iIndex: cardinal;        // Specify the device number
 			oReadBuffer: pointer): boolean; stdcall; external 'CH347DLL.DLL'; // Points to a buffer to place data ready to be read in
 
 
+
+//Get the GPIO direction and pin level of CH347
+function CH347GPIO_Get(iIndex: cardinal;
+		       iDir: PCHAR;       // Pin direction: GPIo0-7 corresponding bit 0-7,0: input; 1: output
+		       iData: PCHAR): boolean; stdcall; external 'CH347DLL.DLL';     // GPIO0 level: GPIO0-7 corresponding bit 0-7,0: low level; 1: high level
+
+
+//Set the GPIO direction and pin level of CH347
+function CH347GPIO_Set(iIndex: cardinal;
+		       iEnable: byte;        // Data validity flag: The corresponding bits 0-7 correspond to GPIO0-7.
+		       iSetDirOut: byte;     // Sets the I/O direction, with pin 0 corresponding to input and pin 1 corresponding to output. Gpio0-7 corresponds to bits 0-7.
+		       iSetDataOut: byte): boolean; stdcall; external 'CH347DLL.DLL';   // Outputs data. If the I/O direction is output, then a pin outputs low level at a clear 0 and high level at a position 1
+
 implementation
 
 end.

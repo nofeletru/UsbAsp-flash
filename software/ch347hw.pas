@@ -5,7 +5,7 @@ unit ch347hw;
 interface
 
 uses
-  Classes, SysUtils, basehw, msgstr, ch347dll, ch341dll;
+  Classes, SysUtils, basehw, msgstr, ch347dll, ch341dll, utilfunc;
 
 type
 
@@ -48,6 +48,9 @@ public
   function MWRead(CS: byte; BufferLen: integer; var buffer: array of byte): integer; override;
   function MWWrite(CS: byte; BitsWrite: byte; buffer: array of byte): integer; override;
   function MWIsBusy: boolean; override;
+
+  function ReadBit(var data: byte): boolean;
+  function WriteBit(data: byte): boolean;
 end;
 
 implementation
@@ -262,37 +265,125 @@ begin
   result := boolean(mBuffer[0]);
 end;
 
+
 //MICROWIRE_____________________________________________________________________
+//00001111
+//       ^ CLK
+//      ^ MISO
+//     ^ CS
+//    ^ MOSI
+function TCH347Hardware.ReadBit(var data: byte): boolean;
+var
+  i: byte = 0;
+  b: byte;
+begin
+  result := true;
+
+  if not CH347GPIO_Set(FDevHandle, %00000001, $FF, $FF) then result := false;
+  if not CH347GPIO_Get(FDevHandle, @b, @i) then result := false;
+  if not CH347GPIO_Set(FDevHandle, %00000001, $FF, 0) then result := false;
+
+  if IsBitSet(i, 1) then data := 1 else data := 0;
+end;
+
+function TCH347Hardware.WriteBit(data: byte): boolean;
+var sdata: byte = 0;
+begin
+  result := true;
+
+  if data > 0 then sdata := $FF else sdata := 0;
+
+  if not CH347GPIO_Set(FDevHandle, %00001000, $FF, sdata) then result := false;
+
+  if not CH347GPIO_Set(FDevHandle, %00000001, $FF, $FF) then result := false;
+  if not CH347GPIO_Set(FDevHandle, %00000001, $FF, 0) then result := false;
+end;
 
 function TCH347Hardware.MWInit(speed: integer): boolean;
 begin
     if not FDevOpened then Exit(false);
-    main.LogPrint('MICROWIRE not supported');
-    Exit(false);
+    Result := CH347GPIO_Set(FDevHandle, %00001111, %00001101, %00001010);
 end;
 
 procedure TCH347Hardware.MWDeInit;
 begin
   if not FDevOpened then Exit;
-
+  CH347GPIO_Set(FDevHandle, %00001111, 0, 0);
 end;
 
 function TCH347Hardware.MWRead(CS: byte; BufferLen: integer; var buffer: array of byte): integer;
+var
+  bit_buffer: array of byte;
+  i,j: integer;
 begin
   if not FDevOpened then Exit(-1);
+  CH347GPIO_Set(FDevHandle, %00000100, $FF, $FF); //cs hi
 
+  SetLength(bit_buffer, BufferLen*8);
+
+  for i:=0 to (BufferLen*8)-1 do
+   begin
+    if ReadBit(bit_buffer[i]) then result := BufferLen else result := -1; //читаем биты
+   end;
+
+  for i:=0 to BufferLen-1 do
+  begin
+    for j:=0 to 7 do
+    begin
+      if IsBitSet(bit_buffer[(i*8)+j], 0) then //читаем DIN
+        BitSet(1, buffer[i], 7-j) //устанавливаем биты от старшего к младшему
+      else
+        BitSet(0, buffer[i], 7-j);
+    end;
+  end;
+
+  if Boolean(CS) then CH347GPIO_Set(FDevHandle, %00000100, $FF, 0);
 end;
 
 function TCH347Hardware.MWWrite(CS: byte; BitsWrite: byte; buffer: array of byte): integer;
+var
+  bit_buffer: array of byte;
+  i,j: integer;
 begin
   if not FDevOpened then Exit(-1);
 
+  if BitsWrite > 0 then
+  begin
+    CH347GPIO_Set(FDevHandle, %00000100, $FF, $FF); //cs hi
+
+    SetLength(bit_buffer, ByteNum(BitsWrite)*8);
+
+    for i:=0 to ByteNum(BitsWrite)-1 do
+    begin
+      for j:=0 to 7 do
+      begin
+        if IsBitSet(buffer[i], 7-j) then //читаем буфер
+          BitSet(1, bit_buffer[(i*8)+j], 0) //устанавливаем биты от старшего к младшему
+        else
+          BitSet(0, bit_buffer[(i*8)+j], 0);
+      end;
+    end;
+
+    //Отсылаем биты
+    for i:=0 to BitsWrite-1 do
+      if WriteBit(bit_buffer[i]) then result := BitsWrite else result := -1;
+
+    if Boolean(CS) then CH347GPIO_Set(FDevHandle, %00000100, $FF, 0);
+  end;
 
 end;
 
 function TCH347Hardware.MWIsBusy: boolean;
+var
+  port, b: byte;
 begin
+  CH347GPIO_Set(FDevHandle, %00000100, $FF, 0);
+  CH347GPIO_Set(FDevHandle, %00000100, $FF, $FF); //cs hi
 
+  CH347GPIO_Get(FDevHandle, @b, @port);
+  result := not IsBitSet(port, 1);
+
+  CH347GPIO_Set(FDevHandle, %00000100, $FF, 0);
 end;
 
 end.
