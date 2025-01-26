@@ -1,7 +1,7 @@
 #include <arduino.h>
 #include "commands.h"
 
-#define UART_SPEED 1000000 
+#define UART_SPEED 921600 
 
 int CMD;
 

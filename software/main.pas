@@ -250,7 +250,7 @@ var
   AsProgrammer: TAsProgrammer;
 
   Arduino_COMPort: string;
-  Arduino_BaudRate: integer = 1000000;
+  Arduino_BaudRate: integer = 921600;
 
 implementation
 
