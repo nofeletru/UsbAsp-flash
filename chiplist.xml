@@ -161,8 +161,11 @@
 	  <Pm25LV040 id="7F9D7E" page="256" size="524288"/>
 	</PFLASH>
 	<PUYA>
+	<P25D40SH id="856013" page="256" size="524288"/>
+	<P25D40SH id="854213" page="256" size="524288"/>
     <P25D40H id="856013" page="256" size="524288"/>
 	<P25Q80H id="856014" page="256" size="1048576"/>
+	<P25D80SH id="856014" page="256" size="1048576"/>
   </PUYA>
 	<TERRA>
 	  <TS25L512A id="373010" page="256" size="65536"/>
