@@ -5,6 +5,12 @@
   id - индефикатор микросхемы памяти(HEX). Поддерживаются опкоды 9F, 90, AB, 15
   spicmd - команды для серий микросхем памяти 25, 45, 95(EEPROM)
   script - имя файла скрипта из папки scripts  
+  
+  size - memory chip data size in bytes(Decimal)
+  page - memory chip page size in bytes(Decimal). For SST AAI Word programm - SSTW. For SST AAI Byte programm - SSTB. 
+  id - memory chip ID(Hexadecimal). Supported instructions 9F, 90, AB, 15.
+  spicmd - instructions for a series of memory chips 25, 45, 95(EEPROM). If not specified, the default value is 25.
+  script - the name of the script file from the scripts folder .
  -->
 <chiplist>
   <SPI>
