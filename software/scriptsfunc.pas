@@ -19,6 +19,7 @@ implementation
 uses main, scriptedit;
 
 const _SPI_SPEED_MAX = 255;
+      _SPI_CURRENT_UI_SPEED = 0;
 
 
 function GetScriptSectionsFromFile(ScriptFile: string): TStrings;
@@ -688,6 +689,7 @@ begin
   ScriptEngine.SetValue('_IC_MWAddrLen', CurrentICParam.MWAddLen);
   ScriptEngine.SetValue('_IC_I2CAddrType', CurrentICParam.I2CAddrType);
   ScriptEngine.SetValue('_SPI_SPEED_MAX', _SPI_SPEED_MAX);
+  ScriptEngine.SetValue('_SPI_CURRENT_UI_SPEED', _SPI_CURRENT_UI_SPEED);
 end;
 
 end.
