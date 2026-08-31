@@ -253,7 +253,7 @@ begin
   if not FDevOpened then Exit;
 
   mBuffer[0] := mCH341A_CMD_I2C_STREAM;
-  mBuffer[1] := mCH341A_CMD_I2C_STM_OUT or 1;
+  mBuffer[1] := mCH341A_CMD_I2C_STM_OUT;
   mBuffer[2] := data;
   mBuffer[3] := mCH341A_CMD_I2C_STM_END;
   mLength := 4;
